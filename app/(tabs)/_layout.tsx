@@ -26,6 +26,7 @@ export default function TabLayout() {
                 <Tabs.Screen
                     name="add"
                     options={{
+                        title: 'Add',
                         tabBarIcon: ({ color }) => <FontAwesome size={25} name="plus-circle" color={color} />,
                     }}
                 />
@@ -39,7 +40,7 @@ export default function TabLayout() {
                 <Tabs.Screen
                     name="menu"
                     options={{
-                        title: 'menu',
+                        title: 'Menu',
                         tabBarIcon: ({ color }) => <FontAwesome size={25} name="bars" color={color} />,
                     }}
                 />
