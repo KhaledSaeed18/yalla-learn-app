@@ -13,7 +13,7 @@ export default function AddProduct() {
         <SafeAreaView edges={["top", "right", "left"]} className='bg-background-0 flex-1'>
             <View className="px-4 py-3 bg-background-0 z-10 border-b border-[#3b83f664] flex-row items-center">
                 <TouchableOpacity onPress={() => router.push('/add')} className="pr-4">
-                    <FontAwesome name="arrow-left" size={20} color="#3b82f6" />
+                    <FontAwesome name="arrow-left" size={25} color="#3b82f6" />
                 </TouchableOpacity>
                 <Heading size="xl" className="flex-1 text-center pr-8">
                     Add a Product
