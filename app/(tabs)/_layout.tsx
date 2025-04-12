@@ -44,6 +44,18 @@ export default function TabLayout() {
                         tabBarIcon: ({ color }) => <FontAwesome size={25} name="bars" color={color} />,
                     }}
                 />
+                <Tabs.Screen
+                    name="add-product"
+                    options={{
+                        href: null,
+                    }}
+                />
+                <Tabs.Screen
+                    name="add-service"
+                    options={{
+                        href: null,
+                    }}
+                />
             </Tabs>
         </SafeAreaProvider>
     );

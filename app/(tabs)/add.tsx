@@ -6,14 +6,15 @@ import { Heading } from "@/components/ui/heading"
 import { Text } from "@/components/ui/text"
 import { Image } from "@/components/ui/image"
 import { FontAwesome } from '@expo/vector-icons'
+import { router } from 'expo-router'
 
 const add = () => {
     const handleAddProductClick = () => {
-        console.log("Add Product card clicked")
+        router.push('/add-product')
     }
 
     const handleAddServiceClick = () => {
-        console.log("Add Service card clicked")
+        router.push('/add-service')
     }
 
     return (
@@ -50,7 +51,7 @@ const add = () => {
                                     </Heading>
                                     <Text size="lg">List textbooks, electronics, furniture or other items you want to sell to fellow students</Text>
                                 </View>
-                                <FontAwesome name="chevron-right" size={20} color="#3b82f6" className='pl-2'/>
+                                <FontAwesome name="chevron-right" size={20} color="#3b82f6" className='pl-2' />
                             </View>
                         </Card>
                     </TouchableOpacity>
@@ -74,7 +75,7 @@ const add = () => {
                                     </Heading>
                                     <Text size="lg">Offer or find tutoring, design work, event help and other services within the campus community</Text>
                                 </View>
-                                <FontAwesome name="chevron-right" size={20} color="#3b82f6" className='pl-2'/>
+                                <FontAwesome name="chevron-right" size={20} color="#3b82f6" className='pl-2' />
                             </View>
                         </Card>
                     </TouchableOpacity>
