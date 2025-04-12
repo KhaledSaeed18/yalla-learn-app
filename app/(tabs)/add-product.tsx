@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, TouchableOpacity, Switch, ActivityIndicator } from 'react-native'
+import { View, ScrollView, TouchableOpacity, Switch, ActivityIndicator, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Text } from '@/components/ui/text'
 import { Heading } from '@/components/ui/heading'
@@ -13,9 +13,12 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { productSchema, ProductFormData } from '@/lib/validations/product.validation'
 import { Condition, ListingCategory } from '@/types/enums'
+import * as ImagePicker from 'expo-image-picker'
+import { Actionsheet, ActionsheetContent, ActionsheetItem, ActionsheetItemText, ActionsheetDragIndicator, ActionsheetDragIndicatorWrapper, ActionsheetBackdrop } from "@/components/ui/actionsheet"
 
 export default function AddProduct() {
     const [isLoading, setIsLoading] = useState(false);
+    const [imagePickerOpen, setImagePickerOpen] = useState(false);
 
     // Format enum values for display
     const formatEnumValue = (value: string) => {
@@ -47,10 +50,81 @@ export default function AddProduct() {
     const isRentable = watch('isRentable');
     const images = watch('images') || [];
 
-    // Handle image selection (placeholder)
+    // Request camera permissions
+    const requestCameraPermission = async () => {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert('Permission needed', 'Camera permission is required to take photos.');
+            return false;
+        }
+        return true;
+    };
+
+    // Request media library permissions
+    const requestMediaLibraryPermission = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert('Permission needed', 'Media library permission is required to select photos.');
+            return false;
+        }
+        return true;
+    };
+
+    // Take a photo with camera
+    const takePhoto = async () => {
+        const hasPermission = await requestCameraPermission();
+        if (!hasPermission) return;
+
+        try {
+            const result = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 0.8,
+            });
+
+            if (!result.canceled && result.assets && result.assets.length > 0) {
+                const newImage = result.assets[0];
+                setValue('images', [...images, newImage.uri]);
+            }
+        } catch (error) {
+            console.error('Error taking photo:', error);
+            Alert.alert('Error', 'Failed to take photo');
+        }
+    };
+
+    // Select images from gallery
+    const pickImages = async () => {
+        const hasPermission = await requestMediaLibraryPermission();
+        if (!hasPermission) return;
+
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsMultipleSelection: true,
+                selectionLimit: 5 - images.length,
+                quality: 0.8,
+            });
+
+            if (!result.canceled && result.assets && result.assets.length > 0) {
+                const newImages = result.assets.map(asset => asset.uri);
+                setValue('images', [...images, ...newImages]);
+            }
+        } catch (error) {
+            console.error('Error picking images:', error);
+            Alert.alert('Error', 'Failed to pick images');
+        }
+    };
+
+    // Handle image selection
     const handleAddImage = () => {
-        // In a real app, this would open image picker and add to images
-        const newImages = [...images, `image-${images.length + 1}`];
+        setImagePickerOpen(true);
+    };
+
+    // Remove image
+    const removeImage = (index: number) => {
+        const newImages = [...images];
+        newImages.splice(index, 1);
         setValue('images', newImages);
     };
 
@@ -261,15 +335,38 @@ export default function AddProduct() {
                         >
                             <FontAwesome name="camera" size={32} color="rgb(var(--color-primary-500))" />
                             <Text className="mt-2 text-primary-500">Tap to add photos</Text>
+                            {images.length > 0 && (
+                                <Text className="text-typography-500 text-xs mt-1">
+                                    {images.length} {images.length === 1 ? 'photo' : 'photos'} selected
+                                </Text>
+                            )}
                         </TouchableOpacity>
 
                         {images.length > 0 && (
                             <View className="flex-row flex-wrap mt-2">
                                 {images.map((img, index) => (
-                                    <View key={index} className="w-20 h-20 bg-gray-200 rounded-md m-1 items-center justify-center">
-                                        <Text>Image {index + 1}</Text>
+                                    <View key={index} className="w-24 h-24 m-1 relative">
+                                        <Image
+                                            source={{ uri: img }}
+                                            className="w-full h-full rounded-md"
+                                            resizeMode="cover"
+                                        />
+                                        <TouchableOpacity
+                                            className="absolute top-1 right-1 bg-black bg-opacity-50 rounded-full p-1"
+                                            onPress={() => removeImage(index)}
+                                        >
+                                            <FontAwesome name="times" size={14} color="white" />
+                                        </TouchableOpacity>
                                     </View>
                                 ))}
+                                {images.length < 5 && (
+                                    <TouchableOpacity
+                                        className="w-24 h-24 bg-background-100 border border-outline-300 rounded-md m-1 items-center justify-center"
+                                        onPress={handleAddImage}
+                                    >
+                                        <FontAwesome name="plus" size={20} color="rgb(var(--color-primary-500))" />
+                                    </TouchableOpacity>
+                                )}
                             </View>
                         )}
                         {errors.images && <Text className="text-error-600 text-xs mt-1">{errors.images.message}</Text>}
@@ -291,6 +388,43 @@ export default function AddProduct() {
                     </View>
                 </View>
             </ScrollView>
+
+            {/* Image picker action sheet */}
+            <Actionsheet isOpen={imagePickerOpen} onClose={() => setImagePickerOpen(false)}>
+                <ActionsheetBackdrop />
+                <ActionsheetContent>
+                    <ActionsheetDragIndicatorWrapper>
+                        <ActionsheetDragIndicator />
+                    </ActionsheetDragIndicatorWrapper>
+                    <ActionsheetItem
+                        onPress={() => {
+                            setImagePickerOpen(false);
+                            setTimeout(takePhoto, 500);
+                        }}
+                    >
+                        <View className="flex-row items-center">
+                            <FontAwesome name="camera" size={24} color="rgb(var(--color-primary-500))" />
+                            <ActionsheetItemText className="ml-4">Take a photo</ActionsheetItemText>
+                        </View>
+                    </ActionsheetItem>
+
+                    <ActionsheetItem
+                        onPress={() => {
+                            setImagePickerOpen(false);
+                            setTimeout(pickImages, 500);
+                        }}
+                    >
+                        <View className="flex-row items-center">
+                            <FontAwesome name="image" size={24} color="rgb(var(--color-primary-500))" />
+                            <ActionsheetItemText className="ml-4">Choose from gallery</ActionsheetItemText>
+                        </View>
+                    </ActionsheetItem>
+
+                    <ActionsheetItem onPress={() => setImagePickerOpen(false)}>
+                        <ActionsheetItemText className="text-center">Cancel</ActionsheetItemText>
+                    </ActionsheetItem>
+                </ActionsheetContent>
+            </Actionsheet>
         </SafeAreaView>
     )
 }
