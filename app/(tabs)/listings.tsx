@@ -187,40 +187,45 @@ const Listings = () => {
 
     return (
         <SafeAreaView edges={['top']} className='bg-background-0 flex-1'>
-            <View className="px-4 py-4">
-                <Heading size="xl" className="mb-2 text-typography-900">Marketplace</Heading>
+            <View className="flex-1">
+                <View className="px-4 pt-4">
+                    <Heading size="xl" className="mb-2 text-typography-900">Marketplace</Heading>
 
-                {/* Search and Filter Section */}
-                <View className="flex-row items-center mb-4">
-                    <View className="flex-1 mr-2">
-                        <Input variant="outline" size="md">
-                            <InputIcon as={SearchIcon} className="ml-3" />
-                            <InputField
-                                placeholder="Search products"
-                                value={searchQuery}
-                                onChangeText={setSearchQuery}
-                            />
-                        </Input>
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => setFilterSheetOpen(true)}
-                        className="bg-background-100 p-3 rounded-md"
-                    >
-                        <FontAwesome name="sliders" size={20} color="rgb(var(--color-primary-500))" />
-                    </TouchableOpacity>
-                </View>
-
-                {/* Selected Category Display */}
-                {selectedCategory && (
-                    <View className="mb-4 flex-row">
-                        <View className="bg-primary-100 rounded-full px-3 py-1 flex-row items-center">
-                            <Text className="text-primary-700 text-sm">{formatEnumValue(selectedCategory)}</Text>
-                            <TouchableOpacity onPress={() => setSelectedCategory(null)} className="ml-2">
-                                <FontAwesome name="times-circle" size={16} color="rgb(var(--color-primary-700))" />
-                            </TouchableOpacity>
+                    {/* Search and Filter Section */}
+                    <View className="flex-row items-center mb-4">
+                        <View className="flex-1 mr-2">
+                            <Input variant="outline" size="md">
+                                <InputIcon as={SearchIcon} className="ml-3" />
+                                <InputField
+                                    placeholder="Search products"
+                                    value={searchQuery}
+                                    onChangeText={setSearchQuery}
+                                />
+                            </Input>
                         </View>
+                        <TouchableOpacity
+                            onPress={() => setFilterSheetOpen(true)}
+                            className="bg-background-100 p-3 rounded-md"
+                        >
+                            <FontAwesome name="sliders" size={20} color="rgb(var(--color-primary-500))" />
+                        </TouchableOpacity>
                     </View>
-                )}
+
+                    {/* Selected Category Display */}
+                    {selectedCategory && (
+                        <View className="mb-4 flex-row">
+                            <View className="bg-primary-100 rounded-full px-3 py-1 flex-row items-center">
+                                <Text className="text-primary-700 text-sm">{formatEnumValue(selectedCategory)}</Text>
+                                <TouchableOpacity onPress={() => setSelectedCategory(null)} className="ml-2">
+                                    <FontAwesome name="times-circle" size={16} color="rgb(var(--color-primary-700))" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    )}
+
+                    {/* Results count */}
+                    <Text className="text-typography-600 mb-4">{filteredListings.length} {filteredListings.length === 1 ? 'product' : 'products'} found</Text>
+                </View>
 
                 {/* Loading indicator */}
                 {isLoading ? (
@@ -229,9 +234,6 @@ const Listings = () => {
                     </View>
                 ) : (
                     <>
-                        {/* Results count */}
-                        <Text className="text-typography-600 mb-4">{filteredListings.length} {filteredListings.length === 1 ? 'product' : 'products'} found</Text>
-
                         {/* Products grid */}
                         {filteredListings.length > 0 ? (
                             <FlatList
@@ -241,9 +243,14 @@ const Listings = () => {
                                 numColumns={width < 700 ? 2 : 3}
                                 columnWrapperStyle={{ justifyContent: 'space-between' }}
                                 showsVerticalScrollIndicator={false}
+                                contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 30 }}
+                                initialNumToRender={6}
+                                maxToRenderPerBatch={10}
+                                windowSize={10}
+                                removeClippedSubviews={true}
                             />
                         ) : (
-                            <View className="items-center justify-center py-20">
+                            <View className="items-center justify-center py-20 px-4">
                                 <FontAwesome name="search" size={50} color="rgb(var(--color-outline-400))" />
                                 <Text className="text-typography-600 mt-4 text-center">No products found</Text>
                                 <Text className="text-typography-500 mt-1 text-center">Try different search terms or filters</Text>
