@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Text } from '@/components/ui/text'
 import { Heading } from '@/components/ui/heading'
@@ -22,8 +22,8 @@ export default function AddService() {
         control,
         handleSubmit,
         watch,
-        setValue,
-        formState: { errors }
+        formState: { errors },
+        reset
     } = useForm<ServiceFormData>({
         resolver: zodResolver(serviceSchema),
         defaultValues: {
@@ -52,8 +52,15 @@ export default function AddService() {
         setTimeout(() => {
             // Add actual API call here to save the service
             setIsLoading(false);
-            // Navigate to another screen or show success
-            router.push('/');
+
+            reset({
+                title: '',
+                description: '',
+                price: '',
+                category: GigCategory.OTHER,
+                direction: ServiceDirection.OFFERING
+            });
+
         }, 1500);
     };
 

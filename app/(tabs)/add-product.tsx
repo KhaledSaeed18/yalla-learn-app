@@ -31,7 +31,8 @@ export default function AddProduct() {
         handleSubmit,
         watch,
         formState: { errors },
-        setValue
+        setValue,
+        reset
     } = useForm<ProductFormData>({
         resolver: zodResolver(productSchema),
         defaultValues: {
@@ -136,8 +137,17 @@ export default function AddProduct() {
         // Add API call to save the listing
         setTimeout(() => {
             setIsLoading(false);
-            // Show success message or navigate away
-            router.push('/');
+            // Reset form fields to default values
+            reset({
+                title: '',
+                description: '',
+                price: '',
+                condition: Condition.NEW,
+                category: ListingCategory.OTHER,
+                isRentable: false,
+                rentalPeriod: '',
+                images: []
+            });
         }, 1500);
     };
 
