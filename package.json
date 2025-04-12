@@ -15,9 +15,11 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@expo/html-elements": "^0.4.2",
     "@expo/vector-icons": "^14.0.2",
     "@gluestack-ui/button": "^1.0.14",
     "@gluestack-ui/icon": "^0.1.27",
+    "@gluestack-ui/image": "^0.1.17",
     "@gluestack-ui/nativewind-utils": "^1.0.26",
     "@gluestack-ui/overlay": "^0.1.22",
     "@gluestack-ui/toast": "^1.0.9",
