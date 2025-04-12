@@ -43,14 +43,14 @@ const add = () => {
                                 className="mb-2 h-[200px] w-full rounded-md"
                                 alt="Student marketplace products"
                             />
-                            <View className="flex-row justify-between items-center gap-0.5">
+                            <View className="flex-row justify-between items-center">
                                 <View className="flex-1">
                                     <Heading size="xl" className="mb-1">
                                         Sell a Product
                                     </Heading>
                                     <Text size="lg">List textbooks, electronics, furniture or other items you want to sell to fellow students</Text>
                                 </View>
-                                <FontAwesome name="chevron-right" size={20} color="#3b82f6" />
+                                <FontAwesome name="chevron-right" size={20} color="#3b82f6" className='pl-2'/>
                             </View>
                         </Card>
                     </TouchableOpacity>
@@ -67,14 +67,14 @@ const add = () => {
                                 className="mb-2 h-[200px] w-full rounded-md"
                                 alt="Student services"
                             />
-                            <View className="flex-row justify-between items-center gap-0.5">
+                            <View className="flex-row justify-between items-center">
                                 <View className="flex-1">
                                     <Heading size="xl" className="mb-1">
                                         Offer or Request a Service
                                     </Heading>
                                     <Text size="lg">Offer or find tutoring, design work, event help and other services within the campus community</Text>
                                 </View>
-                                <FontAwesome name="chevron-right" size={20} color="#3b82f6" />
+                                <FontAwesome name="chevron-right" size={20} color="#3b82f6" className='pl-2'/>
                             </View>
                         </Card>
                     </TouchableOpacity>
