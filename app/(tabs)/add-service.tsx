@@ -198,7 +198,10 @@ export default function AddService() {
                             isDisabled={isLoading}
                         >
                             <Text className="text-white font-bold">
-                                {serviceDirection === ServiceDirection.OFFERING ? "List My Service" : "Post My Request"}
+                                {isLoading
+                                    ? (serviceDirection === ServiceDirection.OFFERING ? "Listing..." : "Posting...")
+                                    : (serviceDirection === ServiceDirection.OFFERING ? "List My Service" : "Post My Request")
+                                }
                             </Text>
                         </Button>
                     </View>
