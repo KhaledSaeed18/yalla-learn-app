@@ -38,7 +38,7 @@ const add = () => {
                         <Card size="md" variant="outline" className="border-[#3b82f6]">
                             <Image
                                 source={{
-                                    uri: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?q=80&w=1000",
+                                    uri: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                                 }}
                                 className="mb-2 h-[200px] w-full rounded-md"
                                 alt="Student marketplace products"
