@@ -15,6 +15,26 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
+                name="listings"
+                options={{
+                    title: 'Listings',
+                    tabBarIcon: ({ color }) => <FontAwesome size={28} name="shopping-cart" color={color} />,
+                }}
+            />
+            <Tabs.Screen
+                name="add"
+                options={{
+                    tabBarIcon: ({ color }) => <FontAwesome size={28} name="plus-circle" color={color} />,
+                }}
+            />
+            <Tabs.Screen
+                name="services"
+                options={{
+                    title: 'Services',
+                    tabBarIcon: ({ color }) => <FontAwesome size={28} name="briefcase" color={color} />,
+                }}
+            />
+            <Tabs.Screen
                 name="menu"
                 options={{
                     title: 'menu',
