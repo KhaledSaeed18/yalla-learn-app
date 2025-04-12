@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Text } from '@/components/ui/text'
 import { Heading } from '@/components/ui/heading'
@@ -9,57 +9,34 @@ import { Input, InputField } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectTrigger, SelectInput, SelectIcon, SelectPortal, SelectBackdrop, SelectContent, SelectDragIndicator, SelectDragIndicatorWrapper, SelectItem } from '@/components/ui/select'
 import { ChevronDownIcon } from '@/components/ui/icon'
-
-// Enums from the model
-enum ServiceDirection {
-    OFFERING = "OFFERING",
-    REQUESTING = "REQUESTING"
-}
-
-enum GigCategory {
-    TUTORING = "TUTORING",
-    NOTES_SHARING = "NOTES_SHARING",
-    ACADEMIC_WRITING = "ACADEMIC_WRITING",
-    DESIGN_SERVICES = "DESIGN_SERVICES",
-    CODING_HELP = "CODING_HELP",
-    LANGUAGE_TRANSLATION = "LANGUAGE_TRANSLATION",
-    EVENT_PLANNING = "EVENT_PLANNING",
-    PHOTOGRAPHY = "PHOTOGRAPHY",
-    MUSIC_LESSONS = "MUSIC_LESSONS",
-    RESEARCH_ASSISTANCE = "RESEARCH_ASSISTANCE",
-    EXAM_PREP = "EXAM_PREP",
-    RESUME_WRITING = "RESUME_WRITING",
-    CAMPUS_DELIVERY = "CAMPUS_DELIVERY",
-    TECHNICAL_REPAIR = "TECHNICAL_REPAIR",
-    OTHER = "OTHER"
-}
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { serviceSchema, ServiceFormData } from '@/lib/validations/service.validation'
+import { ServiceDirection, GigCategory } from '@/types/enums'
 
 export default function AddService() {
-    const [serviceDirection, setServiceDirection] = useState<ServiceDirection>(ServiceDirection.OFFERING)
     const [isLoading, setIsLoading] = useState(false)
 
-    // Form state
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        price: '',
-        category: GigCategory.OTHER,
-    });
-
-    // Helper for updating form values
-    const updateFormField = (field: string, value: any) => {
-        setFormData({ ...formData, [field]: value });
-    };
-
-    // Reset form to initial values
-    const resetForm = () => {
-        setFormData({
+    // Initialize react-hook-form with zod resolver
+    const {
+        control,
+        handleSubmit,
+        watch,
+        setValue,
+        formState: { errors }
+    } = useForm<ServiceFormData>({
+        resolver: zodResolver(serviceSchema),
+        defaultValues: {
             title: '',
             description: '',
             price: '',
             category: GigCategory.OTHER,
-        });
-    };
+            direction: ServiceDirection.OFFERING
+        }
+    });
+
+    // Watch the direction field to conditionally show price input
+    const direction = watch('direction');
 
     // Format enum values for display
     const formatEnumValue = (value: string) => {
@@ -67,21 +44,17 @@ export default function AddService() {
     };
 
     // Submit form handler
-    const submitService = () => {
+    const onSubmit = (data: ServiceFormData) => {
         setIsLoading(true);
-        console.log("Service submitted", {
-            ...formData,
-            direction: serviceDirection,
-            price: formData.price ? parseFloat(formData.price) : null
-        });
+        console.log("Service submitted with validation", data);
 
         // Simulate API call with timeout
         setTimeout(() => {
             // Add actual API call here to save the service
             setIsLoading(false);
-            resetForm(); // Clear form fields after successful submission
-            // Optionally show success message or navigate away
-        }, 1500); // 1.5 second delay
+            // Navigate to another screen or show success
+            router.push('/');
+        }, 1500);
     };
 
     return (
@@ -103,106 +76,145 @@ export default function AddService() {
                 <View className='p-4 flex flex-col gap-4'>
                     <View>
                         <Text className="mb-2 text-typography-700">Service Type</Text>
-                        <View className="flex-row">
-                            <TouchableOpacity
-                                onPress={() => setServiceDirection(ServiceDirection.OFFERING)}
-                                className={`flex-1 py-2 rounded-l-md items-center ${serviceDirection === ServiceDirection.OFFERING ? 'bg-primary-500' : 'bg-background-100 border border-outline-200'}`}
-                            >
-                                <Text className={serviceDirection === ServiceDirection.OFFERING ? 'text-white' : 'text-typography-700'}>I'm Offering</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => setServiceDirection(ServiceDirection.REQUESTING)}
-                                className={`flex-1 py-2 rounded-r-md items-center ${serviceDirection === ServiceDirection.REQUESTING ? 'bg-primary-500' : 'bg-background-100 border border-outline-200'}`}
-                            >
-                                <Text className={serviceDirection === ServiceDirection.REQUESTING ? 'text-white' : 'text-typography-700'}>I'm Requesting</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <Controller
+                            control={control}
+                            name="direction"
+                            render={({ field: { onChange, value } }) => (
+                                <View className="flex-row">
+                                    <TouchableOpacity
+                                        onPress={() => onChange(ServiceDirection.OFFERING)}
+                                        className={`flex-1 py-2 rounded-l-md items-center ${value === ServiceDirection.OFFERING ? 'bg-primary-500' : 'bg-background-100 border border-outline-200'}`}
+                                    >
+                                        <Text className={value === ServiceDirection.OFFERING ? 'text-white' : 'text-typography-700'}>I'm Offering</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => onChange(ServiceDirection.REQUESTING)}
+                                        className={`flex-1 py-2 rounded-r-md items-center ${value === ServiceDirection.REQUESTING ? 'bg-primary-500' : 'bg-background-100 border border-outline-200'}`}
+                                    >
+                                        <Text className={value === ServiceDirection.REQUESTING ? 'text-white' : 'text-typography-700'}>I'm Requesting</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        />
+                        {errors.direction && <Text className="text-error-600 text-xs mt-1">{errors.direction.message}</Text>}
                     </View>
 
                     <View>
                         <Text className="mb-2 text-typography-700">Service Title</Text>
-                        <Input variant="outline" size="md">
-                            <InputField
-                                placeholder="Enter service title"
-                                value={formData.title}
-                                onChangeText={(text) => updateFormField('title', text)}
-                            />
-                        </Input>
+                        <Controller
+                            control={control}
+                            name="title"
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <Input variant="outline" size="md">
+                                    <InputField
+                                        placeholder="Enter service title"
+                                        value={value}
+                                        onChangeText={onChange}
+                                        onBlur={onBlur}
+                                    />
+                                </Input>
+                            )}
+                        />
+                        {errors.title && <Text className="text-error-600 text-xs mt-1">{errors.title.message}</Text>}
                     </View>
 
-                    {serviceDirection === ServiceDirection.OFFERING && (
+                    {direction === ServiceDirection.OFFERING && (
                         <View>
                             <Text className="mb-2 text-typography-700">Your Rate</Text>
-                            <Input variant="outline" size="md">
-                                <InputField
-                                    placeholder="$25/hour (optional)"
-                                    keyboardType="numeric"
-                                    value={formData.price}
-                                    onChangeText={(text) => updateFormField('price', text)}
-                                />
-                            </Input>
+                            <Controller
+                                control={control}
+                                name="price"
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <Input variant="outline" size="md">
+                                        <InputField
+                                            placeholder="$25/hour (optional)"
+                                            keyboardType="numeric"
+                                            value={value}
+                                            onChangeText={onChange}
+                                            onBlur={onBlur}
+                                        />
+                                    </Input>
+                                )}
+                            />
+                            {errors.price && <Text className="text-error-600 text-xs mt-1">{errors.price.message}</Text>}
                         </View>
                     )}
 
                     <View>
                         <Text className="mb-2 text-typography-700">Category</Text>
-                        <Select
-                            onValueChange={(value) => updateFormField('category', value)}
-                            defaultValue={formData.category}
-                        >
-                            <SelectTrigger variant="outline" size="md">
-                                <SelectInput
-                                    placeholder="Select category"
-                                    value={formatEnumValue(formData.category)}
-                                />
-                                <SelectIcon className="mr-3" as={ChevronDownIcon} />
-                            </SelectTrigger>
-                            <SelectPortal>
-                                <SelectBackdrop />
-                                <SelectContent>
-                                    <SelectDragIndicatorWrapper>
-                                        <SelectDragIndicator />
-                                    </SelectDragIndicatorWrapper>
-                                    {Object.values(GigCategory).map(cat => (
-                                        <SelectItem
-                                            key={cat}
-                                            label={formatEnumValue(cat)}
-                                            value={cat}
+                        <Controller
+                            control={control}
+                            name="category"
+                            render={({ field: { onChange, value } }) => (
+                                <Select
+                                    onValueChange={onChange}
+                                    defaultValue={value}
+                                >
+                                    <SelectTrigger variant="outline" size="md">
+                                        <SelectInput
+                                            placeholder="Select category"
+                                            value={formatEnumValue(value)}
                                         />
-                                    ))}
-                                </SelectContent>
-                            </SelectPortal>
-                        </Select>
+                                        <SelectIcon className="mr-3" as={ChevronDownIcon} />
+                                    </SelectTrigger>
+                                    <SelectPortal>
+                                        <SelectBackdrop />
+                                        <SelectContent>
+                                            <SelectDragIndicatorWrapper>
+                                                <SelectDragIndicator />
+                                            </SelectDragIndicatorWrapper>
+                                            {Object.values(GigCategory).map(cat => (
+                                                <SelectItem
+                                                    key={cat}
+                                                    label={formatEnumValue(cat)}
+                                                    value={cat}
+                                                />
+                                            ))}
+                                        </SelectContent>
+                                    </SelectPortal>
+                                </Select>
+                            )}
+                        />
+                        {errors.category && <Text className="text-error-600 text-xs mt-1">{errors.category.message}</Text>}
                     </View>
 
                     <View>
                         <Text className="mb-2 text-typography-700">Description</Text>
-                        <Input variant="outline" size="md" className="h-24">
-                            <InputField
-                                placeholder={serviceDirection === ServiceDirection.OFFERING ? "Describe the service you're offering" : "Describe the service you're looking for"}
-                                multiline
-                                numberOfLines={4}
-                                textAlignVertical="top"
-                                className="pt-2"
-                                value={formData.description}
-                                onChangeText={(text) => updateFormField('description', text)}
-                            />
-                        </Input>
+                        <Controller
+                            control={control}
+                            name="description"
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <Input variant="outline" size="md" className="h-24">
+                                    <InputField
+                                        placeholder={direction === ServiceDirection.OFFERING ? "Describe the service you're offering" : "Describe the service you're looking for"}
+                                        multiline
+                                        numberOfLines={4}
+                                        textAlignVertical="top"
+                                        className="pt-2"
+                                        value={value}
+                                        onChangeText={onChange}
+                                        onBlur={onBlur}
+                                    />
+                                </Input>
+                            )}
+                        />
+                        {errors.description && <Text className="text-error-600 text-xs mt-1">{errors.description.message}</Text>}
                     </View>
 
                     <View className="mt-4">
                         <Button
                             size="lg"
                             className="bg-primary-500"
-                            onPress={submitService}
+                            onPress={handleSubmit(onSubmit)}
                             isDisabled={isLoading}
                         >
-                            <Text className="text-white font-bold">
-                                {isLoading
-                                    ? (serviceDirection === ServiceDirection.OFFERING ? "Listing..." : "Posting...")
-                                    : (serviceDirection === ServiceDirection.OFFERING ? "List My Service" : "Post My Request")
-                                }
-                            </Text>
+                            {isLoading ? (
+                                <ActivityIndicator color="white" />
+                            ) : (
+                                <Text className="text-white font-bold">
+                                    {direction === ServiceDirection.OFFERING ? "List My Service" : "Post My Request"}
+                                </Text>
+                            )}
                         </Button>
                     </View>
                 </View>
