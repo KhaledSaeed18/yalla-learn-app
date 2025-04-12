@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { Heading } from '../../components/ui/heading';
 
 export default function Tab() {
     const user = {
@@ -42,6 +43,11 @@ export default function Tab() {
         <SafeAreaView className='bg-background-0 flex-1'>
             <ScrollView className='flex-1'>
                 <View className='px-4'>
+                    {/* Page Title */}
+                    <Heading size="xl" className="my-4 text-typography-900">
+                        Account & Settings
+                    </Heading>
+
                     {/* User Profile Section */}
                     <View className='bg-white rounded-xl p-4 mb-6 flex-row items-center justify-between'>
                         <View className='flex-row items-center'>
