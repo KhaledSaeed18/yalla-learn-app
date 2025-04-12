@@ -80,11 +80,11 @@ export default function Tab() {
                         {menuOptions.map((option, index) => (
                             <TouchableOpacity
                                 key={index}
-                                className={`p-4 flex-row items-center border-b border-[#3b83f664] ${index === menuOptions.length - 1 ? 'border-b-0' : ''
+                                className={`p-4 flex-row items-center border-b border-gray-300 ${index === menuOptions.length - 1 ? 'border-b-0' : ''
                                     }`}
                                 onPress={option.onPress}
                             >
-                                <Ionicons name={option.icon as any} size={24} color="#666" className='mr-4' />
+                                <Ionicons name={option.icon as any} size={24} color="#3b83f664" className='mr-4' />
                                 <Text className='text-typography-600 text-base flex-1'>{option.title}</Text>
                                 <Ionicons name="chevron-forward" size={20} color="#999" />
                             </TouchableOpacity>
