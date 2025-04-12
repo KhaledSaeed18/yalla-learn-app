@@ -13,9 +13,9 @@ export default function AddService() {
 
     return (
         <SafeAreaView edges={["top", "right", "left"]} className='bg-background-0 flex-1'>
-            <View className="px-4 py-3 bg-background-0 z-10 border-b border-[#3b83f664] flex-row items-center">
+            <View className="px-4 py-3 bg-background-0 z-10 border-b border-outline-200 flex-row items-center">
                 <TouchableOpacity onPress={() => router.push('/add')} className="pr-4">
-                    <FontAwesome name="arrow-left" size={25} color="#3b82f6" />
+                    <FontAwesome name="arrow-left" size={25} color="rgb(var(--color-primary-500))" />
                 </TouchableOpacity>
                 <Heading size="xl" className="flex-1 text-center pr-8">
                     Add a Service
@@ -33,13 +33,13 @@ export default function AddService() {
                         <View className="flex-row">
                             <TouchableOpacity
                                 onPress={() => setServiceType('offer')}
-                                className={`flex-1 py-2 rounded-l-md items-center ${serviceType === 'offer' ? 'bg-[#3b82f6]' : 'bg-background-100 border border-outline-200'}`}
+                                className={`flex-1 py-2 rounded-l-md items-center ${serviceType === 'offer' ? 'bg-primary-500' : 'bg-background-100 border border-outline-200'}`}
                             >
                                 <Text className={serviceType === 'offer' ? 'text-white' : 'text-typography-700'}>I'm Offering</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setServiceType('request')}
-                                className={`flex-1 py-2 rounded-r-md items-center ${serviceType === 'request' ? 'bg-[#3b82f6]' : 'bg-background-100 border border-outline-200'}`}
+                                className={`flex-1 py-2 rounded-r-md items-center ${serviceType === 'request' ? 'bg-primary-500' : 'bg-background-100 border border-outline-200'}`}
                             >
                                 <Text className={serviceType === 'request' ? 'text-white' : 'text-typography-700'}>I'm Requesting</Text>
                             </TouchableOpacity>
@@ -92,7 +92,7 @@ export default function AddService() {
                     <View className="mt-4">
                         <Button
                             size="lg"
-                            className="bg-[#3b82f6]"
+                            className="bg-primary-500"
                             onPress={() => console.log("Service submitted")}
                         >
                             <Text className="text-white font-bold">

@@ -49,7 +49,7 @@ export default function Tab() {
                     </Heading>
 
                     {/* User Profile Section */}
-                    <View className='bg-white rounded-xl p-4 mb-6 flex-row items-center justify-between'>
+                    <View className='bg-background-0 rounded-xl p-4 mb-6 flex-row items-center justify-between'>
                         <View className='flex-row items-center'>
                             {user.avatarUrl ? (
                                 <Image
@@ -57,7 +57,7 @@ export default function Tab() {
                                     className='w-16 h-16 rounded-full mr-4'
                                 />
                             ) : (
-                                <View className='w-16 h-16 rounded-full bg-gray-300 mr-4 items-center justify-center'>
+                                <View className='w-16 h-16 rounded-full bg-background-200 mr-4 items-center justify-center'>
                                     <Ionicons name="person" size={30} color="#666" />
                                 </View>
                             )}
@@ -67,7 +67,7 @@ export default function Tab() {
                             </View>
                         </View>
                         <TouchableOpacity
-                            className='bg-[#3b82f6] rounded-lg px-3 py-2 flex-row items-center'
+                            className='bg-primary-500 rounded-lg px-3 py-2 flex-row items-center'
                             onPress={() => console.log("Edit profile")}
                         >
                             <Ionicons name="pencil-outline" size={16} color="#fff" style={{ marginRight: 4 }} />
@@ -76,15 +76,15 @@ export default function Tab() {
                     </View>
 
                     {/* Options List */}
-                    <View className='bg-white rounded-xl overflow-hidden mb-6'>
+                    <View className='bg-background-0 rounded-xl overflow-hidden mb-6 shadow-soft-1'>
                         {menuOptions.map((option, index) => (
                             <TouchableOpacity
                                 key={index}
-                                className={`p-4 flex-row items-center border-b border-gray-300 ${index === menuOptions.length - 1 ? 'border-b-0' : ''
+                                className={`p-4 flex-row items-center border-b border-outline-200 ${index === menuOptions.length - 1 ? 'border-b-0' : ''
                                     }`}
                                 onPress={option.onPress}
                             >
-                                <Ionicons name={option.icon as any} size={24} color="#3b83f664" className='mr-4' />
+                                <Ionicons name={option.icon as any} size={24} color="#3b82f6" className='mr-4' />
                                 <Text className='text-typography-600 text-base flex-1'>{option.title}</Text>
                                 <Ionicons name="chevron-forward" size={20} color="#999" />
                             </TouchableOpacity>
@@ -93,11 +93,11 @@ export default function Tab() {
 
                     {/* Logout Button */}
                     <TouchableOpacity
-                        className='bg-white rounded-xl p-4 flex-row items-center justify-center mb-8'
+                        className='bg-background-0 rounded-xl p-4 flex-row items-center justify-center mb-8'
                         onPress={() => console.log("Logout")}
                     >
                         <Ionicons name="log-out-outline" size={24} color="#f44336" className='mr-2' />
-                        <Text className='text-red-500 font-medium text-base'>Logout</Text>
+                        <Text className='text-error-600 font-medium text-base'>Logout</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

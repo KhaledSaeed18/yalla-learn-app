@@ -19,7 +19,7 @@ const add = () => {
 
     return (
         <SafeAreaView edges={["top", "right", "left"]} className='bg-background-0 flex-1'>
-            <View className="px-4 py-3 bg-background-0 z-10 border-b border-[#3b83f664]">
+            <View className="px-4 py-3 bg-background-0 z-10 border-b border-outline-200">
                 <Heading size="xl" className="text-center">
                     What would you like to add?
                 </Heading>
@@ -36,7 +36,7 @@ const add = () => {
                         onPress={handleAddProductClick}
                         className="mb-4"
                     >
-                        <Card size="md" variant="outline" className="border-[#3b82f6]">
+                        <Card size="md" variant="outline" className="border-primary-500">
                             <Image
                                 source={{
                                     uri: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -51,7 +51,7 @@ const add = () => {
                                     </Heading>
                                     <Text size="lg">List textbooks, electronics, furniture or other items you want to sell to fellow students</Text>
                                 </View>
-                                <FontAwesome name="chevron-right" size={20} color="#3b82f6" className='pl-2' />
+                                <FontAwesome name="chevron-right" size={20} color="rgb(var(--color-primary-500))" className='pl-2' />
                             </View>
                         </Card>
                     </TouchableOpacity>
@@ -60,7 +60,7 @@ const add = () => {
                         activeOpacity={0.8}
                         onPress={handleAddServiceClick}
                     >
-                        <Card size="md" variant="outline" className="border-[#3b82f6]">
+                        <Card size="md" variant="outline" className="border-primary-500">
                             <Image
                                 source={{
                                     uri: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000",
@@ -75,7 +75,7 @@ const add = () => {
                                     </Heading>
                                     <Text size="lg">Offer or find tutoring, design work, event help and other services within the campus community</Text>
                                 </View>
-                                <FontAwesome name="chevron-right" size={20} color="#3b82f6" className='pl-2' />
+                                <FontAwesome name="chevron-right" size={20} color="rgb(var(--color-primary-500))" className='pl-2' />
                             </View>
                         </Card>
                     </TouchableOpacity>

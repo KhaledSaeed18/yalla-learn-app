@@ -11,9 +11,9 @@ import { Button } from '@/components/ui/button'
 export default function AddProduct() {
     return (
         <SafeAreaView edges={["top", "right", "left"]} className='bg-background-0 flex-1'>
-            <View className="px-4 py-3 bg-background-0 z-10 border-b border-[#3b83f664] flex-row items-center">
+            <View className="px-4 py-3 bg-background-0 z-10 border-b border-outline-200 flex-row items-center">
                 <TouchableOpacity onPress={() => router.push('/add')} className="pr-4">
-                    <FontAwesome name="arrow-left" size={25} color="#3b82f6" />
+                    <FontAwesome name="arrow-left" size={25} color="rgb(var(--color-primary-500))" />
                 </TouchableOpacity>
                 <Heading size="xl" className="flex-1 text-center pr-8">
                     Add a Product
@@ -65,16 +65,16 @@ export default function AddProduct() {
 
                     <View>
                         <Text className="mb-2 text-typography-700">Upload Photos</Text>
-                        <TouchableOpacity className="border-2 border-dashed border-[#3b82f6] h-32 rounded-md items-center justify-center">
-                            <FontAwesome name="camera" size={32} color="#3b82f6" />
-                            <Text className="mt-2 text-[#3b82f6]">Tap to add photos</Text>
+                        <TouchableOpacity className="border-2 border-dashed border-primary-500 h-32 rounded-md items-center justify-center">
+                            <FontAwesome name="camera" size={32} color="rgb(var(--color-primary-500))" />
+                            <Text className="mt-2 text-primary-500">Tap to add photos</Text>
                         </TouchableOpacity>
                     </View>
 
                     <View className="mt-4">
                         <Button
                             size="lg"
-                            className="bg-[#3b82f6]"
+                            className="bg-primary-500"
                             onPress={() => console.log("Product submitted")}
                         >
                             <Text className="text-white font-bold">Submit Listing</Text>
