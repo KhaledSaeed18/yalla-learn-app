@@ -36,6 +36,7 @@ enum GigCategory {
 
 export default function AddService() {
     const [serviceDirection, setServiceDirection] = useState<ServiceDirection>(ServiceDirection.OFFERING)
+    const [isLoading, setIsLoading] = useState(false)
 
     // Form state
     const [formData, setFormData] = useState({
@@ -50,6 +51,16 @@ export default function AddService() {
         setFormData({ ...formData, [field]: value });
     };
 
+    // Reset form to initial values
+    const resetForm = () => {
+        setFormData({
+            title: '',
+            description: '',
+            price: '',
+            category: GigCategory.OTHER,
+        });
+    };
+
     // Format enum values for display
     const formatEnumValue = (value: string) => {
         return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
@@ -57,12 +68,20 @@ export default function AddService() {
 
     // Submit form handler
     const submitService = () => {
+        setIsLoading(true);
         console.log("Service submitted", {
             ...formData,
             direction: serviceDirection,
             price: formData.price ? parseFloat(formData.price) : null
         });
-        // Add API call to save the service
+
+        // Simulate API call with timeout
+        setTimeout(() => {
+            // Add actual API call here to save the service
+            setIsLoading(false);
+            resetForm(); // Clear form fields after successful submission
+            // Optionally show success message or navigate away
+        }, 1500); // 1.5 second delay
     };
 
     return (
@@ -176,6 +195,7 @@ export default function AddService() {
                             size="lg"
                             className="bg-primary-500"
                             onPress={submitService}
+                            isDisabled={isLoading}
                         >
                             <Text className="text-white font-bold">
                                 {serviceDirection === ServiceDirection.OFFERING ? "List My Service" : "Post My Request"}
