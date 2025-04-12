@@ -7,9 +7,63 @@ import { FontAwesome } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { Input, InputField } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Select, SelectTrigger, SelectInput, SelectIcon, SelectPortal, SelectBackdrop, SelectContent, SelectDragIndicator, SelectDragIndicatorWrapper, SelectItem } from '@/components/ui/select'
+import { ChevronDownIcon } from '@/components/ui/icon'
+
+// Enums from the model
+enum ServiceDirection {
+    OFFERING = "OFFERING",
+    REQUESTING = "REQUESTING"
+}
+
+enum GigCategory {
+    TUTORING = "TUTORING",
+    NOTES_SHARING = "NOTES_SHARING",
+    ACADEMIC_WRITING = "ACADEMIC_WRITING",
+    DESIGN_SERVICES = "DESIGN_SERVICES",
+    CODING_HELP = "CODING_HELP",
+    LANGUAGE_TRANSLATION = "LANGUAGE_TRANSLATION",
+    EVENT_PLANNING = "EVENT_PLANNING",
+    PHOTOGRAPHY = "PHOTOGRAPHY",
+    MUSIC_LESSONS = "MUSIC_LESSONS",
+    RESEARCH_ASSISTANCE = "RESEARCH_ASSISTANCE",
+    EXAM_PREP = "EXAM_PREP",
+    RESUME_WRITING = "RESUME_WRITING",
+    CAMPUS_DELIVERY = "CAMPUS_DELIVERY",
+    TECHNICAL_REPAIR = "TECHNICAL_REPAIR",
+    OTHER = "OTHER"
+}
 
 export default function AddService() {
-    const [serviceType, setServiceType] = useState('offer')
+    const [serviceDirection, setServiceDirection] = useState<ServiceDirection>(ServiceDirection.OFFERING)
+
+    // Form state
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        price: '',
+        category: GigCategory.OTHER,
+    });
+
+    // Helper for updating form values
+    const updateFormField = (field: string, value: any) => {
+        setFormData({ ...formData, [field]: value });
+    };
+
+    // Format enum values for display
+    const formatEnumValue = (value: string) => {
+        return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+    };
+
+    // Submit form handler
+    const submitService = () => {
+        console.log("Service submitted", {
+            ...formData,
+            direction: serviceDirection,
+            price: formData.price ? parseFloat(formData.price) : null
+        });
+        // Add API call to save the service
+    };
 
     return (
         <SafeAreaView edges={["top", "right", "left"]} className='bg-background-0 flex-1'>
@@ -32,16 +86,16 @@ export default function AddService() {
                         <Text className="mb-2 text-typography-700">Service Type</Text>
                         <View className="flex-row">
                             <TouchableOpacity
-                                onPress={() => setServiceType('offer')}
-                                className={`flex-1 py-2 rounded-l-md items-center ${serviceType === 'offer' ? 'bg-primary-500' : 'bg-background-100 border border-outline-200'}`}
+                                onPress={() => setServiceDirection(ServiceDirection.OFFERING)}
+                                className={`flex-1 py-2 rounded-l-md items-center ${serviceDirection === ServiceDirection.OFFERING ? 'bg-primary-500' : 'bg-background-100 border border-outline-200'}`}
                             >
-                                <Text className={serviceType === 'offer' ? 'text-white' : 'text-typography-700'}>I'm Offering</Text>
+                                <Text className={serviceDirection === ServiceDirection.OFFERING ? 'text-white' : 'text-typography-700'}>I'm Offering</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                onPress={() => setServiceType('request')}
-                                className={`flex-1 py-2 rounded-r-md items-center ${serviceType === 'request' ? 'bg-primary-500' : 'bg-background-100 border border-outline-200'}`}
+                                onPress={() => setServiceDirection(ServiceDirection.REQUESTING)}
+                                className={`flex-1 py-2 rounded-r-md items-center ${serviceDirection === ServiceDirection.REQUESTING ? 'bg-primary-500' : 'bg-background-100 border border-outline-200'}`}
                             >
-                                <Text className={serviceType === 'request' ? 'text-white' : 'text-typography-700'}>I'm Requesting</Text>
+                                <Text className={serviceDirection === ServiceDirection.REQUESTING ? 'text-white' : 'text-typography-700'}>I'm Requesting</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -49,43 +103,71 @@ export default function AddService() {
                     <View>
                         <Text className="mb-2 text-typography-700">Service Title</Text>
                         <Input variant="outline" size="md">
-                            <InputField placeholder="Enter service title" />
+                            <InputField
+                                placeholder="Enter service title"
+                                value={formData.title}
+                                onChangeText={(text) => updateFormField('title', text)}
+                            />
                         </Input>
                     </View>
 
-                    {serviceType === 'offer' && (
+                    {serviceDirection === ServiceDirection.OFFERING && (
                         <View>
                             <Text className="mb-2 text-typography-700">Your Rate</Text>
                             <Input variant="outline" size="md">
-                                <InputField placeholder="$25/hour (optional)" />
+                                <InputField
+                                    placeholder="$25/hour (optional)"
+                                    keyboardType="numeric"
+                                    value={formData.price}
+                                    onChangeText={(text) => updateFormField('price', text)}
+                                />
                             </Input>
                         </View>
                     )}
 
                     <View>
                         <Text className="mb-2 text-typography-700">Category</Text>
-                        <Input variant="outline" size="md">
-                            <InputField placeholder="Select category" />
-                        </Input>
+                        <Select
+                            onValueChange={(value) => updateFormField('category', value)}
+                            defaultValue={formData.category}
+                        >
+                            <SelectTrigger variant="outline" size="md">
+                                <SelectInput
+                                    placeholder="Select category"
+                                    value={formatEnumValue(formData.category)}
+                                />
+                                <SelectIcon className="mr-3" as={ChevronDownIcon} />
+                            </SelectTrigger>
+                            <SelectPortal>
+                                <SelectBackdrop />
+                                <SelectContent>
+                                    <SelectDragIndicatorWrapper>
+                                        <SelectDragIndicator />
+                                    </SelectDragIndicatorWrapper>
+                                    {Object.values(GigCategory).map(cat => (
+                                        <SelectItem
+                                            key={cat}
+                                            label={formatEnumValue(cat)}
+                                            value={cat}
+                                        />
+                                    ))}
+                                </SelectContent>
+                            </SelectPortal>
+                        </Select>
                     </View>
 
                     <View>
                         <Text className="mb-2 text-typography-700">Description</Text>
                         <Input variant="outline" size="md" className="h-24">
                             <InputField
-                                placeholder={serviceType === 'offer' ? "Describe the service you're offering" : "Describe the service you're looking for"}
+                                placeholder={serviceDirection === ServiceDirection.OFFERING ? "Describe the service you're offering" : "Describe the service you're looking for"}
                                 multiline
                                 numberOfLines={4}
                                 textAlignVertical="top"
                                 className="pt-2"
+                                value={formData.description}
+                                onChangeText={(text) => updateFormField('description', text)}
                             />
-                        </Input>
-                    </View>
-
-                    <View>
-                        <Text className="mb-2 text-typography-700">Availability</Text>
-                        <Input variant="outline" size="md">
-                            <InputField placeholder="When are you available?" />
                         </Input>
                     </View>
 
@@ -93,10 +175,10 @@ export default function AddService() {
                         <Button
                             size="lg"
                             className="bg-primary-500"
-                            onPress={() => console.log("Service submitted")}
+                            onPress={submitService}
                         >
                             <Text className="text-white font-bold">
-                                {serviceType === 'offer' ? "List My Service" : "Post My Request"}
+                                {serviceDirection === ServiceDirection.OFFERING ? "List My Service" : "Post My Request"}
                             </Text>
                         </Button>
                     </View>
