@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Actionsheet, ActionsheetContent, ActionsheetItem, ActionsheetItemText, ActionsheetDragIndicator, ActionsheetDragIndicatorWrapper, ActionsheetBackdrop } from "@/components/ui/actionsheet";
 import { SearchIcon } from '@/components/ui/icon';
 import { ListingCategory, Condition } from '@/types/enums';
+import { router } from 'expo-router';
 
 // Mock data for listings
 const mockListings = [
@@ -139,12 +140,18 @@ const Listings = () => {
         }, 800);
     };
 
+    // Handle listing item press - navigate to the detail page
+    const handleListingPress = (itemId: string) => {
+        router.push(`/listing-details?id=${itemId}`);
+    };
+
     // Render each item in the grid
     const renderItem = ({ item }: { item: typeof mockListings[0] }) => (
         <TouchableOpacity
             style={{ width: cardWidth, marginBottom: 16 }}
             className="bg-background-50 rounded-xl overflow-hidden shadow-md"
             activeOpacity={0.7}
+            onPress={() => handleListingPress(item.id)}
         >
             <View className="relative">
                 <Image
