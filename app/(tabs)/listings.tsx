@@ -6,22 +6,26 @@ import { productService } from '@/services/product.service';
 import { ListingCard } from '@/components/ui/listing-card';
 import { Heading } from '@/components/ui/heading';
 import { ListingResponse, PaginationInfo } from '@/types/service/product.types';
+import { ListingsFilter, FilterOptions } from '@/components/listings/listings-filter';
+import { useRouter } from 'expo-router';
 
 const Listings = () => {
+    const router = useRouter();
     const [listings, setListings] = useState<ListingResponse[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [page, setPage] = useState(1);
     const [loadingMore, setLoadingMore] = useState(false);
+    const [filters, setFilters] = useState<FilterOptions>({});
 
-    const fetchListings = async (pageNum: number = 1, refresh: boolean = false) => {
+    const fetchListings = async (pageNum: number = 1, refresh: boolean = false, currentFilters: FilterOptions = filters) => {
         try {
             if (refresh) setRefreshing(true);
             else if (pageNum === 1) setLoading(true);
             else setLoadingMore(true);
 
-            const response = await productService.getListings(pageNum);
+            const response = await productService.getListings(pageNum, 10, currentFilters);
 
             if (response && response.data) {
                 const newListings = response.data.listings;
@@ -56,6 +60,13 @@ const Listings = () => {
     };
 
     const handleListingPress = (id: string) => {
+        // router.push(`/listing/${id}`);
+    };
+
+    const handleFilterChange = (newFilters: FilterOptions) => {
+        setFilters(newFilters);
+        setPage(1);
+        fetchListings(1, false, newFilters);
     };
 
     useEffect(() => {
@@ -69,6 +80,8 @@ const Listings = () => {
                     Listings
                 </Heading>
             </View>
+
+            <ListingsFilter onFilterChange={handleFilterChange} />
 
             {loading ? (
                 <View className="flex-1 justify-center items-center">
