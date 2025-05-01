@@ -63,7 +63,16 @@ export default function SignIn() {
 
             // Only dispatch setUser if user data exists
             if (response.user) {
-                dispatch(setUser(response.user));
+                // Transform user data to match User type with firstName and lastName
+                const nameParts = response.user.name.split(' ');
+                const firstName = nameParts[0] || '';
+                const lastName = nameParts.slice(1).join(' ') || '';
+                
+                dispatch(setUser({
+                    ...response.user,
+                    firstName,
+                    lastName
+                }));
             }
 
             // Navigate to main app

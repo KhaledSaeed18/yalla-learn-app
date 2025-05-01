@@ -22,7 +22,7 @@ export const authServices = {
                 throw new Error('Invalid response received from authentication server');
             }
 
-            // Return the data in the expected format
+            // Return the structure we need, preserving the original user properties
             return {
                 user: {
                     id: apiResponse.data.user.id,

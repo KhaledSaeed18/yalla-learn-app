@@ -4,9 +4,15 @@ import { api, ApiError } from '@/api/base';
 // Define the user type
 export interface User {
     id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
+    role?: string;
+    isVerified?: boolean;
+    totpEnabled?: boolean;
     avatar?: string;
+    bio?: string;
+    location?: string;
     rating?: number;
     totalListings?: number;
     createdAt?: string;
