@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Heading } from '../../components/ui/heading';
-import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+import { useAppSelector } from '@/redux/hooks';
 import { router } from 'expo-router';
 import { logout } from '@/utils/auth';
 
