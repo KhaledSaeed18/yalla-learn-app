@@ -62,9 +62,9 @@ const Listings = () => {
     }, []);
 
     return (
-        <SafeAreaView edges={['top']} className='bg-background-0 flex-1'>
-            <View className="px-4 pt-4 pb-2">
-                <Heading className="text-2xl font-bold">
+        <SafeAreaView edges={['top']} className='bg-background-0 flex-1 px-4'>
+            <View className="pt-4 pb-2">
+                <Heading size='2xl' className='text-center'>
                     Listings
                 </Heading>
             </View>
@@ -84,7 +84,6 @@ const Listings = () => {
                         />
                     )}
                     numColumns={1}
-                    contentContainerStyle={{ padding: 8 }}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}

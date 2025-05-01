@@ -29,11 +29,16 @@ export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
                         <Heading className="text-white font-medium">For Rent</Heading>
                     </View>
                 )}
+
             </View>
 
             <View style={styles.contentContainer}>
-                <Text numberOfLines={1} className="font-semibold text-base">{listing.title}</Text>
-                <Text className="text-[#3B82F6] text-xl font-bold">{formatCurrency(listing.price)}</Text>
+                <Text numberOfLines={1} className="font-semibold text-base">
+                    {listing.title}
+                </Text>
+                <Text className="text-[#3B82F6] text-xl font-bold">
+                    {formatCurrency(listing.price)}{''}{listing.isRentable ? `/${listing.rentalPeriod} days` : ''}
+                </Text>
                 <Text numberOfLines={2} className="text-muted-foreground mt-1">
                     {listing.description}
                 </Text>
