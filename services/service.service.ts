@@ -7,7 +7,6 @@ export const serviceService = {
      * Create a new service listing (offering or request)
      */
     createService: async (serviceData: ServiceFormData): Promise<ServiceResponse> => {
-        // Format the data for the API
         const formattedData: CreateServiceRequest = {
             ...serviceData,
             price: serviceData.price ? parseFloat(serviceData.price) : undefined,
