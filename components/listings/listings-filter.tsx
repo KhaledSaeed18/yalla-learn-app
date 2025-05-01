@@ -227,21 +227,19 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
                         </TouchableOpacity>
                     )}
                     {['category', 'condition', 'rentable', 'sort'].map((type) => {
-                        // Determine if this filter is active
                         const isActive = type === 'category' ? !!filters.category :
-                                        type === 'condition' ? !!filters.condition :
-                                        type === 'rentable' ? filters.isRentable !== undefined :
-                                        type === 'sort' ? !!filters.sortBy : false;
-                        
+                            type === 'condition' ? !!filters.condition :
+                                type === 'rentable' ? filters.isRentable !== undefined :
+                                    type === 'sort' ? !!filters.sortBy : false;
+
                         return (
                             <TouchableOpacity
                                 key={type}
                                 onPress={() => handleOpenFilter(type as any)}
-                                className={`flex-row items-center mr-2 px-3 py-2 rounded-full border ${
-                                    isActive
-                                    ? 'border-[#3B82F6] bg-[#E0F2FE]'
-                                    : 'border-gray-300'
-                                }`}
+                                className={`flex-row items-center mr-2 px-3 py-2 rounded-full border ${isActive
+                                        ? 'border-[#3B82F6] bg-[#E0F2FE]'
+                                        : 'border-gray-300'
+                                    }`}
                             >
                                 <FontAwesome
                                     name={getFilterIcon(type as any)}
@@ -253,11 +251,10 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
                                     }
                                 />
                                 <Text
-                                    className={`ml-2 ${
-                                        isActive
-                                        ? 'text-primary-600 font-medium'
-                                        : 'text-gray-700'
-                                    }`}
+                                    className={`ml-2 ${isActive
+                                            ? 'text-primary-600 font-medium'
+                                            : 'text-gray-700'
+                                        }`}
                                 >
                                     {getFilterLabel(type as any)}
                                 </Text>

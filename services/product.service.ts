@@ -24,7 +24,6 @@ export const productService = {
     getListings: async (page: number = 1, limit: number = 10, filters?: FilterOptions): Promise<ListingsResponse> => {
         let url = `/listings/get-listings?page=${page}&limit=${limit}`;
 
-        // Add filters to URL if they exist
         if (filters) {
             if (filters.category) url += `&category=${filters.category}`;
             if (filters.condition) url += `&condition=${filters.condition}`;
