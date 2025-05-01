@@ -1,0 +1,223 @@
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
+import { router } from 'expo-router';
+import { Entypo } from '@expo/vector-icons';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { signupServices } from '@/services/auth/signup.service';
+import { Box } from '@/components/ui/box';
+import { Heading } from '@/components/ui/heading';
+import { HStack } from '@/components/ui/hstack';
+import { Input, InputField } from '@/components/ui/input';
+import { VStack } from '@/components/ui/vstack';
+import { FormControl, FormControlError, FormControlErrorText, FormControlLabel } from '@/components/ui/form-control';
+import { Button } from '@/components/ui/button';
+
+// Form validation schema
+const signUpSchema = yup.object({
+    name: yup.string().required('Name is required'),
+    email: yup.string().email('Enter a valid email').required('Email is required'),
+    password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
+    confirmPassword: yup.string()
+        .required('Confirm password is required')
+        .oneOf([yup.ref('password')], 'Passwords must match'),
+});
+
+type SignUpFormData = {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+};
+
+export default function SignUp() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const { control, handleSubmit, formState: { errors } } = useForm<SignUpFormData>({
+        resolver: yupResolver(signUpSchema),
+        defaultValues: {
+            name: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+        }
+    });
+
+    const onSubmit = async (data: SignUpFormData) => {
+        setIsLoading(true);
+        try {
+            // Call signup service
+            await signupServices.signUp({
+                name: data.name,
+                email: data.email,
+                password: data.password,
+            });
+
+            // Navigate to verification page
+            router.push({
+                pathname: '/verify-email',
+                params: { email: data.email }
+            });
+        } catch (error: any) {
+            console.error('Registration error:', error);
+            Alert.alert(
+                'Registration Failed',
+                error.message || 'An error occurred during registration. Please try again.'
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <View className="flex-1 bg-background-50 p-6 justify-center">
+            <Box className="mb-6 items-center">
+                <Image
+                    source={require('@/assets/images/logo.png')}
+                    className="w-20 h-20 mb-3"
+                    resizeMode="contain"
+                />
+                <Heading size="xl" className="text-typography-900">Create Account</Heading>
+                <Text className="text-typography-600 text-center mt-1">
+                    Sign up to get started with our app
+                </Text>
+            </Box>
+
+            <VStack space="sm" className="mb-4">
+                <FormControl isInvalid={!!errors.name}>
+                    <FormControlLabel>
+                        <Text className="text-typography-700 font-medium">Full Name</Text>
+                    </FormControlLabel>
+                    <Controller
+                        control={control}
+                        name="name"
+                        render={({ field: { onChange, value } }) => (
+                            <Input>
+                                <InputField
+                                    placeholder="Enter your full name"
+                                    value={value}
+                                    onChangeText={onChange}
+                                    className="bg-background-0 border-background-200"
+                                />
+                            </Input>
+                        )}
+                    />
+                    {errors.name && (
+                        <FormControlError>
+                            <FormControlErrorText>{errors.name.message}</FormControlErrorText>
+                        </FormControlError>
+                    )}
+                </FormControl>
+
+                <FormControl isInvalid={!!errors.email} className="mt-2">
+                    <FormControlLabel>
+                        <Text className="text-typography-700 font-medium">Email</Text>
+                    </FormControlLabel>
+                    <Controller
+                        control={control}
+                        name="email"
+                        render={({ field: { onChange, value } }) => (
+                            <Input>
+                                <InputField
+                                    placeholder="Enter your email"
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    value={value}
+                                    onChangeText={onChange}
+                                    className="bg-background-0 border-background-200"
+                                />
+                            </Input>
+                        )}
+                    />
+                    {errors.email && (
+                        <FormControlError>
+                            <FormControlErrorText>{errors.email.message}</FormControlErrorText>
+                        </FormControlError>
+                    )}
+                </FormControl>
+
+                <FormControl isInvalid={!!errors.password} className="mt-2">
+                    <FormControlLabel>
+                        <Text className="text-typography-700 font-medium">Password</Text>
+                    </FormControlLabel>
+                    <Controller
+                        control={control}
+                        name="password"
+                        render={({ field: { onChange, value } }) => (
+                            <Input>
+                                <InputField
+                                    placeholder="Create a password"
+                                    secureTextEntry={!showPassword}
+                                    autoCapitalize="none"
+                                    value={value}
+                                    onChangeText={onChange}
+                                    className="bg-background-0 border-background-200"
+                                />
+                                <TouchableOpacity
+                                    className="absolute right-3 top-3.5"
+                                    onPress={() => setShowPassword(!showPassword)}
+                                >
+                                    <Entypo name={showPassword ? "eye" : "eye-with-line"} size={20} color="#666" />
+                                </TouchableOpacity>
+                            </Input>
+                        )}
+                    />
+                    {errors.password && (
+                        <FormControlError>
+                            <FormControlErrorText>{errors.password.message}</FormControlErrorText>
+                        </FormControlError>
+                    )}
+                </FormControl>
+
+                <FormControl isInvalid={!!errors.confirmPassword} className="mt-2">
+                    <FormControlLabel>
+                        <Text className="text-typography-700 font-medium">Confirm Password</Text>
+                    </FormControlLabel>
+                    <Controller
+                        control={control}
+                        name="confirmPassword"
+                        render={({ field: { onChange, value } }) => (
+                            <Input>
+                                <InputField
+                                    placeholder="Confirm your password"
+                                    secureTextEntry={!showPassword}
+                                    autoCapitalize="none"
+                                    value={value}
+                                    onChangeText={onChange}
+                                    className="bg-background-0 border-background-200"
+                                />
+                            </Input>
+                        )}
+                    />
+                    {errors.confirmPassword && (
+                        <FormControlError>
+                            <FormControlErrorText>{errors.confirmPassword.message}</FormControlErrorText>
+                        </FormControlError>
+                    )}
+                </FormControl>
+            </VStack>
+
+            <Button
+                className="bg-primary-500 mt-2"
+                size="lg"
+                onPress={handleSubmit(onSubmit)}
+                isDisabled={isLoading}
+            >
+                {isLoading ? (
+                    <ActivityIndicator color="white" />
+                ) : (
+                    <Text className="text-white font-bold">Create Account</Text>
+                )}
+            </Button>
+
+            <HStack className="mt-6 justify-center">
+                <Text className="text-typography-600">Already have an account? </Text>
+                <TouchableOpacity onPress={() => router.push('/signin')}>
+                    <Text className="text-primary-500 font-semibold">Sign In</Text>
+                </TouchableOpacity>
+            </HStack>
+        </View>
+    );
+}

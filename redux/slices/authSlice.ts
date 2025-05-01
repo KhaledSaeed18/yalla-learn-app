@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { api, ApiError } from '@/api/base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SignInRequest, SignInResponse } from '@/types/auth/signin.types';
 
 // Types
 interface AuthState {
@@ -9,17 +10,6 @@ interface AuthState {
     refreshToken: string | null;
     isLoading: boolean;
     error: string | null;
-}
-
-interface LoginCredentials {
-    email: string;
-    password: string;
-}
-
-interface AuthResponse {
-    accessToken: string;
-    refreshToken: string;
-    user: any; // You may want to define a proper User type
 }
 
 // Initial state
@@ -33,12 +23,12 @@ const initialState: AuthState = {
 
 // Async thunks
 export const loginUser = createAsyncThunk<
-    AuthResponse,
-    LoginCredentials,
+    SignInResponse,
+    SignInRequest,
     { rejectValue: string }
 >('auth/login', async (credentials, { rejectWithValue }) => {
     try {
-        const response = await api.post<AuthResponse>('/auth/login', credentials);
+        const response = await api.post<SignInResponse>('/auth/signin', credentials);
 
         // Store refresh token in AsyncStorage for persistence
         await AsyncStorage.setItem('refreshToken', response.refreshToken);
