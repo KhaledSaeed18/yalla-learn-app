@@ -2,7 +2,6 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setStoreReference } from '@/api/base';
 import authReducer from './slices/authSlice';
 import userReducer from './slices/userSlice';
 
@@ -29,6 +28,9 @@ export const store = configureStore({
         }),
 });
 
+// Import setStoreReference after store is created to avoid circular dependency
+const { setStoreReference } = require('../api/base');
+// Set store reference for API
 setStoreReference(store);
 
 setupListeners(store.dispatch);

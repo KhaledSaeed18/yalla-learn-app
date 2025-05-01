@@ -1,7 +1,5 @@
 import axios, { AxiosResponse, Method } from 'axios';
 import { Store } from '@reduxjs/toolkit';
-import { logout } from '../utils/auth';
-import { refreshTokenAction } from '../redux/slices/authSlice';
 
 let storeReference: Store | null = null;
 let isRefreshing = false;
@@ -33,6 +31,22 @@ const processQueue = (error: any, token: string | null = null) => {
     });
 
     failedQueue = [];
+};
+
+// Helper function to handle logout (to avoid circular import)
+const handleTokenExpiration = () => {
+    // Instead of importing logout directly, we'll use the store reference
+    if (storeReference) {
+        // Clear auth state
+        const { clearCredentials } = require('../redux/slices/authSlice');
+        const { clearUser } = require('../redux/slices/userSlice');
+        storeReference.dispatch(clearCredentials());
+        storeReference.dispatch(clearUser());
+
+        // Clear AsyncStorage token
+        const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+        AsyncStorage.removeItem('refreshToken');
+    }
 };
 
 axiosInstance.interceptors.request.use(
@@ -75,30 +89,21 @@ axiosInstance.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                const result = await storeReference.dispatch(refreshTokenAction() as any);
+                const { refreshTokenAction } = require('../redux/slices/authSlice');
+                const result = await storeReference.dispatch(refreshTokenAction());
 
                 if (result.meta.requestStatus === 'fulfilled') {
                     const newToken = result.payload.accessToken;
-                    console.log('New token:', newToken);
                     originalRequest.headers.Authorization = `Bearer ${newToken}`;
-
                     processQueue(null, newToken);
-
                     return axios(originalRequest);
                 } else {
-                    processQueue(result.payload);
-
-                    if (
-                        result.payload === "Refresh token expired" ||
-                        (typeof result.payload === 'string' &&
-                            result.payload.includes("Refresh token expired"))
-                    ) {
-                        await logout(true);
-                    }
-
-                    return Promise.reject(result.payload);
+                    handleTokenExpiration();
+                    processQueue(new Error('Failed to refresh token'));
+                    return Promise.reject(error);
                 }
             } catch (refreshError) {
+                handleTokenExpiration();
                 processQueue(refreshError);
                 return Promise.reject(refreshError);
             } finally {
@@ -106,29 +111,43 @@ axiosInstance.interceptors.response.use(
             }
         }
 
-        if (
-            error.response &&
-            error.response.status === 500 &&
-            error.response.data?.message === "Refresh token expired"
-        ) {
-            await logout(true);
-        }
-
         return Promise.reject(error);
     }
 );
 
-type ApiClientResponse<T = any> = T;
-type ApiParams = Record<string, any>;
+interface ApiErrorResponse {
+    message: string;
+    errors?: any;
+}
 
-const apiClient = async <T = any>(
+export class ApiError extends Error {
+    status: number;
+    errors?: any;
+
+    constructor(message: string, status: number, errors?: any) {
+        super(message);
+        this.name = 'ApiError';
+        this.status = status;
+        this.errors = errors;
+    }
+}
+
+export const api = {
+    get: <T>(url: string, params?: any) => makeRequest<T>('GET', url, undefined, params),
+    post: <T>(url: string, data?: any, params?: any) => makeRequest<T>('POST', url, data, params),
+    put: <T>(url: string, data?: any, params?: any) => makeRequest<T>('PUT', url, data, params),
+    patch: <T>(url: string, data?: any, params?: any) => makeRequest<T>('PATCH', url, data, params),
+    delete: <T>(url: string, params?: any) => makeRequest<T>('DELETE', url, undefined, params),
+};
+
+async function makeRequest<T>(
     method: Method,
     url: string,
     data?: any,
-    params?: ApiParams
-): Promise<ApiClientResponse<T>> => {
+    params?: any
+): Promise<T> {
     try {
-        const response: AxiosResponse<T> = await axiosInstance({
+        const response = await axiosInstance.request<T>({
             method,
             url,
             data,
@@ -138,42 +157,21 @@ const apiClient = async <T = any>(
         return response.data;
     } catch (error: any) {
         if (error.response) {
-            const errorData = {
-                status: error.response.status,
-                message: error.response.data?.message || 'Server error occurred',
-                errors: error.response.data?.errors || null,
-                code: error.response.data?.code || null,
-            };
-            throw errorData;
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            const { data, status } = error.response;
+            const errorData = data as ApiErrorResponse;
+            throw new ApiError(
+                errorData.message || 'An error occurred',
+                status,
+                errorData.errors
+            );
         } else if (error.request) {
-            throw {
-                status: 0,
-                message: 'No response from server. Please check your internet connection.',
-            };
+            // The request was made but no response was received
+            throw new ApiError('No response received from server', 0);
         } else {
-            throw {
-                message: error.message || 'An error occurred while preparing the request',
-            };
+            // Something happened in setting up the request that triggered an Error
+            throw new ApiError(error.message || 'Request setup error', 0);
         }
     }
-};
-
-export const api = {
-    get: <T = any>(url: string, params?: ApiParams): Promise<ApiClientResponse<T>> =>
-        apiClient<T>('GET', url, undefined, params),
-    post: <T = any>(url: string, data?: any, params?: ApiParams): Promise<ApiClientResponse<T>> =>
-        apiClient<T>('POST', url, data, params),
-    put: <T = any>(url: string, data?: any, params?: ApiParams): Promise<ApiClientResponse<T>> =>
-        apiClient<T>('PUT', url, data, params),
-    patch: <T = any>(url: string, data?: any, params?: ApiParams): Promise<ApiClientResponse<T>> =>
-        apiClient<T>('PATCH', url, data, params),
-    delete: <T = any>(url: string, params?: ApiParams): Promise<ApiClientResponse<T>> =>
-        apiClient<T>('DELETE', url, undefined, params),
-};
-
-export type ApiError = {
-    status?: number;
-    message: string;
-    errors?: any;
-    code?: string;
-};
+}

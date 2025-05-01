@@ -74,11 +74,11 @@ export default function SignUp() {
     return (
         <View className="flex-1 bg-background-50 p-6 justify-center">
             <Box className="mb-6 items-center">
-                <Image
+                {/* <Image
                     source={require('@/assets/images/logo.png')}
                     className="w-20 h-20 mb-3"
                     resizeMode="contain"
-                />
+                /> */}
                 <Heading size="xl" className="text-typography-900">Create Account</Heading>
                 <Text className="text-typography-600 text-center mt-1">
                     Sign up to get started with our app

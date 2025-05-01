@@ -104,11 +104,11 @@ export default function VerifyEmail() {
     return (
         <View className="flex-1 bg-background-50 p-6 justify-center">
             <Box className="mb-8 items-center">
-                <Image
+                {/* <Image
                     source={require('@/assets/images/logo.png')}
                     className="w-20 h-20 mb-4"
                     resizeMode="contain"
-                />
+                /> */}
                 <Heading size="xl" className="text-typography-900">Verify Your Email</Heading>
                 <Text className="text-typography-600 text-center mt-2 px-4">
                     We've sent a 6-digit verification code to{' '}

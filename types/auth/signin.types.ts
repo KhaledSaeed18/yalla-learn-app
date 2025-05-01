@@ -3,13 +3,37 @@ export interface SignInRequest {
     password: string;
 }
 
+// The actual API response structure from the server
+export interface ApiSignInResponse {
+    status: string;
+    statusCode: number;
+    message: string;
+    data: {
+        user: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            role: string;
+            isVerified: boolean;
+            totpEnabled: boolean;
+            avatar?: string;
+            bio?: string;
+            location?: string;
+        };
+        accessToken: string;
+        refreshToken: string;
+    };
+}
+
+// The transformed response structure used in the app
 export interface SignInResponse {
-    accessToken: string;
-    refreshToken: string;
     user: {
         id: string;
         name: string;
         email: string;
         avatar?: string;
     };
+    accessToken: string;
+    refreshToken: string;
 }

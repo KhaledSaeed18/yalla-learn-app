@@ -1,11 +1,13 @@
-import { store } from '@/redux/store';
-import { clearCredentials } from '@/redux/slices/authSlice';
-import { clearUser } from '@/redux/slices/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 
 export const logout = async (sessionExpired = false): Promise<void> => {
     try {
+        // Import here to avoid circular dependency
+        const { store } = require('../redux/store');
+        const { clearCredentials } = require('../redux/slices/authSlice');
+        const { clearUser } = require('../redux/slices/userSlice');
+
         store.dispatch(clearCredentials());
         store.dispatch(clearUser());
 

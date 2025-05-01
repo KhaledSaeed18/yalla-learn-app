@@ -6,7 +6,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from '@/redux/store';
 import { View, ActivityIndicator } from 'react-native';
 import { useEffect } from "react";
-import { setStoreReference } from "@/api/base";
 import { RootState } from "@/redux/store";
 
 // Keep the splash screen visible until authentication check
@@ -45,11 +44,6 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
-  // Initialize store reference for API interceptors
-  useEffect(() => {
-    setStoreReference(store);
-  }, []);
-
   return (
     <Provider store={store}>
       <PersistGate

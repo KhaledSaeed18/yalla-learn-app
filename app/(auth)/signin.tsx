@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
-import { useDispatch } from 'react-redux';
 import { Entypo } from '@expo/vector-icons';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { authServices } from '@/services/auth/signin.service';
-import { setCredentials } from '@/redux/slices/authSlice';
-import { setUser } from '@/redux/slices/userSlice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Box } from '@/components/ui/box';
 import { Heading } from '@/components/ui/heading';
 import { VStack } from '@/components/ui/vstack';
@@ -17,6 +13,10 @@ import { FormControl, FormControlError, FormControlErrorText, FormControlLabel }
 import { Input, InputField } from '@/components/ui/input';
 import { HStack } from '@/components/ui/hstack';
 import { Button } from '@/components/ui/button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAppDispatch } from '@/redux/hooks';
+import { setCredentials } from '@/redux/slices/authSlice';
+import { setUser } from '@/redux/slices/userSlice';
 
 // Form validation schema
 const signInSchema = yup.object({
@@ -32,7 +32,7 @@ type SignInFormData = {
 export default function SignIn() {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const { control, handleSubmit, formState: { errors } } = useForm<SignInFormData>({
         resolver: yupResolver(signInSchema),
@@ -47,6 +47,11 @@ export default function SignIn() {
         try {
             const response = await authServices.signIn(data);
 
+            // Validate response before storing tokens
+            if (!response || !response.accessToken || !response.refreshToken) {
+                throw new Error('Invalid response from server');
+            }
+
             // Store tokens and user data
             await AsyncStorage.setItem('refreshToken', response.refreshToken);
 
@@ -55,7 +60,11 @@ export default function SignIn() {
                 accessToken: response.accessToken,
                 refreshToken: response.refreshToken
             }));
-            dispatch(setUser(response.user));
+
+            // Only dispatch setUser if user data exists
+            if (response.user) {
+                dispatch(setUser(response.user));
+            }
 
             // Navigate to main app
             router.replace('/');
@@ -73,11 +82,11 @@ export default function SignIn() {
     return (
         <View className="flex-1 bg-background-50 p-6 justify-center">
             <Box className="mb-8 items-center">
-                <Image
+                {/* <Image
                     source={require('@/assets/images/logo.png')}
                     className="w-24 h-24 mb-4"
                     resizeMode="contain"
-                />
+                /> */}
                 <Heading size="2xl" className="text-typography-900">Welcome Back</Heading>
                 <Text className="text-typography-600 text-center mt-2">
                     Sign in to your account to continue
