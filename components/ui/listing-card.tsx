@@ -109,7 +109,7 @@ export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
 const styles = StyleSheet.create({
     card: {
         backgroundColor: 'white',
-        borderRadius: 12,
+        borderRadius: 6,
         overflow: 'hidden',
         marginBottom: 16,
         shadowColor: '#000',
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#3B82F6',
         paddingHorizontal: 8,
         paddingVertical: 4,
-        borderRadius: 4,
+        borderRadius: 6,
     },
     contentContainer: {
         padding: 12,
