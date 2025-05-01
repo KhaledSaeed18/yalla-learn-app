@@ -226,34 +226,44 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
                             <Text className="ml-2 text-red-500">Clear All</Text>
                         </TouchableOpacity>
                     )}
-                    {['category', 'condition', 'rentable', 'sort'].map((type) => (
-                        <TouchableOpacity
-                            key={type}
-                            onPress={() => handleOpenFilter(type as any)}
-                            className={`flex-row items-center mr-2 px-3 py-2 rounded-full border ${filters[type === 'sort' ? 'sortBy' : type === 'rentable' ? 'isRentable' !== undefined : filters[type]]
-                                ? 'bg-primary-100 border-primary-500'
-                                : 'border-gray-300'
+                    {['category', 'condition', 'rentable', 'sort'].map((type) => {
+                        // Determine if this filter is active
+                        const isActive = type === 'category' ? !!filters.category :
+                                        type === 'condition' ? !!filters.condition :
+                                        type === 'rentable' ? filters.isRentable !== undefined :
+                                        type === 'sort' ? !!filters.sortBy : false;
+                        
+                        return (
+                            <TouchableOpacity
+                                key={type}
+                                onPress={() => handleOpenFilter(type as any)}
+                                className={`flex-row items-center mr-2 px-3 py-2 rounded-full border ${
+                                    isActive
+                                    ? 'bg-primary-100 border-primary-500'
+                                    : 'border-gray-300'
                                 }`}
-                        >
-                            <FontAwesome
-                                name={getFilterIcon(type as any)}
-                                size={14}
-                                color={
-                                    filters[type === 'sort' ? 'sortBy' : type === 'rentable' ? 'isRentable' !== undefined : filters[type]]
-                                        ? 'rgb(var(--color-primary-600))'
-                                        : '#666'
-                                }
-                            />
-                            <Text
-                                className={`ml-2 ${filters[type === 'sort' ? 'sortBy' : type === 'rentable' ? 'isRentable' !== undefined : filters[type]]
-                                    ? 'text-primary-600 font-medium'
-                                    : 'text-gray-700'
-                                    }`}
                             >
-                                {getFilterLabel(type as any)}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
+                                <FontAwesome
+                                    name={getFilterIcon(type as any)}
+                                    size={14}
+                                    color={
+                                        isActive
+                                            ? 'rgb(var(--color-primary-600))'
+                                            : '#666'
+                                    }
+                                />
+                                <Text
+                                    className={`ml-2 ${
+                                        isActive
+                                        ? 'text-primary-600 font-medium'
+                                        : 'text-gray-700'
+                                    }`}
+                                >
+                                    {getFilterLabel(type as any)}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
                 </View>
             </ScrollView>
 
