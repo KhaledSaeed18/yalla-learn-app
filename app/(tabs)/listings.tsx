@@ -63,7 +63,7 @@ const Listings = () => {
 
     return (
         <SafeAreaView edges={['top']} className='bg-background-0 flex-1 px-4'>
-            <View className="pt-4 pb-2">
+            <View className="mb-4">
                 <Heading size='2xl' className='text-center'>
                     Listings
                 </Heading>
@@ -92,6 +92,8 @@ const Listings = () => {
                     }
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
                     ListFooterComponent={
                         loadingMore ? (
                             <View className="py-4">
