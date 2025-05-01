@@ -239,7 +239,7 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
                                 onPress={() => handleOpenFilter(type as any)}
                                 className={`flex-row items-center mr-2 px-3 py-2 rounded-full border ${
                                     isActive
-                                    ? 'bg-primary-100 border-primary-500'
+                                    ? 'border-[#3B82F6] bg-[#E0F2FE]'
                                     : 'border-gray-300'
                                 }`}
                             >
@@ -248,7 +248,7 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
                                     size={14}
                                     color={
                                         isActive
-                                            ? 'rgb(var(--color-primary-600))'
+                                            ? '#3B82F6'
                                             : '#666'
                                     }
                                 />
