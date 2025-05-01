@@ -20,12 +20,11 @@ export const productService = {
      * Create a new product listing
      */
     createProduct: async (productData: ProductFormData): Promise<ProductResponse> => {
-        // Convert form data to the format expected by the API
         const formattedData = {
             ...productData,
             price: parseFloat(productData.price),
             rentalPeriod: productData.rentalPeriod ? parseInt(productData.rentalPeriod) : undefined,
-            images: productData.images // Assuming the backend expects imageUrls
+            images: productData.images
         };
 
         return api.post<ProductResponse>('/listings/add', formattedData);
