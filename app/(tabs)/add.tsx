@@ -47,7 +47,7 @@ const add = () => {
                             <View className="flex-row justify-between items-center">
                                 <View className="flex-1">
                                     <Heading size="xl" className="mb-1">
-                                        <FontAwesome name="shopping-cart" size={22} color="#3B82F6" />
+                                        <FontAwesome name="shopping-cart" size={22} color="#3B82F6" /> {' '}
                                         Sell a Product
                                     </Heading>
                                     <Text size="lg">List textbooks, electronics, furniture or other items you want to sell to fellow students</Text>
@@ -72,7 +72,7 @@ const add = () => {
                             <View className="flex-row justify-between items-center">
                                 <View className="flex-1">
                                     <Heading size="xl" className="mb-1">
-                                        <FontAwesome name="money" size={22} color="#3B82F6" />
+                                        <FontAwesome name="briefcase" size={22} color="#3B82F6" /> {' '}
                                         Offer or Request a Service
                                     </Heading>
                                     <Text size="lg">Offer or find tutoring, design work, event help and other services within the campus community</Text>
