@@ -8,7 +8,6 @@ import { logout } from '@/utils/auth';
 
 export default function Tab() {
     const { currentUser } = useAppSelector(state => state.user);
-    console.log('Current User:', currentUser);
 
     const userFullName = currentUser ?
         `${currentUser.firstName} ${currentUser.lastName}` :

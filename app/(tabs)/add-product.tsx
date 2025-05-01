@@ -15,10 +15,13 @@ import { productSchema, ProductFormData } from '@/lib/validations/product.valida
 import { Condition, ListingCategory } from '@/types/enums'
 import * as ImagePicker from 'expo-image-picker'
 import { Actionsheet, ActionsheetContent, ActionsheetItem, ActionsheetItemText, ActionsheetDragIndicator, ActionsheetDragIndicatorWrapper, ActionsheetBackdrop } from "@/components/ui/actionsheet"
+import { productService } from '@/services/product.service'
+import { ApiError } from '@/api/base'
 
 export default function AddProduct() {
     const [isLoading, setIsLoading] = useState(false);
     const [imagePickerOpen, setImagePickerOpen] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
     // Format enum values for display
     const formatEnumValue = (value: string) => {
@@ -130,25 +133,62 @@ export default function AddProduct() {
     };
 
     // Submit the listing
-    const onSubmit = (data: ProductFormData) => {
-        setIsLoading(true);
-        console.log("Submitting validated product", data);
+    const onSubmit = async (data: ProductFormData) => {
+        try {
+            setIsLoading(true);
 
-        // Add API call to save the listing
-        setTimeout(() => {
+            // First upload images if there are any
+            setIsUploading(true);
+            const uploadedImageUrls = await productService.uploadProductImages(data.images);
+            setIsUploading(false);
+
+            // Create product with uploaded image URLs
+            const productData = {
+                ...data,
+                images: uploadedImageUrls
+            };
+
+            const response = await productService.createProduct(productData);
+
+            // Show success message
+            Alert.alert(
+                "Success",
+                "Your product has been successfully listed!",
+                [
+                    {
+                        text: "OK",
+                        onPress: () => {
+                            // Reset form and navigate back
+                            reset({
+                                title: '',
+                                description: '',
+                                price: '',
+                                condition: Condition.NEW,
+                                category: ListingCategory.OTHER,
+                                isRentable: false,
+                                rentalPeriod: '',
+                                images: []
+                            });
+                            router.push('/listings');
+                        }
+                    }
+                ]
+            );
+
+        } catch (error) {
+            // Handle errors
+            console.error('Error creating product:', error);
+
+            let errorMessage = "Failed to create product listing. Please try again.";
+
+            if (error instanceof ApiError) {
+                errorMessage = error.message;
+            }
+
+            Alert.alert("Error", errorMessage);
+        } finally {
             setIsLoading(false);
-            // Reset form fields to default values
-            reset({
-                title: '',
-                description: '',
-                price: '',
-                condition: Condition.NEW,
-                category: ListingCategory.OTHER,
-                isRentable: false,
-                rentalPeriod: '',
-                images: []
-            });
-        }, 1500);
+        }
     };
 
     return (
@@ -387,10 +427,15 @@ export default function AddProduct() {
                             size="lg"
                             className="bg-primary-500"
                             onPress={handleSubmit(onSubmit)}
-                            isDisabled={isLoading}
+                            isDisabled={isLoading || isUploading}
                         >
-                            {isLoading ? (
-                                <ActivityIndicator color="white" />
+                            {isLoading || isUploading ? (
+                                <View className="flex-row items-center">
+                                    <ActivityIndicator color="white" size="small" />
+                                    <Text className="text-white font-bold ml-2">
+                                        {isUploading ? 'Uploading Images...' : 'Creating Listing...'}
+                                    </Text>
+                                </View>
                             ) : (
                                 <Text className="text-white font-bold">Submit Listing</Text>
                             )}
