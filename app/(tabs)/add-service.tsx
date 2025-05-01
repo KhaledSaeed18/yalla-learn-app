@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Text } from '@/components/ui/text'
@@ -13,6 +13,8 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { serviceSchema, ServiceFormData } from '@/lib/validations/service.validation'
 import { ServiceDirection, GigCategory } from '@/types/enums'
+import { serviceService } from '@/services/service.service'
+import { ApiError } from '@/api/base'
 
 export default function AddService() {
     const [isLoading, setIsLoading] = useState(false)
@@ -44,24 +46,47 @@ export default function AddService() {
     };
 
     // Submit form handler
-    const onSubmit = (data: ServiceFormData) => {
+    const onSubmit = async (data: ServiceFormData) => {
         setIsLoading(true);
-        console.log("Service submitted with validation", data);
+        try {
+            // Call the service to create a new service listing
+            const response = await serviceService.createService(data);
 
-        // Simulate API call with timeout
-        setTimeout(() => {
-            // Add actual API call here to save the service
+            // Show success message
+            Alert.alert(
+                "Success",
+                `Your service ${direction === ServiceDirection.OFFERING ? 'offer' : 'request'} has been successfully posted!`,
+                [
+                    {
+                        text: "OK",
+                        onPress: () => {
+                            // Reset form and navigate back
+                            reset({
+                                title: '',
+                                description: '',
+                                price: '',
+                                category: GigCategory.OTHER,
+                                direction: ServiceDirection.OFFERING
+                            });
+                            router.push('/listings');
+                        }
+                    }
+                ]
+            );
+        } catch (error) {
+            // Handle errors
+            console.error('Error creating service:', error);
+
+            let errorMessage = "Failed to create service listing. Please try again.";
+
+            if (error instanceof ApiError) {
+                errorMessage = error.message;
+            }
+
+            Alert.alert("Error", errorMessage);
+        } finally {
             setIsLoading(false);
-
-            reset({
-                title: '',
-                description: '',
-                price: '',
-                category: GigCategory.OTHER,
-                direction: ServiceDirection.OFFERING
-            });
-
-        }, 1500);
+        }
     };
 
     return (
