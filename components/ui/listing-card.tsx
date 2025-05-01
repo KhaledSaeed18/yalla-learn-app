@@ -3,14 +3,12 @@ import { View, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-nat
 import { Text } from '@/components/ui/text';
 import { ListingResponse } from '@/services/product.service';
 import { formatCurrency } from '@/lib/utils';
+import { Heading } from './heading';
 
 interface ListingCardProps {
     listing: ListingResponse;
     onPress: (id: string) => void;
 }
-
-const { width } = Dimensions.get('window');
-const cardWidth = (width - 32) / 2; 
 
 export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
     return (
@@ -28,22 +26,25 @@ export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
                 />
                 {listing.isRentable && (
                     <View style={styles.rentableBadge}>
-                        <Text className="text-white font-medium">For Rent</Text>
+                        <Heading className="text-white font-medium">For Rent</Heading>
                     </View>
                 )}
             </View>
 
             <View style={styles.contentContainer}>
                 <Text numberOfLines={1} className="font-semibold text-base">{listing.title}</Text>
-                <Text className="text-primary font-bold">{formatCurrency(listing.price)}</Text>
-
+                <Text className="text-[#3B82F6] text-xl font-bold">{formatCurrency(listing.price)}</Text>
+                <Text numberOfLines={2} className="text-muted-foreground mt-1">
+                    {listing.description}
+                </Text>
                 <View style={styles.footer}>
                     <Text numberOfLines={1} className="text-muted-foreground">
                         {listing.user.firstName} {listing.user.lastName.charAt(0)}.
                     </Text>
                     <View style={styles.condition}>
                         <Text className="text-muted-foreground">
-                            {listing.condition.replace('_', ' ')}
+                            {/* {listing.condition.replace('_', ' ')} */}
+                            {listing.condition}
                         </Text>
                     </View>
                 </View>
@@ -54,7 +55,6 @@ export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
 
 const styles = StyleSheet.create({
     card: {
-        width: cardWidth,
         backgroundColor: 'white',
         borderRadius: 12,
         overflow: 'hidden',
@@ -70,13 +70,13 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: 140,
+        height: 160,
     },
     rentableBadge: {
         position: 'absolute',
         top: 8,
         right: 8,
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#3B82F6',
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 4,

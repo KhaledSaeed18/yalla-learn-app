@@ -4,6 +4,7 @@ import { Text } from '@/components/ui/text';
 import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native';
 import { productService, ListingResponse, PaginationInfo } from '@/services/product.service';
 import { ListingCard } from '@/components/ui/listing-card';
+import { Heading } from '@/components/ui/heading';
 
 const Listings = () => {
     const [listings, setListings] = useState<ListingResponse[]>([]);
@@ -63,8 +64,9 @@ const Listings = () => {
     return (
         <SafeAreaView edges={['top']} className='bg-background-0 flex-1'>
             <View className="px-4 pt-4 pb-2">
-                <Text className="text-2xl font-bold">Marketplace</Text>
-                <Text className="text-muted-foreground">Find items for sale or rent</Text>
+                <Heading className="text-2xl font-bold">
+                    Listings
+                </Heading>
             </View>
 
             {loading ? (
@@ -81,9 +83,8 @@ const Listings = () => {
                             onPress={handleListingPress}
                         />
                     )}
-                    numColumns={2}
-                    columnWrapperStyle={{ justifyContent: 'space-between', paddingHorizontal: 8 }}
-                    contentContainerStyle={{ paddingTop: 4, paddingBottom: 4 }}
+                    numColumns={1}
+                    contentContainerStyle={{ padding: 8 }}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
