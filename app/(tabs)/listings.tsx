@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui/text';
 import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native';
-import { productService, ListingResponse, PaginationInfo } from '@/services/product.service';
+import { productService } from '@/services/product.service';
 import { ListingCard } from '@/components/ui/listing-card';
 import { Heading } from '@/components/ui/heading';
+import { ListingResponse, PaginationInfo } from '@/types/service/product.types';
 
 const Listings = () => {
     const [listings, setListings] = useState<ListingResponse[]>([]);

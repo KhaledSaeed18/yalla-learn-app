@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Text } from '@/components/ui/text';
-import { ListingResponse } from '@/services/product.service';
 import { formatCurrency } from '@/lib/utils';
 import { Heading } from './heading';
+import { ListingResponse } from '@/types/service/product.types';
 
 interface ListingCardProps {
     listing: ListingResponse;
@@ -15,7 +15,6 @@ const formatRelativeTime = (dateString: string): string => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    // Time periods in seconds
     const minute = 60;
     const hour = minute * 60;
     const day = hour * 24;
