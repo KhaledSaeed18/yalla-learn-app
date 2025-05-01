@@ -15,6 +15,46 @@ export interface ProductResponse {
     updatedAt: string;
 }
 
+export interface ListingResponse {
+    id: string;
+    title: string;
+    description: string;
+    price: number;
+    condition: string;
+    category: string;
+    images: string[];
+    isAvailable: boolean;
+    userId: string;
+    isRentable: boolean;
+    rentalPeriod: number | null;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+        id: string;
+        firstName: string;
+        lastName: string;
+    };
+}
+
+export interface PaginationInfo {
+    totalListings: number;
+    totalPages: number;
+    currentPage: number;
+    limit: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+}
+
+export interface ListingsResponse {
+    status: string;
+    statusCode: number;
+    message: string;
+    data: {
+        listings: ListingResponse[];
+        pagination: PaginationInfo;
+    };
+}
+
 export const productService = {
     /**
      * Create a new product listing
@@ -44,5 +84,12 @@ export const productService = {
                 resolve(images);
             }, 1000);
         });
+    },
+
+    /**
+     * Get paginated listings
+     */
+    getListings: async (page: number = 1, limit: number = 10): Promise<ListingsResponse> => {
+        return api.get<ListingsResponse>(`/listings/get-listings?page=${page}&limit=${limit}`);
     }
 };
