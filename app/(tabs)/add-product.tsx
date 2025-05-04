@@ -23,12 +23,10 @@ export default function AddProduct() {
     const [imagePickerOpen, setImagePickerOpen] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
 
-    // Format enum values for display
     const formatEnumValue = (value: string) => {
         return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
     };
 
-    // Initialize react-hook-form with zod resolver
     const {
         control,
         handleSubmit,
@@ -50,11 +48,9 @@ export default function AddProduct() {
         }
     });
 
-    // Watch the isRentable field to conditionally render rental period input
     const isRentable = watch('isRentable');
     const images = watch('images') || [];
 
-    // Request camera permissions
     const requestCameraPermission = async () => {
         const { status } = await ImagePicker.requestCameraPermissionsAsync();
         if (status !== 'granted') {
@@ -64,7 +60,6 @@ export default function AddProduct() {
         return true;
     };
 
-    // Request media library permissions
     const requestMediaLibraryPermission = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
@@ -74,7 +69,6 @@ export default function AddProduct() {
         return true;
     };
 
-    // Take a photo with camera
     const takePhoto = async () => {
         const hasPermission = await requestCameraPermission();
         if (!hasPermission) return;
@@ -97,7 +91,6 @@ export default function AddProduct() {
         }
     };
 
-    // Select images from gallery
     const pickImages = async () => {
         const hasPermission = await requestMediaLibraryPermission();
         if (!hasPermission) return;
@@ -120,37 +113,31 @@ export default function AddProduct() {
         }
     };
 
-    // Handle image selection
     const handleAddImage = () => {
         setImagePickerOpen(true);
     };
 
-    // Remove image
     const removeImage = (index: number) => {
         const newImages = [...images];
         newImages.splice(index, 1);
         setValue('images', newImages);
     };
 
-    // Submit the listing
     const onSubmit = async (data: ProductFormData) => {
         try {
             setIsLoading(true);
 
-            // First upload images if there are any
             setIsUploading(true);
             const uploadedImageUrls = await productService.uploadProductImages(data.images);
             setIsUploading(false);
 
-            // Create product with uploaded image URLs
             const productData = {
                 ...data,
                 images: uploadedImageUrls
             };
 
-            const response = await productService.createProduct(productData);
+            await productService.createProduct(productData);
 
-            // Show success message
             Alert.alert(
                 "Success",
                 "Your product has been successfully listed!",
@@ -158,7 +145,6 @@ export default function AddProduct() {
                     {
                         text: "OK",
                         onPress: () => {
-                            // Reset form and navigate back
                             reset({
                                 title: '',
                                 description: '',
@@ -176,9 +162,6 @@ export default function AddProduct() {
             );
 
         } catch (error) {
-            // Handle errors
-            console.error('Error creating product:', error);
-
             let errorMessage = "Failed to create product listing. Please try again.";
 
             if (error instanceof ApiError) {

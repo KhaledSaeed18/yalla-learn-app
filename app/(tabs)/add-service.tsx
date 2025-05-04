@@ -19,7 +19,6 @@ import { ApiError } from '@/api/base'
 export default function AddService() {
     const [isLoading, setIsLoading] = useState(false)
 
-    // Initialize react-hook-form with zod resolver
     const {
         control,
         handleSubmit,
@@ -37,22 +36,17 @@ export default function AddService() {
         }
     });
 
-    // Watch the direction field to conditionally show price input
     const direction = watch('direction');
 
-    // Format enum values for display
     const formatEnumValue = (value: string) => {
         return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
     };
 
-    // Submit form handler
     const onSubmit = async (data: ServiceFormData) => {
         setIsLoading(true);
         try {
-            // Call the service to create a new service listing
-            const response = await serviceService.createService(data);
+            await serviceService.createService(data);
 
-            // Show success message
             Alert.alert(
                 "Success",
                 `Your service ${direction === ServiceDirection.OFFERING ? 'offer' : 'request'} has been successfully posted!`,
@@ -60,7 +54,6 @@ export default function AddService() {
                     {
                         text: "OK",
                         onPress: () => {
-                            // Reset form and navigate back
                             reset({
                                 title: '',
                                 description: '',
@@ -74,9 +67,6 @@ export default function AddService() {
                 ]
             );
         } catch (error) {
-            // Handle errors
-            console.error('Error creating service:', error);
-
             let errorMessage = "Failed to create service listing. Please try again.";
 
             if (error instanceof ApiError) {
