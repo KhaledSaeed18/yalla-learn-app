@@ -16,7 +16,8 @@ import { Button } from '@/components/ui/button';
 
 // Form validation schema
 const signUpSchema = yup.object({
-    name: yup.string().required('Name is required'),
+    firstName: yup.string().required('First name is required'),
+    lastName: yup.string().required('Last name is required'),
     email: yup.string().email('Enter a valid email').required('Email is required'),
     password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
     confirmPassword: yup.string()
@@ -25,7 +26,8 @@ const signUpSchema = yup.object({
 });
 
 type SignUpFormData = {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
     confirmPassword: string;
@@ -38,7 +40,8 @@ export default function SignUp() {
     const { control, handleSubmit, formState: { errors } } = useForm<SignUpFormData>({
         resolver: yupResolver(signUpSchema),
         defaultValues: {
-            name: '',
+            firstName: '',
+            lastName: '',
             email: '',
             password: '',
             confirmPassword: '',
@@ -48,14 +51,13 @@ export default function SignUp() {
     const onSubmit = async (data: SignUpFormData) => {
         setIsLoading(true);
         try {
-            // Call signup service
             await signupServices.signUp({
-                name: data.name,
+                firstName: data.firstName,
+                lastName: data.lastName,
                 email: data.email,
                 password: data.password,
             });
 
-            // Navigate to verification page
             router.push({
                 pathname: '/verify-email',
                 params: { email: data.email }
@@ -74,42 +76,69 @@ export default function SignUp() {
     return (
         <View className="flex-1 bg-background-50 p-6 justify-center">
             <Box className="mb-6 items-center">
-                {/* <Image
-                    source={require('@/assets/images/logo.png')}
+                <Image
+                    source={require('../../assets/images/brain-circuit.png')}
                     className="w-20 h-20 mb-3"
                     resizeMode="contain"
-                /> */}
+                />
                 <Heading size="xl" className="text-typography-900">Create Account</Heading>
                 <Text className="text-typography-600 text-center mt-1">
-                    Sign up to get started with our app
+                    Sign up to start your journey with us
                 </Text>
             </Box>
 
             <VStack space="sm" className="mb-4">
-                <FormControl isInvalid={!!errors.name}>
-                    <FormControlLabel>
-                        <Text className="text-typography-700 font-medium">Full Name</Text>
-                    </FormControlLabel>
-                    <Controller
-                        control={control}
-                        name="name"
-                        render={({ field: { onChange, value } }) => (
-                            <Input>
-                                <InputField
-                                    placeholder="Enter your full name"
-                                    value={value}
-                                    onChangeText={onChange}
-                                    className="bg-background-0 border-background-200"
-                                />
-                            </Input>
+                <HStack space="sm" className="w-full">
+                    <FormControl isInvalid={!!errors.firstName} className="flex-1">
+                        <FormControlLabel>
+                            <Text className="text-typography-700 font-medium">First Name</Text>
+                        </FormControlLabel>
+                        <Controller
+                            control={control}
+                            name="firstName"
+                            render={({ field: { onChange, value } }) => (
+                                <Input>
+                                    <InputField
+                                        placeholder="Enter your first name"
+                                        value={value}
+                                        onChangeText={onChange}
+                                        className="bg-background-0 border-background-200"
+                                    />
+                                </Input>
+                            )}
+                        />
+                        {errors.firstName && (
+                            <FormControlError>
+                                <FormControlErrorText>{errors.firstName.message}</FormControlErrorText>
+                            </FormControlError>
                         )}
-                    />
-                    {errors.name && (
-                        <FormControlError>
-                            <FormControlErrorText>{errors.name.message}</FormControlErrorText>
-                        </FormControlError>
-                    )}
-                </FormControl>
+                    </FormControl>
+
+                    <FormControl isInvalid={!!errors.lastName} className="flex-1">
+                        <FormControlLabel>
+                            <Text className="text-typography-700 font-medium">Last Name</Text>
+                        </FormControlLabel>
+                        <Controller
+                            control={control}
+                            name="lastName"
+                            render={({ field: { onChange, value } }) => (
+                                <Input>
+                                    <InputField
+                                        placeholder="Enter your last name"
+                                        value={value}
+                                        onChangeText={onChange}
+                                        className="bg-background-0 border-background-200"
+                                    />
+                                </Input>
+                            )}
+                        />
+                        {errors.lastName && (
+                            <FormControlError>
+                                <FormControlErrorText>{errors.lastName.message}</FormControlErrorText>
+                            </FormControlError>
+                        )}
+                    </FormControl>
+                </HStack>
 
                 <FormControl isInvalid={!!errors.email} className="mt-2">
                     <FormControlLabel>
@@ -156,7 +185,7 @@ export default function SignUp() {
                                     className="bg-background-0 border-background-200"
                                 />
                                 <TouchableOpacity
-                                    className="absolute right-3 top-3.5"
+                                    className="absolute right-3 top-2"
                                     onPress={() => setShowPassword(!showPassword)}
                                 >
                                     <Entypo name={showPassword ? "eye" : "eye-with-line"} size={20} color="#666" />

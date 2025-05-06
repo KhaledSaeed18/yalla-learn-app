@@ -7,12 +7,15 @@ import { Heading } from '@/components/ui/heading';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { Button } from '@/components/ui/button';
+import { verifyEmailSchema, resendVerificationSchema } from '@/lib/validations/auth.validaton';
+import { z } from 'zod';
 
 export default function VerifyEmail() {
     const { email } = useLocalSearchParams<{ email: string }>();
     const [isLoading, setIsLoading] = useState(false);
     const [isResending, setIsResending] = useState(false);
     const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
+    const [validationError, setValidationError] = useState<string | null>(null);
     const inputRefs = useRef<Array<TextInput | null>>([]);
 
     // Setup input refs
@@ -30,6 +33,11 @@ export default function VerifyEmail() {
         newCode[index] = text;
         setVerificationCode(newCode);
 
+        // Clear validation error when editing
+        if (validationError) {
+            setValidationError(null);
+        }
+
         // Auto move to next input
         if (text && index < 5) {
             inputRefs.current[index + 1]?.focus();
@@ -46,13 +54,15 @@ export default function VerifyEmail() {
     // Verify email with code
     const verifyEmail = async () => {
         const code = verificationCode.join('');
-        if (code.length !== 6) {
-            Alert.alert('Invalid Code', 'Please enter the complete 6-digit verification code.');
-            return;
-        }
 
-        setIsLoading(true);
         try {
+            // Validate inputs using Zod schema
+            verifyEmailSchema.parse({
+                email: email || '',
+                code: code
+            });
+
+            setIsLoading(true);
             await verifyEmailServices.verifyEmail({
                 email: email || '',
                 code: code
@@ -69,11 +79,17 @@ export default function VerifyEmail() {
                 ]
             );
         } catch (error: any) {
-            console.error('Verification error:', error);
-            Alert.alert(
-                'Verification Failed',
-                error.message || 'An error occurred during verification. Please try again.'
-            );
+            if (error instanceof z.ZodError) {
+                // Handle Zod validation errors
+                const errorMessage = error.errors[0]?.message || 'Invalid verification code';
+                setValidationError(errorMessage);
+            } else {
+                console.error('Verification error:', error);
+                Alert.alert(
+                    'Verification Failed',
+                    error.message || 'An error occurred during verification. Please try again.'
+                );
+            }
         } finally {
             setIsLoading(false);
         }
@@ -86,16 +102,24 @@ export default function VerifyEmail() {
             return;
         }
 
-        setIsResending(true);
         try {
+            // Validate email using Zod schema
+            resendVerificationSchema.parse({ email });
+
+            setIsResending(true);
             await verifyEmailServices.resendVerification({ email });
             Alert.alert('Success', 'A new verification code has been sent to your email.');
         } catch (error: any) {
-            console.error('Resend error:', error);
-            Alert.alert(
-                'Failed to Resend',
-                error.message || 'An error occurred. Please try again.'
-            );
+            if (error instanceof z.ZodError) {
+                // Handle Zod validation errors
+                Alert.alert('Validation Error', error.errors[0]?.message || 'Invalid email format');
+            } else {
+                console.error('Resend error:', error);
+                Alert.alert(
+                    'Failed to Resend',
+                    error.message || 'An error occurred. Please try again.'
+                );
+            }
         } finally {
             setIsResending(false);
         }
@@ -104,17 +128,21 @@ export default function VerifyEmail() {
     return (
         <View className="flex-1 bg-background-50 p-6 justify-center">
             <Box className="mb-8 items-center">
-                {/* <Image
-                    source={require('@/assets/images/logo.png')}
+                <Image
+                    source={require('../../assets/images/brain-circuit.png')}
                     className="w-20 h-20 mb-4"
                     resizeMode="contain"
-                /> */}
+                />
                 <Heading size="xl" className="text-typography-900">Verify Your Email</Heading>
                 <Text className="text-typography-600 text-center mt-2 px-4">
                     We've sent a 6-digit verification code to{' '}
                     <Text className="font-semibold">{email || 'your email'}</Text>
                 </Text>
             </Box>
+
+            {validationError && (
+                <Text className="text-red-500 text-center mb-4">{validationError}</Text>
+            )}
 
             <VStack space="md" className="mb-6">
                 <HStack className="justify-between mb-4 px-1">

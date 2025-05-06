@@ -1,11 +1,22 @@
 export interface SignUpRequest {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
 }
 
 export interface SignUpResponse {
+    status: string;
+    statusCode: number;
     message: string;
-    userId: string;
-    email: string;
+    data: {
+        user: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            role: string;
+            isVerified: boolean;
+        };
+    };
 }

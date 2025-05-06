@@ -3,8 +3,9 @@ import { View, Text, TouchableOpacity, Image, Alert, ActivityIndicator } from 'r
 import { router } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signinSchema } from '@/lib/validations/auth.validaton';
+import { z } from 'zod';
 import { authServices } from '@/services/auth/signin.service';
 import { Box } from '@/components/ui/box';
 import { Heading } from '@/components/ui/heading';
@@ -18,16 +19,8 @@ import { useAppDispatch } from '@/redux/hooks';
 import { setCredentials } from '@/redux/slices/authSlice';
 import { setUser } from '@/redux/slices/userSlice';
 
-// Form validation schema
-const signInSchema = yup.object({
-    email: yup.string().email('Enter a valid email').required('Email is required'),
-    password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
-});
-
-type SignInFormData = {
-    email: string;
-    password: string;
-};
+// Define form type from the Zod schema
+type SignInFormData = z.infer<typeof signinSchema>;
 
 export default function SignIn() {
     const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +28,7 @@ export default function SignIn() {
     const dispatch = useAppDispatch();
 
     const { control, handleSubmit, formState: { errors } } = useForm<SignInFormData>({
-        resolver: yupResolver(signInSchema),
+        resolver: zodResolver(signinSchema),
         defaultValues: {
             email: '',
             password: '',
@@ -67,7 +60,7 @@ export default function SignIn() {
                 const nameParts = response.user.name.split(' ');
                 const firstName = nameParts[0] || '';
                 const lastName = nameParts.slice(1).join(' ') || '';
-                
+
                 dispatch(setUser({
                     ...response.user,
                     firstName,
@@ -91,11 +84,11 @@ export default function SignIn() {
     return (
         <View className="flex-1 bg-background-50 p-6 justify-center">
             <Box className="mb-8 items-center">
-                {/* <Image
-                    source={require('@/assets/images/logo.png')}
+                <Image
+                    source={require('../../assets/images/brain-circuit.png')}
                     className="w-24 h-24 mb-4"
                     resizeMode="contain"
-                /> */}
+                />
                 <Heading size="2xl" className="text-typography-900">Welcome Back</Heading>
                 <Text className="text-typography-600 text-center mt-2">
                     Sign in to your account to continue
@@ -148,7 +141,7 @@ export default function SignIn() {
                                     className="bg-background-0 border-background-200"
                                 />
                                 <TouchableOpacity
-                                    className="absolute right-3 top-3.5"
+                                    className="absolute right-3 top-2"
                                     onPress={() => setShowPassword(!showPassword)}
                                 >
                                     <Entypo name={showPassword ? "eye" : "eye-with-line"} size={20} color="#666" />
