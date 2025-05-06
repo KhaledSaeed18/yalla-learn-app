@@ -8,7 +8,6 @@ import { View, ActivityIndicator } from 'react-native';
 import { useEffect } from "react";
 import { RootState } from "@/redux/store";
 
-// Keep the splash screen visible until authentication check
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
@@ -22,14 +21,11 @@ function RootLayoutNav() {
     const inAuthGroup = segments[0] === '(auth)';
 
     if (isAuthenticated && inAuthGroup) {
-      // Redirect to main app if already authenticated
       router.replace('/');
     } else if (!isAuthenticated && !inAuthGroup) {
-      // Redirect to auth if not authenticated
       router.replace('/signin');
     }
 
-    // Hide splash screen once we've determined authentication state
     SplashScreen.hideAsync();
   }, [isAuthenticated, segments, navigationState?.key]);
 
