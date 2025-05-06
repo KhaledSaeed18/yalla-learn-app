@@ -14,7 +14,6 @@ import { VStack } from '@/components/ui/vstack';
 import { FormControl, FormControlError, FormControlErrorText, FormControlLabel } from '@/components/ui/form-control';
 import { Button } from '@/components/ui/button';
 
-// Form validation schema
 const signUpSchema = yup.object({
     firstName: yup.string().required('First name is required'),
     lastName: yup.string().required('Last name is required'),

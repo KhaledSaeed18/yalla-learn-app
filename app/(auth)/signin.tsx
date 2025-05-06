@@ -3,9 +3,8 @@ import { View, Text, TouchableOpacity, Image, Alert, ActivityIndicator } from 'r
 import { router } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { signinSchema } from '@/lib/validations/auth.validaton';
-import { z } from 'zod';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import { authServices } from '@/services/auth/signin.service';
 import { Box } from '@/components/ui/box';
 import { Heading } from '@/components/ui/heading';
@@ -19,8 +18,12 @@ import { useAppDispatch } from '@/redux/hooks';
 import { setCredentials } from '@/redux/slices/authSlice';
 import { setUser } from '@/redux/slices/userSlice';
 
-// Define form type from the Zod schema
-type SignInFormData = z.infer<typeof signinSchema>;
+const signinSchema = yup.object({
+    email: yup.string().email('Please enter a valid email').required('Email is required'),
+    password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
+});
+
+type SignInFormData = yup.InferType<typeof signinSchema>;
 
 export default function SignIn() {
     const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +31,7 @@ export default function SignIn() {
     const dispatch = useAppDispatch();
 
     const { control, handleSubmit, formState: { errors } } = useForm<SignInFormData>({
-        resolver: zodResolver(signinSchema),
+        resolver: yupResolver(signinSchema),
         defaultValues: {
             email: '',
             password: '',
@@ -40,23 +43,18 @@ export default function SignIn() {
         try {
             const response = await authServices.signIn(data);
 
-            // Validate response before storing tokens
             if (!response || !response.accessToken || !response.refreshToken) {
                 throw new Error('Invalid response from server');
             }
 
-            // Store tokens and user data
             await AsyncStorage.setItem('refreshToken', response.refreshToken);
 
-            // Update Redux state
             dispatch(setCredentials({
                 accessToken: response.accessToken,
                 refreshToken: response.refreshToken
             }));
 
-            // Only dispatch setUser if user data exists
             if (response.user) {
-                // Transform user data to match User type with firstName and lastName
                 const nameParts = response.user.name.split(' ');
                 const firstName = nameParts[0] || '';
                 const lastName = nameParts.slice(1).join(' ') || '';
@@ -68,7 +66,6 @@ export default function SignIn() {
                 }));
             }
 
-            // Navigate to main app
             router.replace('/');
         } catch (error: any) {
             console.error('Login error:', error);

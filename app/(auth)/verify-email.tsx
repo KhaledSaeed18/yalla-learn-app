@@ -7,8 +7,17 @@ import { Heading } from '@/components/ui/heading';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { Button } from '@/components/ui/button';
-import { verifyEmailSchema, resendVerificationSchema } from '@/lib/validations/auth.validaton';
-import { z } from 'zod';
+import * as yup from 'yup';
+
+const verifyEmailSchema = yup.object({
+    email: yup.string().email('Please enter a valid email').required('Email is required'),
+    code: yup.string().required('Verification code is required').length(6, 'Verification code must be 6 digits')
+        .matches(/^\d+$/, 'Verification code must contain only numbers')
+});
+
+const resendVerificationSchema = yup.object({
+    email: yup.string().email('Please enter a valid email').required('Email is required')
+});
 
 export default function VerifyEmail() {
     const { email } = useLocalSearchParams<{ email: string }>();
@@ -18,46 +27,39 @@ export default function VerifyEmail() {
     const [validationError, setValidationError] = useState<string | null>(null);
     const inputRefs = useRef<Array<TextInput | null>>([]);
 
-    // Setup input refs
     useEffect(() => {
         inputRefs.current = inputRefs.current.slice(0, 6);
     }, []);
 
-    // Handle text change in code inputs
     const handleCodeChange = (text: string, index: number) => {
         if (text.length > 1) {
-            text = text[0]; // Only take the first character if multiple are pasted
+            text = text[0]; 
         }
 
         const newCode = [...verificationCode];
         newCode[index] = text;
         setVerificationCode(newCode);
 
-        // Clear validation error when editing
         if (validationError) {
             setValidationError(null);
         }
 
-        // Auto move to next input
         if (text && index < 5) {
             inputRefs.current[index + 1]?.focus();
         }
     };
 
-    // Handle backspace key
     const handleKeyPress = (e: any, index: number) => {
         if (e.nativeEvent.key === 'Backspace' && !verificationCode[index] && index > 0) {
             inputRefs.current[index - 1]?.focus();
         }
     };
 
-    // Verify email with code
     const verifyEmail = async () => {
         const code = verificationCode.join('');
 
         try {
-            // Validate inputs using Zod schema
-            verifyEmailSchema.parse({
+            await verifyEmailSchema.validate({
                 email: email || '',
                 code: code
             });
@@ -79,10 +81,8 @@ export default function VerifyEmail() {
                 ]
             );
         } catch (error: any) {
-            if (error instanceof z.ZodError) {
-                // Handle Zod validation errors
-                const errorMessage = error.errors[0]?.message || 'Invalid verification code';
-                setValidationError(errorMessage);
+            if (error instanceof yup.ValidationError) {
+                setValidationError(error.message || 'Invalid verification code');
             } else {
                 console.error('Verification error:', error);
                 Alert.alert(
@@ -95,7 +95,6 @@ export default function VerifyEmail() {
         }
     };
 
-    // Resend verification code
     const resendCode = async () => {
         if (!email) {
             Alert.alert('Error', 'Email address is missing. Please go back and try again.');
@@ -103,16 +102,14 @@ export default function VerifyEmail() {
         }
 
         try {
-            // Validate email using Zod schema
-            resendVerificationSchema.parse({ email });
+            await resendVerificationSchema.validate({ email });
 
             setIsResending(true);
             await verifyEmailServices.resendVerification({ email });
             Alert.alert('Success', 'A new verification code has been sent to your email.');
         } catch (error: any) {
-            if (error instanceof z.ZodError) {
-                // Handle Zod validation errors
-                Alert.alert('Validation Error', error.errors[0]?.message || 'Invalid email format');
+            if (error instanceof yup.ValidationError) {
+                Alert.alert('Validation Error', error.message || 'Invalid email format');
             } else {
                 console.error('Resend error:', error);
                 Alert.alert(
