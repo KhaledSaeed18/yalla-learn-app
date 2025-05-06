@@ -53,8 +53,10 @@ export const refreshTokenAction = createAsyncThunk<
             return rejectWithValue('No refresh token available');
         }
 
-        const response = await api.post<{ accessToken: string }>('/auth/refresh', { refreshToken });
-        return response;
+        const response = await api.post<{ status: string; data: { accessToken: string } }>('/auth/refresh-token', { refreshToken });
+
+        // Extract the accessToken from the nested structure
+        return { accessToken: response.data.accessToken };
     } catch (error) {
         const apiError = error as ApiError;
         return rejectWithValue(apiError.message);

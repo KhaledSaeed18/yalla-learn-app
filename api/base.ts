@@ -9,7 +9,6 @@ export const setStoreReference = (store: Store): void => {
     storeReference = store;
 };
 
-// Use constants for React Native environment
 const API_BASE_URL: string = 'http://localhost:5005/api/v1';
 const API_TIMEOUT: number = 30000;
 
@@ -33,17 +32,13 @@ const processQueue = (error: any, token: string | null = null) => {
     failedQueue = [];
 };
 
-// Helper function to handle logout (to avoid circular import)
 const handleTokenExpiration = () => {
-    // Instead of importing logout directly, we'll use the store reference
     if (storeReference) {
-        // Clear auth state
         const { clearCredentials } = require('../redux/slices/authSlice');
         const { clearUser } = require('../redux/slices/userSlice');
         storeReference.dispatch(clearCredentials());
         storeReference.dispatch(clearUser());
 
-        // Clear AsyncStorage token
         const AsyncStorage = require('@react-native-async-storage/async-storage').default;
         AsyncStorage.removeItem('refreshToken');
     }
@@ -98,11 +93,17 @@ axiosInstance.interceptors.response.use(
                     processQueue(null, newToken);
                     return axios(originalRequest);
                 } else {
+                    if (result.payload === 'Refresh token expired') {
+                        console.log('Refresh token expired, logging out user');
+                    }
                     handleTokenExpiration();
                     processQueue(new Error('Failed to refresh token'));
                     return Promise.reject(error);
                 }
-            } catch (refreshError) {
+            } catch (refreshError: any) {
+                if (refreshError.message && refreshError.message.includes('Refresh token expired')) {
+                    console.log('Refresh token expired, logging out user');
+                }
                 handleTokenExpiration();
                 processQueue(refreshError);
                 return Promise.reject(refreshError);
@@ -157,8 +158,6 @@ async function makeRequest<T>(
         return response.data;
     } catch (error: any) {
         if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
             const { data, status } = error.response;
             const errorData = data as ApiErrorResponse;
             throw new ApiError(
@@ -167,10 +166,8 @@ async function makeRequest<T>(
                 errorData.errors
             );
         } else if (error.request) {
-            // The request was made but no response was received
             throw new ApiError('No response received from server', 0);
         } else {
-            // Something happened in setting up the request that triggered an Error
             throw new ApiError(error.message || 'Request setup error', 0);
         }
     }
