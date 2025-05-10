@@ -27,7 +27,6 @@ export const ServiceFilter = ({ onFilterChange, initialFilters = {} }: ServiceFi
         updateFilterCount(filters);
     }, [filters]);
 
-    // Format enum values for display
     const formatEnumValue = (value: string) => {
         return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
     };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui/text';
-import { ActivityIndicator, FlatList, RefreshControl, View, StatusBar } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native';
 import { productService } from '@/services/product.service';
 import { ListingCard } from '@/components/ui/listing-card';
 import { Heading } from '@/components/ui/heading';
