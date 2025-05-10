@@ -5,7 +5,8 @@ import { Text } from '@/components/ui/text';
 import { Heading } from '@/components/ui/heading';
 import { productService } from '@/services/product.service';
 import { ListingResponse } from '@/types/service/product.types';
-import { ListingCard } from '@/components/ui/listing-card';
+import { MyListingCard } from '@/components/ui/my-listing-card';
+import { Ionicons } from '@expo/vector-icons';
 
 const formatRelativeTime = (dateString: string): string => {
     const date = new Date(dateString);
@@ -170,24 +171,26 @@ export default function MyListingsScreen() {
 
     const renderListingItem = ({ item }: { item: ListingResponse }) => {
         return (
-            <View className="px-4">
-                <ListingCard
-                    listing={item}
-                    onPress={handleListingPress}
-                />
-                <View className="flex-row justify-end space-x-2 mt-2 mb-6">
-                    <View className="flex-row justify-end space-x-2">
+            <View className="mb-5">
+                <View className='rounded-xl overflow-hidden border border-gray-300'>
+                    <MyListingCard
+                        listing={item}
+                        onPress={handleListingPress}
+                    />
+                    <View className="flex-row justify-end px-4 py-3 border-t border-gray-200">
                         <TouchableOpacity
                             onPress={() => handleEditListing(item.id)}
-                            className="bg-blue-500 px-4 py-2 rounded-lg"
+                            className="bg-[#3B82F6] px-3 py-2 rounded-md mr-3 flex-row items-center"
                         >
-                            <Text className="text-white font-medium">Edit</Text>
+                            <Ionicons name="pencil-outline" size={16} color="#fff" style={{ marginRight: 4 }} />
+                            <Text className="text-white font-semibold">Edit</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => handleDeleteListing(item.id)}
-                            className="bg-red-500 px-4 py-2 rounded-lg"
+                            className="bg-error-50 px-3 py-2 rounded-md flex-row items-center"
                         >
-                            <Text className="text-white font-medium">Delete</Text>
+                            <Ionicons name="trash-outline" size={16} color="#ef4444" style={{ marginRight: 4 }} />
+                            <Text className="text-error-600 font-semibold">Delete</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -204,16 +207,16 @@ export default function MyListingsScreen() {
         );
 
         return (
-            <View className="flex-1 justify-center items-center p-12 mt-8 bg-white rounded-xl shadow-sm">
-                <Text className="text-xl font-bold text-gray-700 mb-2">No Listings Yet</Text>
-                <Text className="text-gray-500 text-center mb-6">
-                    You haven't created any listings yet. Start selling or renting items by adding your first listing.
+            <View className="flex-1 items-center justify-center py-10">
+                <Ionicons name="list-outline" size={48} color="#cbd5e1" />
+                <Text className="mt-4 text-typography-500 text-center text-base">
+                    You haven't created any listings yet
                 </Text>
                 <TouchableOpacity
                     onPress={() => router.push('/add-product')}
-                    className="bg-blue-500 px-6 py-3 rounded-lg"
+                    className="mt-4 bg-[#3B82F6] px-6 py-3 rounded-lg"
                 >
-                    <Text className="text-white font-medium">Create Listing</Text>
+                    <Text className="text-white font-semibold">Create Listing</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -232,12 +235,12 @@ export default function MyListingsScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-background-50">
-            <View className="px-4 py-3">
-                <Heading size='xl' className='text-gray-800'>
+            <View className="px-4 py-2">
+                <Heading size='xl' className='my-3 text-typography-900'>
                     My Listings
                 </Heading>
-                <Text className="text-gray-500 mt-1">
-                    {totalListings} {totalListings === 1 ? 'listing' : 'listings'} in total
+                <Text className="text-typography-500 mb-3">
+                    {totalListings} {totalListings === 1 ? 'listing' : 'listings'} created by you
                 </Text>
             </View>
 
@@ -245,7 +248,7 @@ export default function MyListingsScreen() {
                 data={listings}
                 renderItem={renderListingItem}
                 keyExtractor={(item) => item.id}
-                contentContainerStyle={{ padding: 16, paddingTop: 8 }}
+                contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8 }}
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}
@@ -258,6 +261,13 @@ export default function MyListingsScreen() {
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0.5}
             />
+
+            <TouchableOpacity
+                onPress={() => router.push('/add-product')}
+                className="absolute bottom-6 right-6 bg-[#3B82F6] w-14 h-14 rounded-full items-center justify-center shadow-md"
+            >
+                <Ionicons name="add" size={24} color="white" />
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }
