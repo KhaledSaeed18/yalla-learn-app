@@ -117,6 +117,13 @@ export default function MyServicesScreen() {
         // router.push(`/edit-service/${serviceId}`);
     };
 
+    const handleServicePress = (serviceId: string) => {
+        router.push({
+            pathname: "/service/[id]",
+            params: { id: serviceId }
+        });
+    };
+
     const handleDeleteService = (serviceId: string) => {
         Alert.alert(
             'Delete Service',
@@ -153,7 +160,11 @@ export default function MyServicesScreen() {
         const isOffering = item.direction === ServiceDirection.OFFERING;
 
         return (
-            <View className='bg-white rounded-xl overflow-hidden mb-5 border border-gray-300'>
+            <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => handleServicePress(item.id)}
+                className='bg-white rounded-xl overflow-hidden mb-5 border border-gray-300'
+            >
                 <View className={`h-2 w-full ${isOffering ? 'bg-emerald-500' : 'bg-amber-500'}`} />
 
                 <View className='p-4'>
@@ -213,7 +224,7 @@ export default function MyServicesScreen() {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
 
