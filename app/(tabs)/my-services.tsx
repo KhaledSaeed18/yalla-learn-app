@@ -256,24 +256,31 @@ export default function MyServicesScreen() {
                     {totalServices} {totalServices === 1 ? 'service' : 'services'} created by you
                 </Text>
             </View>
-
-            <FlatList
-                data={services}
-                renderItem={renderServiceItem}
-                keyExtractor={(item) => item.id}
-                contentContainerStyle={{ padding: 16, paddingTop: 8 }}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={handleRefresh}
-                        colors={['#3b82f6']}
-                    />
-                }
-                ListEmptyComponent={renderEmptyList}
-                ListFooterComponent={renderFooter}
-                onEndReached={handleLoadMore}
-                onEndReachedThreshold={0.5}
-            />
+c
+            {loading && services.length === 0 ? (
+                <View className="flex-1 items-center justify-center">
+                    <ActivityIndicator size="large" color="#3b82f6" />
+                    <Text className="mt-4 text-typography-500">Loading your services...</Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={services}
+                    renderItem={renderServiceItem}
+                    keyExtractor={(item) => item.id}
+                    contentContainerStyle={{ padding: 16, paddingTop: 8 }}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={handleRefresh}
+                            colors={['#3b82f6']}
+                        />
+                    }
+                    ListEmptyComponent={renderEmptyList}
+                    ListFooterComponent={renderFooter}
+                    onEndReached={handleLoadMore}
+                    onEndReachedThreshold={0.5}
+                />
+            )}
 
             <TouchableOpacity
                 onPress={() => router.push('/add-service')}
