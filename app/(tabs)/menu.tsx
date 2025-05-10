@@ -15,14 +15,19 @@ export default function Tab() {
 
     const menuOptions = [
         {
+            icon: "list-outline",
+            title: "My Listings",
+            onPress: () => router.push('/listings')
+        },
+        {
+            icon: "briefcase-outline",
+            title: "My Services",
+            onPress: () => router.push('/services')
+        },
+        {
             icon: "settings-outline",
             title: "Settings",
             onPress: () => console.log("Settings")
-        },
-        {
-            icon: "notifications-outline",
-            title: "Notifications",
-            onPress: () => console.log("Notifications")
         },
         {
             icon: "help-circle-outline",
@@ -33,11 +38,6 @@ export default function Tab() {
             icon: "information-circle-outline",
             title: "About",
             onPress: () => console.log("About")
-        },
-        {
-            icon: "shield-outline",
-            title: "Privacy & Security",
-            onPress: () => console.log("Privacy")
         },
     ];
 
