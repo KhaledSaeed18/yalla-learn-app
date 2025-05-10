@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, Alert, ActivityIndicator, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator, TextInput } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { verifyEmailServices } from '@/services/auth/verifyEmail.service';
 import { Box } from '@/components/ui/box';

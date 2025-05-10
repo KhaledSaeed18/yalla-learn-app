@@ -130,7 +130,6 @@ export default function HomePage() {
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ paddingHorizontal: 4 }}
                     >
                         <FeatureCard
                             icon="shopping-cart"
