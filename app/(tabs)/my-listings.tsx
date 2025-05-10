@@ -7,6 +7,7 @@ import { productService } from '@/services/product.service';
 import { ListingResponse } from '@/types/service/product.types';
 import { MyListingCard } from '@/components/ui/my-listing-card';
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function MyListingsScreen() {
     const router = useRouter();
@@ -198,14 +199,17 @@ export default function MyListingsScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-background-50">
-            <View className="px-4 py-2">
-                <Heading size='xl' className='my-3 text-typography-900'>
+            <View className="px-4 py-3 bg-background-50 z-10 border-b border-outline-200 flex-row items-center">
+                <TouchableOpacity onPress={() => router.back()} className="pr-4">
+                    <FontAwesome name="arrow-left" size={25} color="rgb(var(--color-primary-500))" />
+                </TouchableOpacity>
+                <Heading size="xl" className="flex-1 text-center pr-8">
                     My Listings
                 </Heading>
-                <Text className="text-typography-500 mb-3">
-                    {totalListings} {totalListings === 1 ? 'listing' : 'listings'} created by you
-                </Text>
             </View>
+            <Text className="px-4 text-typography-500 my-3">
+                {totalListings} {totalListings === 1 ? 'listing' : 'listings'} created by you
+            </Text>
 
             <FlatList
                 data={listings}

@@ -248,14 +248,17 @@ export default function MyServicesScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-background-50">
-            <View className="px-4 py-2">
-                <Heading size="xl" className="my-3 text-typography-900">
+            <View className="px-4 py-3 bg-background-50 z-10 border-b border-outline-200 flex-row items-center">
+                <TouchableOpacity onPress={() => router.back()} className="pr-4">
+                    <FontAwesome name="arrow-left" size={25} color="rgb(var(--color-primary-500))" />
+                </TouchableOpacity>
+                <Heading size="xl" className="flex-1 text-center pr-8">
                     My Services
                 </Heading>
-                <Text className="text-typography-500 mb-3">
-                    {totalServices} {totalServices === 1 ? 'service' : 'services'} created by you
-                </Text>
             </View>
+            <Text className="px-4 text-typography-500 my-3">
+                {totalServices} {totalServices === 1 ? 'service' : 'services'} created by you
+            </Text>
 
             {loading && services.length === 0 ? (
                 <View className="flex-1 items-center justify-center">
