@@ -114,7 +114,7 @@ export default function MyServicesScreen() {
 
     const handleEditService = (serviceId: string) => {
         // Navigate to edit service page with the service ID
-        router.push(`/edit-service/${serviceId}`);
+        // router.push(`/edit-service/${serviceId}`);
     };
 
     const handleDeleteService = (serviceId: string) => {
@@ -198,10 +198,10 @@ export default function MyServicesScreen() {
                     <View className="flex-row justify-end mt-3 pt-3 border-t border-gray-100">
                         <TouchableOpacity
                             onPress={() => handleEditService(item.id)}
-                            className="bg-primary-50 px-3 py-2 rounded-md mr-3 flex-row items-center"
+                            className="bg-[#3B82F6] px-3 py-2 rounded-md mr-3 flex-row items-center"
                         >
-                            <Ionicons name="pencil-outline" size={16} color="#3b82f6" style={{ marginRight: 4 }} />
-                            <Text className="text-primary-600 font-semibold">Edit</Text>
+                            <Ionicons name="pencil-outline" size={16} color="#fff" style={{ marginRight: 4 }} />
+                            <Text className="text-white font-semibold">Edit</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -277,7 +277,7 @@ export default function MyServicesScreen() {
 
             <TouchableOpacity
                 onPress={() => router.push('/add-service')}
-                className="absolute bottom-6 right-6 bg-primary-500 w-14 h-14 rounded-full items-center justify-center shadow-md"
+                className="absolute bottom-6 right-6 bg-[#3B82F6] w-14 h-14 rounded-full items-center justify-center shadow-md"
             >
                 <Ionicons name="add" size={24} color="white" />
             </TouchableOpacity>
