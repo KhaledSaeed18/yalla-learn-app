@@ -47,10 +47,8 @@ const Services = () => {
 
             if (response && response.data && response.data.services) {
                 if (page > 1 && !refresh) {
-                    // Append new services for pagination
                     setServices(prev => [...prev, ...response.data.services]);
                 } else {
-                    // Replace services on refresh or initial load
                     setServices(response.data.services);
                 }
                 setPagination(response.data.pagination);
@@ -71,7 +69,6 @@ const Services = () => {
     };
 
     const handleRefresh = () => {
-        // Reset to page 1 and refresh
         setCurrentPage(1);
         fetchServices(true, filters, 1);
     };
@@ -81,7 +78,7 @@ const Services = () => {
     };
 
     const handleFilterChange = (newFilters: ServiceFilterOptions) => {
-        setCurrentPage(1); // Reset to page 1 when filters change
+        setCurrentPage(1); 
         setFilters(newFilters);
         fetchServices(false, newFilters, 1);
     };
@@ -90,7 +87,6 @@ const Services = () => {
         fetchServices();
     }, []);
 
-    // Check for refresh parameter when the component mounts or updates
     useEffect(() => {
         if (refresh === 'true') {
             handleRefresh();

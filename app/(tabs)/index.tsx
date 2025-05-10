@@ -54,8 +54,10 @@ export default function HomePage() {
     const [loadingListings, setLoadingListings] = useState(true);
     const [loadingServices, setLoadingServices] = useState(true);
 
-    const navigateToListings = () => router.push("/(tabs)/add-product");
-    const navigateToServices = () => router.push("/(tabs)/add-service");
+    const navigateToAddListings = () => router.push("/(tabs)/add-product");
+    const navigateToListings = () => router.push("/(tabs)/listings");
+    const navigateToAddServices = () => router.push("/(tabs)/add-service");
+    const navigateToServices = () => router.push("/(tabs)/services");
     const navigateToAdd = () => router.push("/(tabs)/add");
     const navigateToWebsite = () => router.push("https://google.com");
 
@@ -135,14 +137,14 @@ export default function HomePage() {
                             icon="shopping-cart"
                             title="Buy & Sell"
                             description="Find textbooks, electronics and more"
-                            onPress={navigateToListings}
+                            onPress={navigateToAddListings}
                             bgColor="bg-[#3B82F6]"
                         />
                         <FeatureCard
                             icon="handshake-o"
                             title="Services"
                             description="Tutoring, mentoring, skill-sharing"
-                            onPress={navigateToServices}
+                            onPress={navigateToAddServices}
                             bgColor="bg-[#10B981]"
                         />
                         <FeatureCard

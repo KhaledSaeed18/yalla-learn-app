@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { Actionsheet, ActionsheetBackdrop, ActionsheetContent, ActionsheetDragIndicator, ActionsheetDragIndicatorWrapper, ActionsheetItem, ActionsheetItemText } from '@/components/ui/actionsheet';
@@ -16,13 +16,19 @@ export interface FilterOptions {
 
 interface ListingsFilterProps {
     onFilterChange: (filters: FilterOptions) => void;
+    initialFilters?: FilterOptions;
 }
 
-export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
+export const ListingsFilter = ({ onFilterChange, initialFilters = { sortBy: 'createdAt', sortOrder: 'desc' } }: ListingsFilterProps) => {
     const [filterOpen, setFilterOpen] = useState(false);
-    const [filters, setFilters] = useState<FilterOptions>({});
+    const [filters, setFilters] = useState<FilterOptions>(initialFilters);
     const [activeFilterCount, setActiveFilterCount] = useState(0);
     const [filterType, setFilterType] = useState<'category' | 'condition' | 'rentable' | 'sort'>('category');
+
+    useEffect(() => {
+        updateFilterCount(filters);
+        onFilterChange(filters);
+    }, []);
 
     const formatEnumValue = (value: string) => {
         return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
@@ -86,9 +92,10 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
     };
 
     const clearFilters = () => {
-        setFilters({});
+        const emptyFilters = {};
+        setFilters(emptyFilters);
         setActiveFilterCount(0);
-        onFilterChange({});
+        onFilterChange(emptyFilters);
     };
 
     const getFilterIcon = (type: 'category' | 'condition' | 'rentable' | 'sort') => {
@@ -172,7 +179,7 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
                 return (
                     <>
                         <ActionsheetItem onPress={() => handleSelectFilter(null)}>
-                            <ActionsheetItemText className={!filters.sortBy ? "font-bold text-primary-600" : ""}>Default (Newest)</ActionsheetItemText>
+                            <ActionsheetItemText className={!filters.sortBy ? "font-bold text-primary-600" : ""}>No Sort</ActionsheetItemText>
                         </ActionsheetItem>
                         <ActionsheetItem onPress={() => handleSelectFilter('createdAt-desc')}>
                             <ActionsheetItemText className={filters.sortBy === 'createdAt' && filters.sortOrder === 'desc' ? "font-bold text-primary-600" : ""}>
