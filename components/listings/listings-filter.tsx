@@ -210,20 +210,21 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
     };
 
     return (
-        <View className="mb-4">
+        <View className="mb-2">
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingHorizontal: 4 }}
+                contentContainerStyle={{ paddingVertical: 4 }}
+                className="pb-2"
             >
-                <View className="flex-row items-center py-2">
+                <View className="flex-row items-center">
                     {activeFilterCount > 0 && (
                         <TouchableOpacity
                             onPress={clearFilters}
-                            className="flex-row items-center px-3 py-2 rounded-full border border-red-300 mr-2"
+                            className="flex-row items-center px-4 py-2.5 rounded-full bg-red-50 border border-red-100 mr-3"
                         >
-                            <FontAwesome name="times" size={14} color="#EF4444" />
-                            <Text className="ml-2 text-red-500">Clear All</Text>
+                            <FontAwesome name="times" size={12} color="#EF4444" />
+                            <Text className="ml-2 text-red-500 font-medium text-xs">Clear Filters</Text>
                         </TouchableOpacity>
                     )}
                     {['category', 'condition', 'rentable', 'sort'].map((type) => {
@@ -236,24 +237,24 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
                             <TouchableOpacity
                                 key={type}
                                 onPress={() => handleOpenFilter(type as any)}
-                                className={`flex-row items-center mr-2 px-3 py-2 rounded-full border ${isActive
-                                        ? 'border-[#3B82F6] bg-[#E0F2FE]'
-                                        : 'border-gray-300'
+                                className={`flex-row items-center mr-3 px-4 py-2.5 rounded-full shadow-sm ${isActive
+                                    ? 'bg-[#3B82F6] border border-[#3B82F6]/20'
+                                    : 'bg-white border border-gray-200'
                                     }`}
                             >
                                 <FontAwesome
                                     name={getFilterIcon(type as any)}
-                                    size={14}
+                                    size={12}
                                     color={
                                         isActive
-                                            ? '#3B82F6'
+                                            ? '#ffffff'
                                             : '#666'
                                     }
                                 />
                                 <Text
-                                    className={`ml-2 ${isActive
-                                            ? 'text-primary-600 font-medium'
-                                            : 'text-gray-700'
+                                    className={`ml-2 text-xs ${isActive
+                                        ? 'text-white font-medium'
+                                        : 'text-gray-700'
                                         }`}
                                 >
                                     {getFilterLabel(type as any)}
@@ -267,10 +268,17 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
             {/* Filter selection actionsheet */}
             <Actionsheet isOpen={filterOpen} onClose={() => setFilterOpen(false)}>
                 <ActionsheetBackdrop />
-                <ActionsheetContent>
+                <ActionsheetContent className="rounded-t-3xl">
                     <ActionsheetDragIndicatorWrapper>
                         <ActionsheetDragIndicator />
                     </ActionsheetDragIndicatorWrapper>
+                    <View className="py-2 px-4 mb-2">
+                        <Text className="text-center font-semibold text-lg">
+                            {filterType === 'category' ? 'Select Category' :
+                                filterType === 'condition' ? 'Select Condition' :
+                                    filterType === 'rentable' ? 'Rental Status' : 'Sort By'}
+                        </Text>
+                    </View>
                     {renderFilterContent()}
                 </ActionsheetContent>
             </Actionsheet>

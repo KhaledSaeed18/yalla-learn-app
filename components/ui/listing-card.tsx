@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, TouchableOpacity } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { formatCurrency } from '@/lib/utils';
 import { Heading } from './heading';
@@ -48,55 +48,59 @@ const formatRelativeTime = (dateString: string): string => {
 export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
     return (
         <TouchableOpacity
-            style={styles.card}
             onPress={() => onPress(listing.id)}
-            activeOpacity={0.7}
-            className='border border-[#3B82F6]'
+            activeOpacity={0.8}
+            className='bg-slate-100 rounded-xl overflow-hidden mb-5 shadow-lg'
         >
-            <View style={styles.imageContainer}>
+            <View className='relative'>
                 <Image
                     source={{ uri: listing.images[0] }}
-                    style={styles.image}
+                    className='w-full h-48'
                     resizeMode="cover"
                 />
                 {listing.isRentable && (
-                    <View style={styles.rentableBadge}>
-                        <Heading className="text-white font-medium">For Rent</Heading>
+                    <View className='absolute top-3 right-3 bg-[#3B82F6] px-3 py-1 rounded-full shadow-sm'>
+                        <Text className="text-white font-medium text-xs">FOR RENT</Text>
                     </View>
                 )}
+                <View className='absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/60 to-transparent' />
             </View>
 
-            <View style={styles.contentContainer}>
-                <Text numberOfLines={1} className="font-semibold text-base">
-                    {listing.title}
-                </Text>
-                <Text className="text-[#3B82F6] text-xl font-bold">
-                    {formatCurrency(listing.price)}{''}{listing.isRentable ? `/${listing.rentalPeriod} days` : ''}
-                </Text>
-                <Text numberOfLines={2} className="mt-1">
+            <View className='p-4'>
+                <View className='flex-row justify-between items-start'>
+                    <Text numberOfLines={1} className="font-bold text-lg">
+                        {listing.title}
+                    </Text>
+                    <Text className="text-[#3B82F6] text-lg font-bold">
+                        {formatCurrency(listing.price)}
+                        {listing.isRentable && (
+                            <Text className="text-[#3B82F6] text-lg font-medium mt-1">
+                                {`/${listing.rentalPeriod} days`}
+                            </Text>
+                        )}
+                    </Text>
+                </View>
+
+                <Text numberOfLines={2} className="mt-2 text-gray-700">
                     {listing.description}
                 </Text>
-                <View style={styles.footer}>
-                    <View className='flex-row items-center'>
-                        <Text numberOfLines={1} className="text-slate-500">
-                            {listing.user.firstName} {listing.user.lastName}
-                        </Text>
-                        <Text>
-                            {' - '}
-                        </Text>
-                        <Text numberOfLines={1} className="text-slate-500">
-                            {formatRelativeTime(listing.createdAt)}
-                        </Text>
+
+                <View className='flex-row justify-between mt-3 pt-3 border-t border-gray-100'>
+                    <View className='flex-row items-center space-x-1'>
+                        <View className='bg-gray-100 px-2 py-1 rounded-md'>
+                            <Text className="text-gray-700 text-xs">
+                                {listing.category}
+                            </Text>
+                        </View>
+                        <View className='bg-gray-100 px-2 py-1 rounded-md'>
+                            <Text className="text-gray-700 text-xs">
+                                {listing.condition.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
+                            </Text>
+                        </View>
                     </View>
-                    <View style={styles.condition}>
-                        <Text className="text-slate-500">
-                            {listing.category}
-                        </Text>
-                        <Text>
-                            {' - '}
-                        </Text>
-                        <Text className="text-slate-500">
-                            {listing.condition}
+                    <View className='flex-row items-center'>
+                        <Text numberOfLines={1} className="text-gray-500 text-xs">
+                            By {listing.user.firstName} {listing.user.lastName} • {formatRelativeTime(listing.createdAt)}
                         </Text>
                     </View>
                 </View>
@@ -105,45 +109,4 @@ export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
     );
 };
 
-const styles = StyleSheet.create({
-    card: {
-        backgroundColor: 'white',
-        borderRadius: 6,
-        overflow: 'hidden',
-        marginBottom: 16,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    imageContainer: {
-        position: 'relative',
-    },
-    image: {
-        width: '100%',
-        height: 160,
-    },
-    rentableBadge: {
-        position: 'absolute',
-        top: 8,
-        right: 8,
-        backgroundColor: '#3B82F6',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 6,
-    },
-    contentContainer: {
-        padding: 12,
-    },
-    footer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: 8,
-    },
-    condition: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-});
+

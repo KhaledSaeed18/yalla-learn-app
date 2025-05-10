@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui/text';
-import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, View, StatusBar } from 'react-native';
 import { productService } from '@/services/product.service';
 import { ListingCard } from '@/components/ui/listing-card';
 import { Heading } from '@/components/ui/heading';
@@ -74,34 +74,42 @@ const Listings = () => {
     }, []);
 
     return (
-        <SafeAreaView edges={['top']} className='bg-background-0 flex-1 px-4'>
-            <View className="mb-4">
-                <Heading size='2xl' className='text-center'>
-                    Listings
+        <SafeAreaView edges={['top']} className='flex-1 bg-white'>
+            <View className="px-4 py-3">
+                <Heading size='xl' className='text-center text-gray-800'>
+                    Discover Listings
                 </Heading>
             </View>
 
-            <ListingsFilter onFilterChange={handleFilterChange} />
+            <View className="px-4 py-3">
+                <ListingsFilter onFilterChange={handleFilterChange} />
+            </View>
 
             {loading ? (
-                <View className="flex-1 justify-center items-center">
-                    <ActivityIndicator size="large" color="#0000ff" />
+                <View className="flex-1 justify-center items-center bg-white">
+                    <ActivityIndicator size="large" color="#3B82F6" />
+                    <Text className="mt-3 text-gray-500">Loading listings...</Text>
                 </View>
             ) : (
                 <FlatList
                     data={listings}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
-                        <ListingCard
-                            listing={item}
-                            onPress={handleListingPress}
-                        />
+                        <View className="px-4">
+                            <ListingCard
+                                listing={item}
+                                onPress={handleListingPress}
+                            />
+                        </View>
                     )}
                     numColumns={1}
+                    contentContainerStyle={{ paddingVertical: 12 }}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
                             onRefresh={handleRefresh}
+                            colors={['#3B82F6']}
+                            tintColor="#3B82F6"
                         />
                     }
                     onEndReached={handleLoadMore}
@@ -110,15 +118,26 @@ const Listings = () => {
                     showsVerticalScrollIndicator={false}
                     ListFooterComponent={
                         loadingMore ? (
-                            <View className="py-4">
-                                <ActivityIndicator size="small" color="#0000ff" />
+                            <View className="py-6 items-center">
+                                <ActivityIndicator size="small" color="#3B82F6" />
+                                <Text className="mt-2 text-gray-500 text-xs">Loading more...</Text>
+                            </View>
+                        ) : pagination?.hasNextPage ? (
+                            <View className="py-6 items-center">
+                                <Text className="text-gray-400 text-xs">Pull up to load more</Text>
                             </View>
                         ) : null
                     }
                     ListEmptyComponent={
-                        <View className="flex-1 justify-center items-center p-8">
-                            <Text className="text-muted-foreground text-center">
-                                No listings found. Check back later!
+                        <View className="flex-1 justify-center items-center p-12 mt-8 bg-white rounded-xl mx-4 shadow-sm">
+                            <View className="w-16 h-16 bg-gray-100 rounded-full items-center justify-center mb-4">
+                                <Text className="text-gray-400 text-2xl">📦</Text>
+                            </View>
+                            <Text className="text-gray-800 font-medium text-lg text-center">
+                                No listings found
+                            </Text>
+                            <Text className="text-gray-500 text-center mt-2">
+                                Try adjusting your filters or check back later for new listings.
                             </Text>
                         </View>
                     }

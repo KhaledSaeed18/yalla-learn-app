@@ -230,6 +230,43 @@ export default function AddProduct() {
                         {errors.price && <Text className="text-error-600 text-xs mt-1">{errors.price.message}</Text>}
                     </View>
 
+                    <View className="flex-row items-center justify-between">
+                        <Text className="text-typography-700">Available for Rent</Text>
+                        <Controller
+                            control={control}
+                            name="isRentable"
+                            render={({ field: { onChange, value } }) => (
+                                <Switch
+                                    value={value}
+                                    onValueChange={onChange}
+                                    trackColor={{ false: '#767577', true: 'rgb(var(--color-primary-500))' }}
+                                />
+                            )}
+                        />
+                    </View>
+
+                    {isRentable && (
+                        <View>
+                            <Text className="mb-2 text-typography-700">Rental Period (days)</Text>
+                            <Controller
+                                control={control}
+                                name="rentalPeriod"
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <Input variant="outline" size="md">
+                                        <InputField
+                                            placeholder="Number of days"
+                                            keyboardType="numeric"
+                                            value={value ?? ''}
+                                            onChangeText={onChange}
+                                            onBlur={onBlur}
+                                        />
+                                    </Input>
+                                )}
+                            />
+                            {errors.rentalPeriod && <Text className="text-error-600 text-xs mt-1">{errors.rentalPeriod.message}</Text>}
+                        </View>
+                    )}
+
                     <View>
                         <Text className="mb-2 text-typography-700">Category</Text>
                         <Controller
@@ -322,43 +359,6 @@ export default function AddProduct() {
                         />
                         {errors.description && <Text className="text-error-600 text-xs mt-1">{errors.description.message}</Text>}
                     </View>
-
-                    <View className="flex-row items-center justify-between">
-                        <Text className="text-typography-700">Available for Rent</Text>
-                        <Controller
-                            control={control}
-                            name="isRentable"
-                            render={({ field: { onChange, value } }) => (
-                                <Switch
-                                    value={value}
-                                    onValueChange={onChange}
-                                    trackColor={{ false: '#767577', true: 'rgb(var(--color-primary-500))' }}
-                                />
-                            )}
-                        />
-                    </View>
-
-                    {isRentable && (
-                        <View>
-                            <Text className="mb-2 text-typography-700">Rental Period (days)</Text>
-                            <Controller
-                                control={control}
-                                name="rentalPeriod"
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                    <Input variant="outline" size="md">
-                                        <InputField
-                                            placeholder="Number of days"
-                                            keyboardType="numeric"
-                                            value={value ?? ''}
-                                            onChangeText={onChange}
-                                            onBlur={onBlur}
-                                        />
-                                    </Input>
-                                )}
-                            />
-                            {errors.rentalPeriod && <Text className="text-error-600 text-xs mt-1">{errors.rentalPeriod.message}</Text>}
-                        </View>
-                    )}
 
                     <View>
                         <Text className="mb-2 text-typography-700">Upload Photos</Text>
