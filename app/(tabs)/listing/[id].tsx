@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, ScrollView, ActivityIndicator, Pressable, Text } from 'react-native';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Heart } from 'lucide-react-native';
 import { Heading } from '@/components/ui/heading';
@@ -18,27 +18,38 @@ const ListingDetailScreen = () => {
     const [error, setError] = useState<string | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    useEffect(() => {
+    const fetchListingDetails = useCallback(async () => {
         if (!id) {
             setError('Listing ID is missing');
             setLoading(false);
             return;
         }
 
-        const fetchListingDetails = async () => {
-            try {
-                const response = await productService.getListingById(id);
-                setListing(response.data.listing);
-            } catch (err) {
-                console.error('Error fetching listing details:', err);
-                setError('Failed to load listing details');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchListingDetails();
+        setLoading(true);
+        try {
+            const response = await productService.getListingById(id);
+            setListing(response.data.listing);
+            setError(null);
+        } catch (err) {
+            console.error('Error fetching listing details:', err);
+            setError('Failed to load listing details');
+        } finally {
+            setLoading(false);
+        }
     }, [id]);
+
+    // Use useFocusEffect to refetch data every time the screen comes into focus
+    useFocusEffect(
+        useCallback(() => {
+            console.log('Listing screen focused, fetching data...');
+            fetchListingDetails();
+
+            // Return a cleanup function (optional)
+            return () => {
+                console.log('Listing screen blurred');
+            };
+        }, [fetchListingDetails])
+    );
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);

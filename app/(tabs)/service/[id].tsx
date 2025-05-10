@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, ScrollView, ActivityIndicator, Pressable, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { Text } from '@/components/ui/text';
 import { Heading } from '@/components/ui/heading';
 import { serviceService } from '@/services/service.service';
@@ -18,27 +18,38 @@ const ServiceDetailScreen = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
+    const fetchServiceDetails = useCallback(async () => {
         if (!id) {
             setError('Service ID is missing');
             setLoading(false);
             return;
         }
 
-        const fetchServiceDetails = async () => {
-            try {
-                const response = await serviceService.getServiceById(id) as any;
-                setService(response.data.service);
-            } catch (err) {
-                console.error('Error fetching service details:', err);
-                setError('Failed to load service details');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchServiceDetails();
+        setLoading(true);
+        try {
+            const response = await serviceService.getServiceById(id) as any;
+            setService(response.data.service);
+            setError(null);
+        } catch (err) {
+            console.error('Error fetching service details:', err);
+            setError('Failed to load service details');
+        } finally {
+            setLoading(false);
+        }
     }, [id]);
+
+    // Use useFocusEffect to refetch data every time the screen comes into focus
+    useFocusEffect(
+        useCallback(() => {
+            console.log('Service screen focused, fetching data...');
+            fetchServiceDetails();
+
+            // Return a cleanup function (optional)
+            return () => {
+                console.log('Service screen blurred');
+            };
+        }, [fetchServiceDetails])
+    );
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
