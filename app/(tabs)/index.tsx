@@ -17,12 +17,6 @@ import { serviceService } from '@/services/service.service';
 const HomeHeader = () => (
     <View className="flex-row justify-between items-center pb-4 pt-2 px-4 border-b border-gray-200">
         <Heading size="xl" className="text-primary-600">Yalla Learn</Heading>
-        <TouchableOpacity
-            className="w-10 h-10 rounded-full bg-gray-100 items-center justify-center"
-            onPress={() => { }}
-        >
-            <FontAwesome name="search" size={18} color="#4B5563" />
-        </TouchableOpacity>
     </View>
 );
 
