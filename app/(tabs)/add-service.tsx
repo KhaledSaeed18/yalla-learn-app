@@ -61,7 +61,7 @@ export default function AddService() {
                                 category: GigCategory.OTHER,
                                 direction: ServiceDirection.OFFERING
                             });
-                            router.push('/listings');
+                            router.push('/services');
                         }
                     }
                 ]
