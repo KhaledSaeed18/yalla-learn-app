@@ -19,6 +19,13 @@ export const productService = {
     },
 
     /**
+     * Delete a listing by ID
+     */
+    deleteListing: async (id: string): Promise<void> => {
+        return api.delete(`/listings/delete-listing/${id}`);
+    },
+
+    /**
      * Get paginated listings
      */
     getListings: async (page: number = 1, limit: number = 10, filters?: FilterOptions): Promise<ListingsResponse> => {

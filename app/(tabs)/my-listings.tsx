@@ -102,16 +102,21 @@ export default function MyListingsScreen() {
                     style: 'destructive',
                     onPress: async () => {
                         try {
-                            // API call to delete listing to be implemented
-                            // await productService.deleteListing(listingId);
+                            setLoading(true);
+                            // Call the API to delete the listing
+                            await productService.deleteListing(listingId);
                             // If successful, update the UI
                             setListings(prevListings =>
                                 prevListings.filter(listing => listing.id !== listingId)
                             );
+                            // Update total listings count
+                            setTotalListings(prev => prev - 1);
                             Alert.alert('Success', 'Listing has been deleted successfully.');
                         } catch (error) {
                             console.error('Failed to delete listing:', error);
                             Alert.alert('Error', 'Failed to delete the listing. Please try again.');
+                        } finally {
+                            setLoading(false);
                         }
                     },
                 },
