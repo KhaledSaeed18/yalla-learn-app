@@ -13,7 +13,7 @@ SplashScreen.preventAutoHideAsync();
 function RootLayoutNav() {
   const segments = useSegments();
   const navigationState = useRootNavigationState();
-  const { isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (!navigationState?.key) return;
