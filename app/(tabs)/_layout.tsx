@@ -68,6 +68,13 @@ export default function TabLayout() {
                         href: null,
                     }}
                 />
+                <Tabs.Screen
+                    name="service/[id]"
+                    options={{
+                        href: null,
+                        headerShown: false,
+                    }}
+                />
             </Tabs>
         </SafeAreaProvider>
     );

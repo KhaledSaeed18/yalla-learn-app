@@ -175,7 +175,7 @@ export default function HomePage() {
                             <ListingCard
                                 key={listing.id}
                                 listing={listing}
-                                onPress={() => { }}
+                                onPress={() => console.log(`Navigate to listing details: ${listing.id}`)}
                             />
                         ))
                     ) : (
@@ -203,7 +203,10 @@ export default function HomePage() {
                             <ServiceCard
                                 key={service.id}
                                 service={service}
-                                onPress={() => { }}
+                                onPress={() => router.push({
+                                    pathname: "/service/[id]",
+                                    params: { id: service.id }
+                                })}
                             />
                         ))
                     ) : (

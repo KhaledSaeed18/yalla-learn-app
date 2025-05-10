@@ -8,10 +8,11 @@ import { Heading } from '@/components/ui/heading';
 import { ServiceFilters, ServicePagination, ServiceResponse } from '@/types/service/service.types';
 import { ServiceFilter, ServiceFilterOptions } from '@/components/listings/service-filter';
 import { GigCategory, ServiceDirection } from '@/types/enums';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 const Services = () => {
     const { refresh } = useLocalSearchParams();
+    const router = useRouter();
     const [services, setServices] = useState<ServiceResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -29,7 +30,7 @@ const Services = () => {
         try {
             if (refresh) {
                 setRefreshing(true);
-                page = 1; 
+                page = 1;
             } else {
                 setLoading(true);
             }
@@ -74,11 +75,14 @@ const Services = () => {
     };
 
     const handleServicePress = (id: string) => {
-        // router.push(`/service/${id}`);
+        router.push({
+            pathname: "/service/[id]",
+            params: { id }
+        });
     };
 
     const handleFilterChange = (newFilters: ServiceFilterOptions) => {
-        setCurrentPage(1); 
+        setCurrentPage(1);
         setFilters(newFilters);
         fetchServices(false, newFilters, 1);
     };
