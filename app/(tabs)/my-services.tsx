@@ -7,7 +7,7 @@ import { serviceService } from '@/services/service.service';
 import { ServiceResponse } from '@/types/service/service.types';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { formatCurrency } from '@/lib/utils';
-import { GigCategory, ServiceDirection } from '@/types/enums';
+import { ServiceDirection } from '@/types/enums';
 import { router } from 'expo-router';
 
 const formatRelativeTime = (dateString: string): string => {

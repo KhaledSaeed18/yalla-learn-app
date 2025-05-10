@@ -1,4 +1,4 @@
-import { View, ScrollView, Image, TouchableOpacity, ImageBackground, ActivityIndicator } from 'react-native';
+import { View, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from "@/components/ui/text";
 import { Heading } from "@/components/ui/heading";
