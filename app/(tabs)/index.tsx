@@ -61,12 +61,10 @@ export default function HomePage() {
     const navigateToAdd = () => router.push("/(tabs)/add");
     const navigateToWebsite = () => router.push("https://google.com");
 
-    // Fetch recent listings
     useEffect(() => {
         const fetchRecentListings = async () => {
             try {
                 setLoadingListings(true);
-                // Fetch just a few recent listings for the homepage
                 const response = await productService.getListings(1, 2);
                 if (response && response.data) {
                     setListings(response.data.listings);
@@ -81,12 +79,10 @@ export default function HomePage() {
         fetchRecentListings();
     }, []);
 
-    // Fetch recent services
     useEffect(() => {
         const fetchRecentServices = async () => {
             try {
                 setLoadingServices(true);
-                // Fetch just a few recent services for the homepage
                 const serviceFilters = {
                     page: 1,
                     limit: 2,
