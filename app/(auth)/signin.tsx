@@ -17,6 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppDispatch } from '@/redux/hooks';
 import { setCredentials } from '@/redux/slices/authSlice';
 import { setUser } from '@/redux/slices/userSlice';
+import { BrainCircuit } from 'lucide-react-native';
 
 const signinSchema = yup.object({
     email: yup.string().email('Please enter a valid email').required('Email is required'),
@@ -81,11 +82,7 @@ export default function SignIn() {
     return (
         <View className="flex-1 bg-background-50 p-6 justify-center">
             <Box className="mb-8 items-center">
-                <Image
-                    source={require('../../assets/images/brain-circuit.png')}
-                    className="w-24 h-24 mb-4"
-                    resizeMode="contain"
-                />
+                <BrainCircuit size={80} color="#3B82F6" className="mr-2" />
                 <Heading size="2xl" className="text-typography-900">Welcome Back</Heading>
                 <Text className="text-typography-600 text-center mt-2">
                     Sign in to your account to continue

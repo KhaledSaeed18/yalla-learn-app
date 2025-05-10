@@ -8,6 +8,7 @@ import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { Button } from '@/components/ui/button';
 import * as yup from 'yup';
+import { BrainCircuit } from 'lucide-react-native';
 
 const verifyEmailSchema = yup.object({
     email: yup.string().email('Please enter a valid email').required('Email is required'),
@@ -33,7 +34,7 @@ export default function VerifyEmail() {
 
     const handleCodeChange = (text: string, index: number) => {
         if (text.length > 1) {
-            text = text[0]; 
+            text = text[0];
         }
 
         const newCode = [...verificationCode];
@@ -125,11 +126,7 @@ export default function VerifyEmail() {
     return (
         <View className="flex-1 bg-background-50 p-6 justify-center">
             <Box className="mb-8 items-center">
-                <Image
-                    source={require('../../assets/images/brain-circuit.png')}
-                    className="w-20 h-20 mb-4"
-                    resizeMode="contain"
-                />
+                <BrainCircuit size={80} color="#3B82F6" className="mr-2" />
                 <Heading size="xl" className="text-typography-900">Verify Your Email</Heading>
                 <Text className="text-typography-600 text-center mt-2 px-4">
                     We've sent a 6-digit verification code to{' '}

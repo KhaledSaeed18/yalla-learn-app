@@ -13,6 +13,7 @@ import { Input, InputField } from '@/components/ui/input';
 import { VStack } from '@/components/ui/vstack';
 import { FormControl, FormControlError, FormControlErrorText, FormControlLabel } from '@/components/ui/form-control';
 import { Button } from '@/components/ui/button';
+import { BrainCircuit } from 'lucide-react-native';
 
 const signUpSchema = yup.object({
     firstName: yup.string().required('First name is required'),
@@ -75,11 +76,7 @@ export default function SignUp() {
     return (
         <View className="flex-1 bg-background-50 p-6 justify-center">
             <Box className="mb-6 items-center">
-                <Image
-                    source={require('../../assets/images/brain-circuit.png')}
-                    className="w-20 h-20 mb-3"
-                    resizeMode="contain"
-                />
+                <BrainCircuit size={80} color="#3B82F6" className="mr-2" />
                 <Heading size="xl" className="text-typography-900">Create Account</Heading>
                 <Text className="text-typography-600 text-center mt-1">
                     Sign up to start your journey with us
