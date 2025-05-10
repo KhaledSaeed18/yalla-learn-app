@@ -103,6 +103,13 @@ export default function HomePage() {
         fetchRecentServices();
     }, []);
 
+    const handleListingPress = (id: string) => {
+        router.push({
+            pathname: "/listing/[id]",
+            params: { id }
+        });
+    };
+
     return (
         <SafeAreaView className="bg-background-0 flex-1">
             <HomeHeader />
@@ -175,7 +182,7 @@ export default function HomePage() {
                             <ListingCard
                                 key={listing.id}
                                 listing={listing}
-                                onPress={() => console.log(`Navigate to listing details: ${listing.id}`)}
+                                onPress={() => handleListingPress(listing.id)}
                             />
                         ))
                     ) : (

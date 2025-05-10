@@ -69,7 +69,7 @@ const ServiceDetailScreen = () => {
                 </Text>
                 <Pressable
                     className="mt-6 py-3 px-6 bg-blue-500 rounded-lg"
-                    onPress={() => router.push('/services')}
+                    onPress={() => router.back()}
                 >
                     <Text className="text-white font-medium">Go Back</Text>
                 </Pressable>
@@ -96,7 +96,7 @@ const ServiceDetailScreen = () => {
                 {/* Header with back button */}
                 <View className={`w-full h-2 ${isOffering ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                 <View className="p-4 flex-row items-center">
-                    <Pressable onPress={() => router.push('/services')} className="p-2 mr-2">
+                    <Pressable onPress={() => router.back()} className="p-2 mr-2">
                         <ArrowLeft size={24} color="#333" />
                     </Pressable>
                     <Heading size="lg">Service Details</Heading>

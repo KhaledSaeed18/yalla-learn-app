@@ -9,7 +9,6 @@ import { productService } from '@/services/product.service';
 import { ListingResponse } from '@/types/service/product.types';
 import { Image } from '@/components/ui/image';
 import { formatCurrency } from '@/lib/utils';
-import { Condition, ListingCategory } from '@/types/enums';
 
 const ListingDetailScreen = () => {
     const router = useRouter();
@@ -93,7 +92,7 @@ const ListingDetailScreen = () => {
                 </Text>
                 <Pressable
                     className="mt-6 py-3 px-6 bg-blue-500 rounded-lg"
-                    onPress={() => router.push('/listings')}
+                    onPress={() => router.back()}
                 >
                     <Text className="text-white font-medium">Go Back</Text>
                 </Pressable>
@@ -112,11 +111,13 @@ const ListingDetailScreen = () => {
                 {/* Header with back button */}
                 <View className="w-full h-2 bg-blue-500" />
                 <View className="p-4 flex-row items-center justify-between">
-                    <Pressable onPress={() => router.push('/listings')} className="p-2">
-                        <ArrowLeft size={24} color="#333" />
+                    <Pressable onPress={() => router.back()} className="p-2">
+                        <View>
+                            <ArrowLeft size={24} color="#333" />
+                        </View>
                     </Pressable>
                     <Heading size="lg">Listing Details</Heading>
-                    <View className="w-10"></View> {/* Empty view for centering */}
+                    <View className="w-10"></View>
                 </View>
 
                 {/* Image carousel */}
@@ -133,13 +134,17 @@ const ListingDetailScreen = () => {
                                 onPress={handlePrevImage}
                                 className="absolute left-2 top-1/2 bg-black/30 rounded-full p-2"
                             >
-                                <ArrowLeft size={24} color="#fff" />
+                                <Text>
+                                    <ArrowLeft size={24} color="#fff" />
+                                </Text>
                             </Pressable>
                             <Pressable
                                 onPress={handleNextImage}
                                 className="absolute right-2 top-1/2 bg-black/30 rounded-full p-2"
                             >
-                                <ArrowLeft size={24} color="#fff" style={{ transform: [{ rotate: '180deg' }] }} />
+                                <Text>
+                                    <ArrowLeft size={24} color="#fff" style={{ transform: [{ rotate: '180deg' }] }} />
+                                </Text>
                             </Pressable>
                         </>
                     )}
