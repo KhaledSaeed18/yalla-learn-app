@@ -22,7 +22,7 @@ export default function Tab() {
         {
             icon: "briefcase-outline",
             title: "My Services",
-            onPress: () => router.push('/services')
+            onPress: () => router.push('/my-services')
         },
         {
             icon: "settings-outline",

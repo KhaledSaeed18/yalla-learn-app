@@ -119,9 +119,9 @@ export const ServiceFilter = ({ onFilterChange, initialFilters = {} }: ServiceFi
                         <ActionsheetItem onPress={() => handleSelectFilter(null)}>
                             <ActionsheetItemText className={!filters.category ? "font-bold text-primary-600" : ""}>All Categories</ActionsheetItemText>
                         </ActionsheetItem>
-                        {Object.values(GigCategory).map((category) => (
+                        {Object.values(GigCategory).map((category, index) => (
                             <ActionsheetItem
-                                key={category}
+                                key={`${category}-${index}`}
                                 onPress={() => handleSelectFilter(category)}
                             >
                                 <ActionsheetItemText className={filters.category === category ? "font-bold text-primary-600" : ""}>{formatEnumValue(category)}</ActionsheetItemText>
@@ -135,9 +135,9 @@ export const ServiceFilter = ({ onFilterChange, initialFilters = {} }: ServiceFi
                         <ActionsheetItem onPress={() => handleSelectFilter(null)}>
                             <ActionsheetItemText className={!filters.direction ? "font-bold text-primary-600" : ""}>All Directions</ActionsheetItemText>
                         </ActionsheetItem>
-                        {Object.values(ServiceDirection).map((direction) => (
+                        {Object.values(ServiceDirection).map((direction, index) => (
                             <ActionsheetItem
-                                key={direction}
+                                key={`${direction}-${index}`}
                                 onPress={() => handleSelectFilter(direction)}
                             >
                                 <ActionsheetItemText className={filters.direction === direction ? "font-bold text-primary-600" : ""}>{formatEnumValue(direction)}</ActionsheetItemText>
