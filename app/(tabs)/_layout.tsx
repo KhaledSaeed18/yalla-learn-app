@@ -75,6 +75,13 @@ export default function TabLayout() {
                         headerShown: false,
                     }}
                 />
+                <Tabs.Screen
+                    name="listing/[id]"
+                    options={{
+                        href: null,
+                        headerShown: false,
+                    }}
+                />
             </Tabs>
         </SafeAreaProvider>
     );
