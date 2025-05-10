@@ -17,7 +17,7 @@ export default function Tab() {
         {
             icon: "list-outline",
             title: "My Listings",
-            onPress: () => router.push('/listings')
+            onPress: () => router.push('/my-listings')
         },
         {
             icon: "briefcase-outline",

@@ -36,6 +36,14 @@ export const productService = {
     },
 
     /**
+     * Get user's own listings
+     */
+    getUserListings: async (page: number = 1, limit: number = 10, sortBy: string = 'createdAt', sortOrder: string = 'desc'): Promise<ListingsResponse> => {
+        const url = `/listings/user/my-listings?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+        return api.get<ListingsResponse>(url);
+    },
+
+    /**
      * Get a specific listing by ID
      */
     getListingById: async (id: string): Promise<ListingDetailResponse> => {

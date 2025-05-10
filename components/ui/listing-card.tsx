@@ -99,7 +99,10 @@ export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
                     </View>
                     <View className='flex-row items-center'>
                         <Text numberOfLines={1} className="text-gray-500 text-xs">
-                            By {listing.user.firstName} {listing.user.lastName} • {formatRelativeTime(listing.createdAt)}
+                            {listing.user ?
+                                `By ${listing.user.firstName} ${listing.user.lastName} • ${formatRelativeTime(listing.createdAt)}` :
+                                `Posted ${formatRelativeTime(listing.createdAt)}`
+                            }
                         </Text>
                     </View>
                 </View>
