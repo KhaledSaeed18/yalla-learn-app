@@ -1,6 +1,6 @@
 import { api } from '@/api/base';
 import { ServiceFormData } from '@/lib/validations/service.validation';
-import { CreateServiceRequest, ServiceResponse } from '@/types/service/service.types';
+import { CreateServiceRequest, ServiceResponse, ServicesListResponse } from '@/types/service/service.types';
 
 export const serviceService = {
     /**
@@ -18,8 +18,8 @@ export const serviceService = {
     /**
      * Get all services
      */
-    getServices: async (): Promise<ServiceResponse[]> => {
-        return api.get<ServiceResponse[]>('/services');
+    getServices: async (): Promise<ServicesListResponse> => {
+        return api.get<ServicesListResponse>('/services/get-services');
     },
 
     /**
@@ -32,14 +32,14 @@ export const serviceService = {
     /**
      * Get services by category
      */
-    getServicesByCategory: async (category: string): Promise<ServiceResponse[]> => {
-        return api.get<ServiceResponse[]>(`/services/category/${category}`);
+    getServicesByCategory: async (category: string): Promise<ServicesListResponse> => {
+        return api.get<ServicesListResponse>(`/services/category/${category}`);
     },
 
     /**
      * Get services by direction (offering or requesting)
      */
-    getServicesByDirection: async (direction: string): Promise<ServiceResponse[]> => {
-        return api.get<ServiceResponse[]>(`/services/direction/${direction}`);
+    getServicesByDirection: async (direction: string): Promise<ServicesListResponse> => {
+        return api.get<ServicesListResponse>(`/services/direction/${direction}`);
     }
 };
