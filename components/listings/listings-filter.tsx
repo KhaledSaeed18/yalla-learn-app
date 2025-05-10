@@ -3,7 +3,7 @@ import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { Actionsheet, ActionsheetBackdrop, ActionsheetContent, ActionsheetDragIndicator, ActionsheetDragIndicatorWrapper, ActionsheetItem, ActionsheetItemText } from '@/components/ui/actionsheet';
 import { FontAwesome } from '@expo/vector-icons';
-import { Condition, ListingCategory, GigCategory, ServiceDirection } from '@/types/enums';
+import { Condition, ListingCategory } from '@/types/enums';
 
 export interface FilterOptions {
     category?: string;

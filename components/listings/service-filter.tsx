@@ -60,8 +60,7 @@ export const ServiceFilter = ({ onFilterChange, initialFilters = {} }: ServiceFi
                     delete newFilters.sortBy;
                     delete newFilters.sortOrder;
                 } else {
-                    // The value contains both sortBy and sortOrder separated by a colon
-                    const [sortBy, sortOrder] = value.split(':');
+                    const [sortBy, sortOrder] = value.split('-');
                     newFilters.sortBy = sortBy;
                     newFilters.sortOrder = sortOrder as 'asc' | 'desc';
                 }
@@ -81,10 +80,36 @@ export const ServiceFilter = ({ onFilterChange, initialFilters = {} }: ServiceFi
         setActiveFilterCount(count);
     };
 
-    const resetFilters = () => {
-        const newFilters = {};
-        setFilters(newFilters);
-        onFilterChange(newFilters);
+    const clearFilters = () => {
+        setFilters({});
+        setActiveFilterCount(0);
+        onFilterChange({});
+    };
+
+    const getFilterIcon = (type: 'category' | 'direction' | 'sort') => {
+        switch (type) {
+            case 'category':
+                return 'th-large';
+            case 'direction':
+                return 'exchange';
+            case 'sort':
+                return 'sort';
+        }
+    };
+
+    const getFilterLabel = (type: 'category' | 'direction' | 'sort') => {
+        switch (type) {
+            case 'category':
+                return filters.category ? formatEnumValue(filters.category) : 'Category';
+            case 'direction':
+                return filters.direction ? formatEnumValue(filters.direction) : 'Direction';
+            case 'sort':
+                if (!filters.sortBy) return 'Sort By';
+                const sortLabel = filters.sortBy === 'createdAt' ? 'Date' :
+                    filters.sortBy === 'price' ? 'Price' : 'Title';
+                const orderLabel = filters.sortOrder === 'asc' ? '▲' : '▼';
+                return `${sortLabel} ${orderLabel}`;
+        }
     };
 
     const renderFilterActionsheet = () => {
@@ -93,14 +118,14 @@ export const ServiceFilter = ({ onFilterChange, initialFilters = {} }: ServiceFi
                 return (
                     <>
                         <ActionsheetItem onPress={() => handleSelectFilter(null)}>
-                            <ActionsheetItemText>All Categories</ActionsheetItemText>
+                            <ActionsheetItemText className={!filters.category ? "font-bold text-primary-600" : ""}>All Categories</ActionsheetItemText>
                         </ActionsheetItem>
                         {Object.values(GigCategory).map((category) => (
                             <ActionsheetItem
                                 key={category}
                                 onPress={() => handleSelectFilter(category)}
                             >
-                                <ActionsheetItemText>{formatEnumValue(category)}</ActionsheetItemText>
+                                <ActionsheetItemText className={filters.category === category ? "font-bold text-primary-600" : ""}>{formatEnumValue(category)}</ActionsheetItemText>
                             </ActionsheetItem>
                         ))}
                     </>
@@ -109,14 +134,14 @@ export const ServiceFilter = ({ onFilterChange, initialFilters = {} }: ServiceFi
                 return (
                     <>
                         <ActionsheetItem onPress={() => handleSelectFilter(null)}>
-                            <ActionsheetItemText>All Directions</ActionsheetItemText>
+                            <ActionsheetItemText className={!filters.direction ? "font-bold text-primary-600" : ""}>All Directions</ActionsheetItemText>
                         </ActionsheetItem>
                         {Object.values(ServiceDirection).map((direction) => (
                             <ActionsheetItem
                                 key={direction}
                                 onPress={() => handleSelectFilter(direction)}
                             >
-                                <ActionsheetItemText>{formatEnumValue(direction)}</ActionsheetItemText>
+                                <ActionsheetItemText className={filters.direction === direction ? "font-bold text-primary-600" : ""}>{formatEnumValue(direction)}</ActionsheetItemText>
                             </ActionsheetItem>
                         ))}
                     </>
@@ -125,19 +150,19 @@ export const ServiceFilter = ({ onFilterChange, initialFilters = {} }: ServiceFi
                 return (
                     <>
                         <ActionsheetItem onPress={() => handleSelectFilter(null)}>
-                            <ActionsheetItemText>Default Sort</ActionsheetItemText>
+                            <ActionsheetItemText className={!filters.sortBy ? "font-bold text-primary-600" : ""}>Default Sort</ActionsheetItemText>
                         </ActionsheetItem>
-                        <ActionsheetItem onPress={() => handleSelectFilter('createdAt:desc')}>
-                            <ActionsheetItemText>Newest First</ActionsheetItemText>
+                        <ActionsheetItem onPress={() => handleSelectFilter('createdAt-desc')}>
+                            <ActionsheetItemText className={filters.sortBy === 'createdAt' && filters.sortOrder === 'desc' ? "font-bold text-primary-600" : ""}>Newest First</ActionsheetItemText>
                         </ActionsheetItem>
-                        <ActionsheetItem onPress={() => handleSelectFilter('createdAt:asc')}>
-                            <ActionsheetItemText>Oldest First</ActionsheetItemText>
+                        <ActionsheetItem onPress={() => handleSelectFilter('createdAt-asc')}>
+                            <ActionsheetItemText className={filters.sortBy === 'createdAt' && filters.sortOrder === 'asc' ? "font-bold text-primary-600" : ""}>Oldest First</ActionsheetItemText>
                         </ActionsheetItem>
-                        <ActionsheetItem onPress={() => handleSelectFilter('price:asc')}>
-                            <ActionsheetItemText>Price: Low to High</ActionsheetItemText>
+                        <ActionsheetItem onPress={() => handleSelectFilter('price-asc')}>
+                            <ActionsheetItemText className={filters.sortBy === 'price' && filters.sortOrder === 'asc' ? "font-bold text-primary-600" : ""}>Price: Low to High</ActionsheetItemText>
                         </ActionsheetItem>
-                        <ActionsheetItem onPress={() => handleSelectFilter('price:desc')}>
-                            <ActionsheetItemText>Price: High to Low</ActionsheetItemText>
+                        <ActionsheetItem onPress={() => handleSelectFilter('price-desc')}>
+                            <ActionsheetItemText className={filters.sortBy === 'price' && filters.sortOrder === 'desc' ? "font-bold text-primary-600" : ""}>Price: High to Low</ActionsheetItemText>
                         </ActionsheetItem>
                     </>
                 );
@@ -146,63 +171,73 @@ export const ServiceFilter = ({ onFilterChange, initialFilters = {} }: ServiceFi
 
     return (
         <View className="mb-2">
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View className="flex-row">
-                    <TouchableOpacity
-                        onPress={() => handleOpenFilter('category')}
-                        className={`flex-row items-center px-3 py-2 mr-2 rounded-full ${filters.category ? 'bg-blue-500' : 'bg-gray-100'}`}
-                    >
-                        <Text className={`${filters.category ? 'text-white' : 'text-gray-700'}`}>
-                            {filters.category ? formatEnumValue(filters.category) : 'Category'}
-                        </Text>
-                        <FontAwesome name="chevron-down" size={12} color={filters.category ? "white" : "#374151"} style={{ marginLeft: 5 }} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => handleOpenFilter('direction')}
-                        className={`flex-row items-center px-3 py-2 mr-2 rounded-full ${filters.direction ? 'bg-blue-500' : 'bg-gray-100'}`}
-                    >
-                        <Text className={`${filters.direction ? 'text-white' : 'text-gray-700'}`}>
-                            {filters.direction ? formatEnumValue(filters.direction) : 'Direction'}
-                        </Text>
-                        <FontAwesome name="chevron-down" size={12} color={filters.direction ? "white" : "#374151"} style={{ marginLeft: 5 }} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => handleOpenFilter('sort')}
-                        className={`flex-row items-center px-3 py-2 mr-2 rounded-full ${filters.sortBy ? 'bg-blue-500' : 'bg-gray-100'}`}
-                    >
-                        <Text className={`${filters.sortBy ? 'text-white' : 'text-gray-700'}`}>
-                            {filters.sortBy ? 'Sort: ' + formatEnumValue(filters.sortBy) : 'Sort'}
-                        </Text>
-                        <FontAwesome name="chevron-down" size={12} color={filters.sortBy ? "white" : "#374151"} style={{ marginLeft: 5 }} />
-                    </TouchableOpacity>
-
+            <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingVertical: 4 }}
+                className="pb-2"
+            >
+                <View className="flex-row items-center">
                     {activeFilterCount > 0 && (
                         <TouchableOpacity
-                            onPress={resetFilters}
-                            className="flex-row items-center px-3 py-2 mr-2 rounded-full bg-red-100"
+                            onPress={clearFilters}
+                            className="flex-row items-center px-4 py-2.5 rounded-full bg-red-50 border border-red-100 mr-3"
                         >
-                            <Text className="text-red-700">Clear All</Text>
-                            <FontAwesome name="times" size={12} color="#B91C1C" style={{ marginLeft: 5 }} />
+                            <FontAwesome name="times" size={12} color="#EF4444" />
+                            <Text className="ml-2 text-red-500 font-medium text-xs">Clear Filters</Text>
                         </TouchableOpacity>
                     )}
+                    {['category', 'direction', 'sort'].map((type) => {
+                        const isActive = type === 'category' ? !!filters.category :
+                            type === 'direction' ? !!filters.direction :
+                                type === 'sort' ? !!filters.sortBy : false;
+
+                        return (
+                            <TouchableOpacity
+                                key={type}
+                                onPress={() => handleOpenFilter(type as any)}
+                                className={`flex-row items-center mr-3 px-4 py-2.5 rounded-full shadow-sm ${isActive
+                                    ? 'bg-[#3B82F6] border border-[#3B82F6]/20'
+                                    : 'bg-white border border-gray-200'
+                                    }`}
+                            >
+                                <FontAwesome
+                                    name={getFilterIcon(type as any)}
+                                    size={12}
+                                    color={
+                                        isActive
+                                            ? '#ffffff'
+                                            : '#666'
+                                    }
+                                />
+                                <Text
+                                    className={`ml-2 text-xs ${isActive
+                                        ? 'text-white font-medium'
+                                        : 'text-gray-700'
+                                        }`}
+                                >
+                                    {getFilterLabel(type as any)}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
                 </View>
             </ScrollView>
 
+            {/* Filter selection actionsheet */}
             <Actionsheet isOpen={filterOpen} onClose={() => setFilterOpen(false)}>
                 <ActionsheetBackdrop />
-                <ActionsheetContent>
+                <ActionsheetContent className="rounded-t-3xl">
                     <ActionsheetDragIndicatorWrapper>
                         <ActionsheetDragIndicator />
                     </ActionsheetDragIndicatorWrapper>
-                    <View className="p-2">
-                        <Text className="text-lg font-semibold mb-4 px-3">
+                    <View className="py-2 px-4 mb-2">
+                        <Text className="text-center font-semibold text-lg">
                             {filterType === 'category' ? 'Select Category' :
                                 filterType === 'direction' ? 'Select Direction' : 'Sort By'}
                         </Text>
-                        {renderFilterActionsheet()}
                     </View>
+                    {renderFilterActionsheet()}
                 </ActionsheetContent>
             </Actionsheet>
         </View>
