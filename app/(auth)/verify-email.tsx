@@ -155,7 +155,7 @@ export default function VerifyEmail() {
                 </HStack>
 
                 <Button
-                    className="bg-primary-500 mt-4"
+                    className="bg-[#3B82F6] mt-4"
                     size="lg"
                     onPress={verifyEmail}
                     isDisabled={isLoading || verificationCode.join('').length !== 6}

@@ -225,7 +225,7 @@ export default function SignUp() {
             </VStack>
 
             <Button
-                className="bg-primary-500 mt-2"
+                className="bg-[#3B82F6] mt-2"
                 size="lg"
                 onPress={handleSubmit(onSubmit)}
                 isDisabled={isLoading}
