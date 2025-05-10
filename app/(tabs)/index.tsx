@@ -13,10 +13,14 @@ import { ListingResponse } from '@/types/service/product.types';
 import { ServiceResponse } from '@/types/service/service.types';
 import { productService } from '@/services/product.service';
 import { serviceService } from '@/services/service.service';
+import { BrainCircuit } from 'lucide-react-native';
 
 const HomeHeader = () => (
     <View className="flex-row justify-between items-center pb-4 pt-2 px-4 border-b border-gray-200">
-        <Heading size="xl" className="text-primary-600">Yalla Learn</Heading>
+        <View className="flex-row items-center">
+            <BrainCircuit size={28} color="#3B82F6" className="mr-2" />
+            <Heading size="xl" className="text-primary-600">Yalla Learn</Heading>
+        </View>
     </View>
 );
 
@@ -107,7 +111,7 @@ export default function HomePage() {
                     className="h-[200px] justify-center p-4 mb-6"
                     imageStyle={{ opacity: 0.85, backgroundColor: '#3B82F6' }}
                 >
-                    <View className="bg-black/30 p-4 rounded-xl flex justify-center items-center">
+                    <View className="bg-black/70 p-4 rounded-xl flex justify-center items-center">
                         <Heading size="xl" className="text-white mb-1">Connect. Learn. Thrive.</Heading>
                         <Text className="text-white text-sm mb-3">Your campus marketplace for knowledge and resources</Text>
                         <Button
