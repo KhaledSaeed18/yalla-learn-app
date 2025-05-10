@@ -1,6 +1,6 @@
 import { api } from '@/api/base';
 import { ServiceFormData } from '@/lib/validations/service.validation';
-import { CreateServiceRequest, ServiceResponse, ServicesListResponse } from '@/types/service/service.types';
+import { CreateServiceRequest, ServiceFilters, ServiceResponse, ServicesListResponse } from '@/types/service/service.types';
 
 export const serviceService = {
     /**
@@ -16,10 +16,24 @@ export const serviceService = {
     },
 
     /**
-     * Get all services
+     * Get all services with optional filters
      */
-    getServices: async (): Promise<ServicesListResponse> => {
-        return api.get<ServicesListResponse>('/services/get-services');
+    getServices: async (filters?: ServiceFilters): Promise<ServicesListResponse> => {
+        const queryParams = new URLSearchParams();
+
+        if (filters) {
+            if (filters.page) queryParams.append('page', filters.page.toString());
+            if (filters.limit) queryParams.append('limit', filters.limit.toString());
+            if (filters.category) queryParams.append('category', filters.category);
+            if (filters.direction) queryParams.append('direction', filters.direction);
+            if (filters.sortBy) queryParams.append('sortBy', filters.sortBy);
+            if (filters.sortOrder) queryParams.append('sortOrder', filters.sortOrder);
+        }
+
+        const queryString = queryParams.toString();
+        const url = `/services/get-services${queryString ? `?${queryString}` : ''}`;
+
+        return api.get<ServicesListResponse>(url);
     },
 
     /**
@@ -27,19 +41,5 @@ export const serviceService = {
      */
     getServiceById: async (id: string): Promise<ServiceResponse> => {
         return api.get<ServiceResponse>(`/services/${id}`);
-    },
-
-    /**
-     * Get services by category
-     */
-    getServicesByCategory: async (category: string): Promise<ServicesListResponse> => {
-        return api.get<ServicesListResponse>(`/services/category/${category}`);
-    },
-
-    /**
-     * Get services by direction (offering or requesting)
-     */
-    getServicesByDirection: async (direction: string): Promise<ServicesListResponse> => {
-        return api.get<ServicesListResponse>(`/services/direction/${direction}`);
     }
 };

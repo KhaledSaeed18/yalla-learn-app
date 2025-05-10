@@ -37,6 +37,15 @@ export interface ServicePagination {
     totalServices: number;
 }
 
+export interface ServiceFilters {
+    page?: number;
+    limit?: number;
+    category?: GigCategory;
+    direction?: ServiceDirection;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+}
+
 export interface ServicesListResponse {
     data: {
         pagination: ServicePagination;
