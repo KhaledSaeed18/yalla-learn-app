@@ -1,4 +1,3 @@
-import React from 'react'
 import { View, TouchableOpacity, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Card } from "@/components/ui/card"
