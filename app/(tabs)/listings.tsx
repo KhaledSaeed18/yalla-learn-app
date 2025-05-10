@@ -61,7 +61,10 @@ const Listings = () => {
     };
 
     const handleListingPress = (id: string) => {
-        // router.push(`/listing/${id}`);
+        router.push({
+            pathname: "/listing/[id]",
+            params: { id }
+        });
     };
 
     const handleFilterChange = (newFilters: FilterOptions) => {

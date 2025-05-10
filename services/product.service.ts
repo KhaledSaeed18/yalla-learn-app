@@ -1,4 +1,4 @@
-import { ProductResponse, ListingsResponse } from '@/types/service/product.types';
+import { ProductResponse, ListingsResponse, ListingDetailResponse } from '@/types/service/product.types';
 import { api } from '../api/base';
 import { ProductFormData } from '@/lib/validations/product.validation';
 import { FilterOptions } from '@/components/listings/listings-filter';
@@ -33,6 +33,13 @@ export const productService = {
         }
 
         return api.get<ListingsResponse>(url);
+    },
+
+    /**
+     * Get a specific listing by ID
+     */
+    getListingById: async (id: string): Promise<ListingDetailResponse> => {
+        return api.get<ListingDetailResponse>(`/listings/get-listing/${id}`);
     },
 
     /**

@@ -33,6 +33,15 @@ export interface ListingResponse {
     };
 }
 
+export interface ListingDetailResponse {
+    status: string;
+    statusCode: number;
+    message: string;
+    data: {
+        listing: ListingResponse;
+    };
+}
+
 export interface PaginationInfo {
     totalListings: number;
     totalPages: number;
