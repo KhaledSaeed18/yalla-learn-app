@@ -58,7 +58,7 @@ export function ServiceCard({ service, onPress }: ServiceCardProps) {
         <TouchableOpacity
             onPress={() => onPress(service.id)}
             activeOpacity={0.8}
-            className='bg-white rounded-xl overflow-hidden mb-5 shadow-sm border border-gray-100'
+            className='bg-white rounded-xl overflow-hidden mb-5 border border-gray-300'
         >
             <View className={`h-2 w-full ${isOffering ? 'bg-emerald-500' : 'bg-amber-500'}`} />
 

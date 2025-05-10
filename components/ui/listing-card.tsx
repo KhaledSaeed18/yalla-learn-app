@@ -49,7 +49,7 @@ export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
         <TouchableOpacity
             onPress={() => onPress(listing.id)}
             activeOpacity={0.8}
-            className='bg-slate-100 rounded-xl overflow-hidden mb-5 shadow-lg'
+            className='rounded-xl overflow-hidden mb-5 border border-gray-300'
         >
             <View className='relative'>
                 <Image
@@ -58,7 +58,7 @@ export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
                     resizeMode="cover"
                 />
                 {listing.isRentable && (
-                    <View className='absolute top-3 right-3 bg-[#3B82F6] px-3 py-1 rounded-full shadow-sm'>
+                    <View className='absolute top-3 right-3 bg-[#3B82F6] px-3 py-1 rounded-full'>
                         <Text className="text-white font-medium text-xs">FOR RENT</Text>
                     </View>
                 )}
@@ -84,14 +84,14 @@ export const ListingCard = ({ listing, onPress }: ListingCardProps) => {
                     {listing.description}
                 </Text>
 
-                <View className='flex-row justify-between mt-3 pt-3 border-t border-gray-100'>
+                <View className='flex-row justify-between mt-3 pt-3 border-t'>
                     <View className='flex-row items-center space-x-1'>
-                        <View className='bg-gray-100 px-2 py-1 rounded-md'>
+                        <View className='px-2 py-1 rounded-md'>
                             <Text className="text-gray-700 text-xs">
                                 {listing.category}
                             </Text>
                         </View>
-                        <View className='bg-gray-100 px-2 py-1 rounded-md'>
+                        <View className='px-2 py-1 rounded-md'>
                             <Text className="text-gray-700 text-xs">
                                 {listing.condition.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
                             </Text>

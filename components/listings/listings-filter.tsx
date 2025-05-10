@@ -24,7 +24,6 @@ export const ListingsFilter = ({ onFilterChange }: ListingsFilterProps) => {
     const [activeFilterCount, setActiveFilterCount] = useState(0);
     const [filterType, setFilterType] = useState<'category' | 'condition' | 'rentable' | 'sort'>('category');
 
-    // Format enum values for display
     const formatEnumValue = (value: string) => {
         return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
     };

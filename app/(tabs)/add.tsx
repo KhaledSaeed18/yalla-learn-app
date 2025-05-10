@@ -36,7 +36,7 @@ const add = () => {
                         onPress={handleAddProductClick}
                         className="mb-4"
                     >
-                        <Card size="md" variant="outline" className="border border-[#3B82F6]">
+                        <Card size="md" variant="outline" className="border border-gray-300">
                             <Image
                                 source={{
                                     uri: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -61,7 +61,7 @@ const add = () => {
                         activeOpacity={0.8}
                         onPress={handleAddServiceClick}
                     >
-                        <Card size="md" variant="outline" className="border border-[#3B82F6]">
+                        <Card size="md" variant="outline" className="border border-gray-300">
                             <Image
                                 source={{
                                     uri: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000",
