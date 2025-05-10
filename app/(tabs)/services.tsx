@@ -8,8 +8,10 @@ import { Heading } from '@/components/ui/heading';
 import { ServiceFilters, ServicePagination, ServiceResponse } from '@/types/service/service.types';
 import { ServiceFilter, ServiceFilterOptions } from '@/components/listings/service-filter';
 import { GigCategory, ServiceDirection } from '@/types/enums';
+import { useLocalSearchParams } from 'expo-router';
 
 const Services = () => {
+    const { refresh } = useLocalSearchParams();
     const [services, setServices] = useState<ServiceResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -27,7 +29,7 @@ const Services = () => {
         try {
             if (refresh) {
                 setRefreshing(true);
-                page = 1; // Reset to first page on refresh
+                page = 1; 
             } else {
                 setLoading(true);
             }
@@ -87,6 +89,13 @@ const Services = () => {
     useEffect(() => {
         fetchServices();
     }, []);
+
+    // Check for refresh parameter when the component mounts or updates
+    useEffect(() => {
+        if (refresh === 'true') {
+            handleRefresh();
+        }
+    }, [refresh]);
 
     return (
         <SafeAreaView edges={['top']} className='flex-1 bg-white'>

@@ -61,7 +61,8 @@ export default function AddService() {
                                 category: GigCategory.OTHER,
                                 direction: ServiceDirection.OFFERING
                             });
-                            router.push('/services');
+                            // Navigate to services page with refresh parameter
+                            router.push('/services?refresh=true');
                         }
                     }
                 ]

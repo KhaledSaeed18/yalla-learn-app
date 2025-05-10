@@ -155,7 +155,8 @@ export default function AddProduct() {
                                 rentalPeriod: '',
                                 images: []
                             });
-                            router.push('/listings');
+                            // Navigate to listings page with refresh parameter
+                            router.push('/listings?refresh=true');
                         }
                     }
                 ]

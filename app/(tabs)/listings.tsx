@@ -7,10 +7,11 @@ import { ListingCard } from '@/components/ui/listing-card';
 import { Heading } from '@/components/ui/heading';
 import { ListingResponse, PaginationInfo } from '@/types/service/product.types';
 import { ListingsFilter, FilterOptions } from '@/components/listings/listings-filter';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
 const Listings = () => {
     const router = useRouter();
+    const { refresh } = useLocalSearchParams();
     const [listings, setListings] = useState<ListingResponse[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
     const [loading, setLoading] = useState(true);
@@ -72,6 +73,12 @@ const Listings = () => {
     useEffect(() => {
         fetchListings();
     }, []);
+
+    useEffect(() => {
+        if (refresh === 'true') {
+            handleRefresh();
+        }
+    }, [refresh]);
 
     return (
         <SafeAreaView edges={['top']} className='flex-1 bg-white'>
