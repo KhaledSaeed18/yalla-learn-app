@@ -256,7 +256,7 @@ export default function MyServicesScreen() {
                     {totalServices} {totalServices === 1 ? 'service' : 'services'} created by you
                 </Text>
             </View>
-c
+
             {loading && services.length === 0 ? (
                 <View className="flex-1 items-center justify-center">
                     <ActivityIndicator size="large" color="#3b82f6" />
