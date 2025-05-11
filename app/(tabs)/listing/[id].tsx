@@ -52,12 +52,7 @@ const ListingDetailScreen = () => {
 
     useFocusEffect(
         useCallback(() => {
-            console.log('Listing screen focused, fetching data...');
             fetchListingDetails();
-
-            return () => {
-                console.log('Listing screen blurred');
-            };
         }, [fetchListingDetails])
     );
 
