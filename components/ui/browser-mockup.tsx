@@ -2,12 +2,13 @@ import { Image, Text } from "react-native";
 import { Box } from "./box";
 import { Button } from "./button";
 import { Heading } from "./heading";
+import { FontAwesome } from "@expo/vector-icons";
 
 function WebsiteCTA() {
     return (
         <Box className="mb-2">
             {/* Text and CTA */}
-            <Box className="flex-row items-center justify-between mb-1">
+            <Box className="flex-row items-center justify-between mb-2">
                 <Heading size="lg">
                     Explore More on Our Website!
                 </Heading>
@@ -19,6 +20,7 @@ function WebsiteCTA() {
                         console.log("Go to website");
                     }}
                 >
+                    <FontAwesome name="external-link" size={14} color="#fff" className="mr-1" />
                     <Text className="text-white font-semibold">
                         Visit Now
                     </Text>

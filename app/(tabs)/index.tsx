@@ -35,7 +35,7 @@ interface FeatureCardProps {
 
 const FeatureCard = ({ icon, title, description, onPress, bgColor }: FeatureCardProps) => (
     <TouchableOpacity
-        className={`p-4 rounded-2xl mr-3 w-[160px] h-[170px] ${bgColor}`}
+        className={`p-4 rounded mr-3 w-[160px] h-[170px] ${bgColor}`}
         activeOpacity={0.8}
         onPress={onPress}
     >
@@ -121,7 +121,7 @@ export default function HomePage() {
                     className="h-[200px] justify-center p-4 mb-6"
                     imageStyle={{ opacity: 0.85, backgroundColor: '#3B82F6' }}
                 >
-                    <View className="bg-black/70 p-4 rounded-xl flex justify-center items-center">
+                    <View className="bg-black/70 p-4 rounded flex justify-center items-center">
                         <Heading size="xl" className="text-white mb-1">Connect. Learn. Thrive.</Heading>
                         <Text className="text-white text-sm mb-3">Your campus marketplace for knowledge and resources</Text>
                         <Button
