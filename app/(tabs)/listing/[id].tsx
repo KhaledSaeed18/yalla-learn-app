@@ -11,6 +11,7 @@ import { Image } from '@/components/ui/image';
 import { formatCurrency } from '@/lib/utils';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAppSelector } from '@/redux/hooks';
+import { Button } from '@/components/ui/button';
 
 const ListingDetailScreen = () => {
     const router = useRouter();
@@ -278,7 +279,7 @@ const ListingDetailScreen = () => {
                         <View className="flex-row justify-between space-x-2">
                             {/* Call button - only shown if seller has phone number */}
                             {listing.user.phoneNumber && (
-                                <Pressable
+                                <Button
                                     className="flex-1 bg-green-500 py-3 rounded-lg flex-row items-center justify-center"
                                     onPress={() => {
                                         Linking.openURL(`tel:${listing.user.phoneNumber}`);
@@ -286,11 +287,11 @@ const ListingDetailScreen = () => {
                                 >
                                     <FontAwesome name="phone" size={16} color="#fff" />
                                     <Text className="text-white font-medium ml-2">Call</Text>
-                                </Pressable>
+                                </Button>
                             )}
 
                             {/* Email button */}
-                            <Pressable
+                            <Button
                                 className="flex-1 bg-orange-500 py-3 rounded-lg flex-row items-center justify-center mx-2"
                                 onPress={() => {
                                     Linking.openURL(`mailto:${listing.user.email}?subject=Regarding your listing: ${listing.title}&body=Hello ${listing.user.firstName},\n\nI'm interested in your listing "${listing.title}" priced at ${formatCurrency(listing.price)}.\n\nPlease let me know if it's still available.\n\nThanks!`);
@@ -298,10 +299,10 @@ const ListingDetailScreen = () => {
                             >
                                 <FontAwesome name="envelope" size={16} color="#fff" />
                                 <Text className="text-white font-medium ml-2">Email</Text>
-                            </Pressable>
+                            </Button>
 
                             {/* Chat button */}
-                            <Pressable
+                            <Button
                                 className="flex-1 bg-blue-500 py-3 rounded-lg flex-row items-center justify-center"
                                 onPress={() => {
                                     // Chat functionality to be implemented
@@ -310,7 +311,7 @@ const ListingDetailScreen = () => {
                             >
                                 <FontAwesome name="comment" size={16} color="#fff" />
                                 <Text className="text-white font-medium ml-2">Chat</Text>
-                            </Pressable>
+                            </Button>
                         </View>
                     )}
                 </View>
