@@ -349,7 +349,7 @@ export default function MyServicesScreen() {
     return (
         <SafeAreaView className="flex-1 bg-background-50">
             <View className="px-4 py-3 bg-background-50 z-10 border-b border-outline-200 flex-row items-center">
-                <TouchableOpacity onPress={() => router.back()} className="pr-4">
+                <TouchableOpacity onPress={() => router.push('/menu')} className="pr-4">
                     <FontAwesome name="arrow-left" size={25} color="rgb(var(--color-primary-500))" />
                 </TouchableOpacity>
                 <Heading size="xl" className="flex-1 text-center pr-8">
