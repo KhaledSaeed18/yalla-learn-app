@@ -73,7 +73,7 @@ export const serviceService = {
             price: serviceData.price ? parseFloat(serviceData.price) : undefined,
         };
 
-        return api.put<ServiceResponse>(`/services/${id}`, formattedData);
+        return api.put<ServiceResponse>(`/services/update-service/${id}`, formattedData);
     },
 
     /**
