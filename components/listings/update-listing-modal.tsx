@@ -10,6 +10,7 @@ import { Modal, ModalBackdrop, ModalContent, ModalHeader, ModalBody, ModalFooter
 import { Condition, ListingCategory } from '@/types/enums';
 import { productService } from '@/services/product.service';
 import { ListingResponse } from '@/types/service/product.types';
+import { Select, SelectTrigger, SelectInput, SelectPortal, SelectBackdrop, SelectContent, SelectDragIndicator, SelectDragIndicatorWrapper, SelectItem, SelectScrollView } from '@/components/ui/select';
 
 interface UpdateListingModalProps {
     isOpen: boolean;
@@ -94,7 +95,7 @@ export const UpdateListingModal = ({ isOpen, onClose, listing, onSuccess }: Upda
                 <ModalBody>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <View className="space-y-4">
-                            <View>
+                            <View className='mb-2'>
                                 <Text className="text-typography-500 mb-1">Title</Text>
                                 <Controller
                                     control={control}
@@ -113,7 +114,7 @@ export const UpdateListingModal = ({ isOpen, onClose, listing, onSuccess }: Upda
                                 )}
                             </View>
 
-                            <View>
+                            <View className='mb-2'>
                                 <Text className="text-typography-500 mb-1">Description</Text>
                                 <Controller
                                     control={control}
@@ -135,7 +136,7 @@ export const UpdateListingModal = ({ isOpen, onClose, listing, onSuccess }: Upda
                                 )}
                             </View>
 
-                            <View>
+                            <View className='mb-2'>
                                 <Text className="text-typography-500 mb-1">Price ($)</Text>
                                 <Controller
                                     control={control}
@@ -155,35 +156,37 @@ export const UpdateListingModal = ({ isOpen, onClose, listing, onSuccess }: Upda
                                 )}
                             </View>
 
-                            <View>
+                            <View className='mb-2'>
                                 <Text className="text-typography-500 mb-1">Condition</Text>
                                 <Controller
                                     control={control}
                                     name="condition"
                                     render={({ field: { value, onChange } }) => (
-                                        <View className="border border-outline-300 rounded-md p-3 bg-background-0">
-                                            <View className="flex-row flex-wrap">
-                                                {Object.values(Condition).map((condition) => (
-                                                    <TouchableOpacity
-                                                        key={condition}
-                                                        onPress={() => onChange(condition)}
-                                                        className={`mr-2 mb-2 px-3 py-2 rounded-full ${value === condition
-                                                                ? 'bg-primary-500'
-                                                                : 'bg-background-100'
-                                                            }`}
-                                                    >
-                                                        <Text
-                                                            className={`${value === condition
-                                                                    ? 'text-white'
-                                                                    : 'text-typography-500'
-                                                                } font-medium text-sm`}
-                                                        >
-                                                            {formatEnumValue(condition)}
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                ))}
-                                            </View>
-                                        </View>
+                                        <Select
+                                            selectedValue={value}
+                                            onValueChange={onChange}
+                                        >
+                                            <SelectTrigger className="border border-outline-300 rounded-md p-3 bg-background-0">
+                                                <SelectInput placeholder="Select condition" value={formatEnumValue(value)} />
+                                            </SelectTrigger>
+                                            <SelectPortal>
+                                                <SelectBackdrop />
+                                                <SelectContent>
+                                                    <SelectDragIndicatorWrapper>
+                                                        <SelectDragIndicator />
+                                                    </SelectDragIndicatorWrapper>
+                                                    <SelectScrollView className="w-full max-h-96">
+                                                        {Object.values(Condition).map((condition) => (
+                                                            <SelectItem
+                                                                key={condition}
+                                                                label={formatEnumValue(condition)}
+                                                                value={condition}
+                                                            />
+                                                        ))}
+                                                    </SelectScrollView>
+                                                </SelectContent>
+                                            </SelectPortal>
+                                        </Select>
                                     )}
                                 />
                                 {errors.condition && (
@@ -193,35 +196,37 @@ export const UpdateListingModal = ({ isOpen, onClose, listing, onSuccess }: Upda
                                 )}
                             </View>
 
-                            <View>
+                            <View className='mb-2'>
                                 <Text className="text-typography-500 mb-1">Category</Text>
                                 <Controller
                                     control={control}
                                     name="category"
                                     render={({ field: { value, onChange } }) => (
-                                        <View className="border border-outline-300 rounded-md p-3 bg-background-0">
-                                            <View className="flex-row flex-wrap">
-                                                {Object.values(ListingCategory).map((category) => (
-                                                    <TouchableOpacity
-                                                        key={category}
-                                                        onPress={() => onChange(category)}
-                                                        className={`mr-2 mb-2 px-3 py-2 rounded-full ${value === category
-                                                                ? 'bg-primary-500'
-                                                                : 'bg-background-100'
-                                                            }`}
-                                                    >
-                                                        <Text
-                                                            className={`${value === category
-                                                                    ? 'text-white'
-                                                                    : 'text-typography-500'
-                                                                } font-medium text-sm`}
-                                                        >
-                                                            {formatEnumValue(category)}
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                ))}
-                                            </View>
-                                        </View>
+                                        <Select
+                                            selectedValue={value}
+                                            onValueChange={onChange}
+                                        >
+                                            <SelectTrigger className="border border-outline-300 rounded-md p-3 bg-background-0">
+                                                <SelectInput placeholder="Select category" value={formatEnumValue(value)} />
+                                            </SelectTrigger>
+                                            <SelectPortal>
+                                                <SelectBackdrop />
+                                                <SelectContent>
+                                                    <SelectDragIndicatorWrapper>
+                                                        <SelectDragIndicator />
+                                                    </SelectDragIndicatorWrapper>
+                                                    <SelectScrollView className="w-full max-h-96">
+                                                        {Object.values(ListingCategory).map((category) => (
+                                                            <SelectItem
+                                                                key={category}
+                                                                label={formatEnumValue(category)}
+                                                                value={category}
+                                                            />
+                                                        ))}
+                                                    </SelectScrollView>
+                                                </SelectContent>
+                                            </SelectPortal>
+                                        </Select>
                                     )}
                                 />
                                 {errors.category && (
@@ -271,26 +276,6 @@ export const UpdateListingModal = ({ isOpen, onClose, listing, onSuccess }: Upda
                                         )}
                                     </View>
                                 )}
-                            </View>
-
-                            {/* Note: Image editing is not included in this basic version */}
-                            <View>
-                                <Text className="text-typography-500 mb-1">Images</Text>
-                                <Text className="text-typography-400 text-xs italic">
-                                    Images cannot be modified in this version
-                                </Text>
-                                <View className="flex-row flex-wrap mt-2">
-                                    {watch('images')?.map((image, index) => (
-                                        <View
-                                            key={index}
-                                            className="w-20 h-20 mr-2 mb-2 rounded-md overflow-hidden border border-outline-300"
-                                        >
-                                            <View className="w-full h-full bg-background-100 items-center justify-center">
-                                                <Text className="text-xs text-typography-400">Image {index + 1}</Text>
-                                            </View>
-                                        </View>
-                                    ))}
-                                </View>
                             </View>
                         </View>
                     </ScrollView>
