@@ -485,9 +485,9 @@ export default function MyServicesScreen() {
                                                 </SelectTrigger>
                                                 <SelectPortal>
                                                     <SelectContent>
-                                                        {Object.values(GigCategory).map((category) => (
+                                                        {Object.values(GigCategory).map((category, index) => (
                                                             <SelectItem
-                                                                key={category}
+                                                                key={`${category}-${index}`}
                                                                 label={formatEnumValue(category)}
                                                                 value={category}
                                                             />
