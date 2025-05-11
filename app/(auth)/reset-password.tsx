@@ -174,7 +174,7 @@ export default function ResetPassword() {
                                     value={verificationCode[index]}
                                     onChangeText={(text) => handleCodeChange(text, index)}
                                     onKeyPress={(e) => handleKeyPress(e, index)}
-                                    className="bg-background-0 border-background-200 text-center text-lg"
+                                    className="w-12 h-14 border border-background-300 rounded-md text-center text-2xl bg-background-0"
                                 />
                             </Input>
                         ))}
