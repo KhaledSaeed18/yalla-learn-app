@@ -149,6 +149,13 @@ export default function SignIn() {
                         </FormControlError>
                     )}
                 </FormControl>
+
+                <TouchableOpacity 
+                    className="self-end mb-2" 
+                    onPress={() => router.push('/forgot-password')}
+                >
+                    <Text className="text-primary-500 font-medium">Forgot Password?</Text>
+                </TouchableOpacity>
             </VStack>
 
             <Button

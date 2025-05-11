@@ -4,13 +4,14 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useRouter } from 'expo-router';
-import { BrainCircuit, Heading } from 'lucide-react-native';
+import { BrainCircuit } from 'lucide-react-native';
 import { forgotPasswordServices } from '@/services/auth/forgotPassword.service';
 import { Box } from '@/components/ui/box';
 import { FormControl, FormControlLabel, FormControlError, FormControlErrorText } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { VStack } from '@/components/ui/vstack';
 import { Button } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
 
 const forgotPasswordSchema = yup.object({
     email: yup.string().email('Enter a valid email').required('Email is required'),
