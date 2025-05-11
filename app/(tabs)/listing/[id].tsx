@@ -10,6 +10,7 @@ import { ListingResponse } from '@/types/service/product.types';
 import { Image } from '@/components/ui/image';
 import { formatCurrency } from '@/lib/utils';
 import { FontAwesome } from '@expo/vector-icons';
+import { useAppSelector } from '@/redux/hooks';
 
 const ListingDetailScreen = () => {
     const router = useRouter();
@@ -18,6 +19,9 @@ const ListingDetailScreen = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [isOwner, setIsOwner] = useState(false);
+
+    const currentUser = useAppSelector(state => state.user.currentUser);
 
     const fetchListingDetails = useCallback(async () => {
         if (!id) {
@@ -29,7 +33,15 @@ const ListingDetailScreen = () => {
         setLoading(true);
         try {
             const response = await productService.getListingById(id);
+            console.log('Listing details response:', response.data);
             setListing(response.data.listing);
+
+            if (currentUser && response.data.listing.user.id === currentUser.id) {
+                setIsOwner(true);
+            } else {
+                setIsOwner(false);
+            }
+
             setError(null);
         } catch (err) {
             console.error('Error fetching listing details:', err);
@@ -37,7 +49,7 @@ const ListingDetailScreen = () => {
         } finally {
             setLoading(false);
         }
-    }, [id]);
+    }, [id, currentUser]);
 
     useFocusEffect(
         useCallback(() => {
@@ -191,11 +203,6 @@ const ListingDetailScreen = () => {
                                 )}
                             </View>
                         </View>
-                        <View className="flex-row mt-2">
-                            <Text className="text-gray-500 text-sm">
-                                Posted {formatDate(listing.createdAt)} by {listing.user.firstName} {listing.user.lastName}
-                            </Text>
-                        </View>
                     </View>
 
                     {/* Details boxes */}
@@ -218,10 +225,42 @@ const ListingDetailScreen = () => {
                         </Text>
                     </View>
 
-                    {/* Contact seller button */}
-                    <Pressable className="bg-blue-500 py-3 rounded-lg items-center">
-                        <Text className="text-white font-medium">Contact Seller</Text>
-                    </Pressable>
+                    {/* Seller Information */}
+                    <View className="mb-6">
+                        <Heading size="md" className="mb-2">Seller Information</Heading>
+                        <Box className="p-4 bg-gray-50 rounded-lg">
+                            <View className="flex-row items-center mb-3">
+                                <View className="w-10 h-10 bg-blue-100 rounded-full items-center justify-center mr-4">
+                                    <Text className="text-blue-500 font-bold">
+                                        {listing.user.firstName.charAt(0)}{listing.user.lastName.charAt(0)}
+                                    </Text>
+                                </View>
+                                <View>
+                                    <Text className="font-medium text-base">
+                                        {listing.user.firstName} {listing.user.lastName}
+                                    </Text>
+                                    <Text className="font-medium text-base">
+                                        {listing.user.email}
+                                    </Text>
+                                </View>
+                            </View>
+                            <View className="mt-2">
+                                <Text className="text-gray-700 mt-1">
+                                    Listing Created: {formatDate(listing.createdAt)}
+                                </Text>
+                                <Text className="text-gray-700 mt-1">
+                                    Last Updated: {formatDate(listing.updatedAt)}
+                                </Text>
+                            </View>
+                        </Box>
+                    </View>
+
+                    {/* Contact seller button - only shown if user is not the owner */}
+                    {!isOwner && (
+                        <Pressable className="bg-blue-500 py-3 rounded-lg items-center">
+                            <Text className="text-white font-medium">Contact Seller</Text>
+                        </Pressable>
+                    )}
                 </View>
             </ScrollView>
         </SafeAreaView>

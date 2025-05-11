@@ -30,6 +30,7 @@ export interface ListingResponse {
         id: string;
         firstName: string;
         lastName: string;
+        email: string;
     };
 }
 
