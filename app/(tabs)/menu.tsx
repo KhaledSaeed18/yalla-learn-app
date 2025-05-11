@@ -70,9 +70,6 @@ export default function Tab() {
                             <View>
                                 <Text className='text-lg font-bold text-typography-700'>{userFullName}</Text>
                                 <Text className='text-typography-500'>{currentUser?.email || 'N/A'}</Text>
-                                {currentUser?.location && (
-                                    <Text className='text-typography-500'>{currentUser.location}</Text>
-                                )}
                             </View>
                         </View>
                         <TouchableOpacity

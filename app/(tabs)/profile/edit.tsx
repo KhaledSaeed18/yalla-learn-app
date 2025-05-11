@@ -9,9 +9,12 @@ import { Button } from '@/components/ui/button';
 import { Input, InputField } from '@/components/ui/input';
 import { Heading } from '@/components/ui/heading';
 import { VStack } from '@/components/ui/vstack';
+import { useAppDispatch } from '@/redux/hooks';
+import { setUser } from '@/redux/slices/userSlice';
 import { FormControl, FormControlLabel, FormControlHelperText } from '@/components/ui/form-control';
 
 export default function EditProfileScreen() {
+    const dispatch = useAppDispatch();
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -27,7 +30,6 @@ export default function EditProfileScreen() {
     });
 
     useEffect(() => {
-        // Fetch user profile when component mounts
         const fetchUserProfile = async () => {
             setIsLoading(true);
             try {
@@ -59,7 +61,6 @@ export default function EditProfileScreen() {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    // Determine if form data has changed compared to original data
     const hasChanges = useMemo(() => {
         if (!originalData) return false;
 
@@ -76,10 +77,8 @@ export default function EditProfileScreen() {
         setIsLoading(true);
         setError(null);
         try {
-            // Update the profile directly using the API service
             const updatedUser = await updateProfile(formData);
 
-            // Update local state with the response from API
             setCurrentUser(updatedUser);
             setOriginalData({
                 firstName: updatedUser.firstName || '',
@@ -89,6 +88,8 @@ export default function EditProfileScreen() {
                 location: updatedUser.location || '',
                 phoneNumber: updatedUser.phoneNumber || '',
             });
+
+            dispatch(setUser(updatedUser));
 
             Alert.alert('Success', 'Profile updated successfully');
             router.back();
