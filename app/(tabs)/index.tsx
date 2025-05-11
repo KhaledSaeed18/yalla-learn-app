@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator } from 'react-native';
+import { View, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from "@/components/ui/text";
 import { Heading } from "@/components/ui/heading";
@@ -54,6 +54,7 @@ export default function HomePage() {
     const [services, setServices] = useState<ServiceResponse[]>([]);
     const [loadingListings, setLoadingListings] = useState(true);
     const [loadingServices, setLoadingServices] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     const navigateToAddListings = () => router.push("/(tabs)/add-product");
     const navigateToListings = () => router.push("/(tabs)/listings");
@@ -62,46 +63,52 @@ export default function HomePage() {
     const navigateToAdd = () => router.push("/(tabs)/add");
     const navigateToWebsite = () => router.push("https://google.com");
 
-    useEffect(() => {
-        const fetchRecentListings = async () => {
-            try {
-                setLoadingListings(true);
-                const response = await productService.getListings(1, 2);
-                if (response && response.data) {
-                    setListings(response.data.listings);
-                }
-            } catch (error) {
-                console.error('Error fetching recent listings:', error);
-            } finally {
-                setLoadingListings(false);
+    const fetchListings = async () => {
+        try {
+            setLoadingListings(true);
+            const response = await productService.getListings(1, 2);
+            if (response && response.data) {
+                setListings(response.data.listings);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching recent listings:', error);
+        } finally {
+            setLoadingListings(false);
+        }
+    };
 
-        fetchRecentListings();
+    const fetchServices = async () => {
+        try {
+            setLoadingServices(true);
+            const serviceFilters = {
+                page: 1,
+                limit: 2,
+                sortBy: 'createdAt',
+                sortOrder: 'desc' as 'desc'
+            };
+            const response = await serviceService.getServices(serviceFilters);
+            if (response && response.data && response.data.services) {
+                setServices(response.data.services);
+            }
+        } catch (error) {
+            console.error('Error fetching recent services:', error);
+        } finally {
+            setLoadingServices(false);
+        }
+    };
+
+    const handleRefresh = async () => {
+        setRefreshing(true);
+        await Promise.all([fetchListings(), fetchServices()]);
+        setRefreshing(false);
+    };
+
+    useEffect(() => {
+        fetchListings();
     }, []);
 
     useEffect(() => {
-        const fetchRecentServices = async () => {
-            try {
-                setLoadingServices(true);
-                const serviceFilters = {
-                    page: 1,
-                    limit: 2,
-                    sortBy: 'createdAt',
-                    sortOrder: 'desc' as 'desc'
-                };
-                const response = await serviceService.getServices(serviceFilters);
-                if (response && response.data && response.data.services) {
-                    setServices(response.data.services);
-                }
-            } catch (error) {
-                console.error('Error fetching recent services:', error);
-            } finally {
-                setLoadingServices(false);
-            }
-        };
-
-        fetchRecentServices();
+        fetchServices();
     }, []);
 
     const handleListingPress = (id: string) => {
@@ -114,7 +121,18 @@ export default function HomePage() {
     return (
         <SafeAreaView className="bg-background-0 flex-1">
             <HomeHeader />
-            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+            <ScrollView
+                className="flex-1"
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={handleRefresh}
+                        colors={["#3B82F6"]}
+                        tintColor="#3B82F6"
+                    />
+                }
+            >
                 {/* Hero Banner */}
                 <ImageBackground
                     source={{ uri: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1000' }}
