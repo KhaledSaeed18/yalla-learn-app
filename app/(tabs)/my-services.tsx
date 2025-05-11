@@ -233,13 +233,13 @@ export default function MyServicesScreen() {
 
         return (
             <View className="flex-1 items-center justify-center py-10">
-                <FontAwesome name="list-alt" size={48} color="#cbd5e1" />
+                <Ionicons name="list-outline" size={48} color="#cbd5e1" />
                 <Text className="mt-4 text-typography-500 text-center text-base">
                     You haven't created any services yet
                 </Text>
                 <TouchableOpacity
-                    onPress={() => router.push('/add-service')}
-                    className="mt-4 bg-primary-500 px-6 py-3 rounded-lg"
+                    onPress={() => router.push('/add-product')}
+                    className="mt-4 bg-[#3B82F6] px-6 py-3 rounded-lg"
                 >
                     <Text className="text-white font-semibold">Create a Service</Text>
                 </TouchableOpacity>
