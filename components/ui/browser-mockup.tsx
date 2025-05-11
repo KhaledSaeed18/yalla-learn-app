@@ -6,7 +6,7 @@ import { FontAwesome } from "@expo/vector-icons";
 
 function WebsiteCTA() {
     return (
-        <Box className="mb-2">
+        <Box className="mb-4">
             {/* Text and CTA */}
             <Box className="flex-row items-center justify-between mb-2">
                 <Heading size="lg">
