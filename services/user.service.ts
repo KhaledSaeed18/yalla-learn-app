@@ -35,3 +35,14 @@ export const uploadAvatar = async (imageUri: string): Promise<string> => {
     // This should be replaced with actual image upload logic
     return imageUri;
 };
+
+/**
+ * Delete the user's account
+ */
+export const deleteAccount = async (): Promise<void> => {
+    try {
+        await api.delete('/users/delete-account');
+    } catch (error) {
+        throw error;
+    }
+};

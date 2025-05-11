@@ -1,13 +1,16 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Heading } from '../../components/ui/heading';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { router } from 'expo-router';
 import { logout } from '@/utils/auth';
+import { deleteAccount } from '@/services/user.service';
+import { clearUser } from '@/redux/slices/userSlice';
 
 export default function Tab() {
     const { currentUser } = useAppSelector(state => state.user);
+    const dispatch = useAppDispatch();
 
     const userFullName = currentUser ?
         `${currentUser.firstName} ${currentUser.lastName}` :
@@ -44,6 +47,34 @@ export default function Tab() {
     const handleLogout = async () => {
         await logout();
         router.replace('/signin');
+    };
+
+    const handleDeleteAccount = () => {
+        Alert.alert(
+            "Delete Account",
+            "Are you sure you want to delete your account? This action cannot be undone.",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            await deleteAccount();
+                            dispatch(clearUser());
+                            await logout();
+                            router.replace('/signin');
+                        } catch (error) {
+                            Alert.alert("Error", "Failed to delete account. Please try again later.");
+                            console.error("Error deleting account:", error);
+                        }
+                    }
+                }
+            ]
+        );
     };
 
     return (
@@ -102,14 +133,24 @@ export default function Tab() {
                         ))}
                     </View>
 
+                    {/* Delete Account Button */}
+                    <TouchableOpacity
+                        className='border-2 border-error-500 rounded-xl p-4 flex-row items-center justify-center mb-4'
+                        onPress={handleDeleteAccount}
+                    >
+                        <Ionicons name="trash-outline" size={24} color="#ef4444" className='mr-2' />
+                        <Text className='text-error-500 font-medium text-base'>Delete Account</Text>
+                    </TouchableOpacity>
+
                     {/* Logout Button */}
                     <TouchableOpacity
-                        className='bg-error-500 rounded-xl p-4 flex-row items-center justify-center mb-8'
+                        className='bg-error-500 rounded-xl p-4 flex-row items-center justify-center'
                         onPress={handleLogout}
                     >
                         <Ionicons name="log-out-outline" size={24} color="#fff" className='mr-2' />
                         <Text className='text-white font-medium text-base'>Logout</Text>
                     </TouchableOpacity>
+
                 </View>
             </ScrollView>
         </SafeAreaView>
