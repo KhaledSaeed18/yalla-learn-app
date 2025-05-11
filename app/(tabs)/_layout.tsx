@@ -88,6 +88,13 @@ export default function TabLayout() {
                         headerShown: false,
                     }}
                 />
+                <Tabs.Screen
+                    name="profile/edit"
+                    options={{
+                        href: null,
+                        headerShown: false,
+                    }}
+                />
             </Tabs>
         </SafeAreaProvider>
     );
