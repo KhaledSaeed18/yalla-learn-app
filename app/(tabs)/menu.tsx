@@ -77,7 +77,7 @@ export default function Tab() {
                         </View>
                         <TouchableOpacity
                             className='bg-primary-500 rounded-lg px-3 py-2 flex-row items-center'
-                            onPress={() => console.log("Edit profile")}
+                            onPress={() => router.push('/profile/edit')}
                         >
                             <Ionicons name="pencil-outline" size={16} color="#fff" style={{ marginRight: 4 }} />
                             <Text className='text-white font-medium'>Edit</Text>

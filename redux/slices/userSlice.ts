@@ -1,23 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { api, ApiError } from '@/api/base';
-
-// Define the user type
-export interface User {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role?: string;
-    isVerified?: boolean;
-    totpEnabled?: boolean;
-    avatar?: string;
-    bio?: string;
-    location?: string;
-    rating?: number;
-    totalListings?: number;
-    createdAt?: string;
-    updatedAt?: string;
-}
+import { ApiError } from '@/api/base';
+import { getCurrentUserProfile, updateProfile } from '@/services/user.service';
+import { User, UpdateProfileRequest } from '@/types/service/user.types';
 
 // Define the user state
 interface UserState {
@@ -40,7 +24,7 @@ export const fetchCurrentUser = createAsyncThunk<
     { rejectValue: string }
 >('user/fetchCurrentUser', async (_, { rejectWithValue }) => {
     try {
-        const user = await api.get<User>('/users/me');
+        const user = await getCurrentUserProfile();
         return user;
     } catch (error) {
         const apiError = error as ApiError;
@@ -54,7 +38,7 @@ export const updateUserProfile = createAsyncThunk<
     { rejectValue: string }
 >('user/updateProfile', async (userData, { rejectWithValue }) => {
     try {
-        const updatedUser = await api.patch<User>('/users/me', userData);
+        const updatedUser = await updateProfile(userData);
         return updatedUser;
     } catch (error) {
         const apiError = error as ApiError;
