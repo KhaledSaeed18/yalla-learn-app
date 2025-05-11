@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, ScrollView, ActivityIndicator, Pressable, Alert } from 'react-native';
+import { View, ScrollView, ActivityIndicator, Pressable, Alert, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { Text } from '@/components/ui/text';
@@ -11,6 +11,9 @@ import { Box } from '@/components/ui/box';
 import { ArrowLeft, Clock, Calendar, User, Tag } from 'lucide-react-native';
 import { formatCurrency } from '@/lib/utils';
 import { FontAwesome } from '@expo/vector-icons';
+import { useAppSelector } from '@/redux/hooks';
+import { Button } from '@/components/ui/button';
+import { Image } from '@/components/ui/image';
 
 const ServiceDetailScreen = () => {
     const router = useRouter();
@@ -18,6 +21,9 @@ const ServiceDetailScreen = () => {
     const [service, setService] = useState<ServiceResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isOwner, setIsOwner] = useState(false);
+
+    const currentUser = useAppSelector(state => state.user.currentUser);
 
     const fetchServiceDetails = useCallback(async () => {
         if (!id) {
@@ -30,6 +36,13 @@ const ServiceDetailScreen = () => {
         try {
             const response = await serviceService.getServiceById(id) as any;
             setService(response.data.service);
+
+            if (currentUser && response.data.service.user && response.data.service.user.id === currentUser.id) {
+                setIsOwner(true);
+            } else {
+                setIsOwner(false);
+            }
+
             setError(null);
         } catch (err) {
             console.error('Error fetching service details:', err);
@@ -37,7 +50,7 @@ const ServiceDetailScreen = () => {
         } finally {
             setLoading(false);
         }
-    }, [id]);
+    }, [id, currentUser]);
 
     useFocusEffect(
         useCallback(() => {
@@ -151,18 +164,7 @@ const ServiceDetailScreen = () => {
                             </View>
                         </View>
 
-                        {/* Posted By */}
-                        <View className="flex-row items-center p-4 border-b border-gray-100">
-                            <User size={20} color="#6B7280" />
-                            <View className="ml-3">
-                                <Text className="text-gray-500 text-sm">Posted By</Text>
-                                <Text className="text-gray-800 font-medium">
-                                    {service.user?.firstName} {service.user?.lastName}
-                                </Text>
-                            </View>
-                        </View>
-
-                        {/* Posted Date */}
+                        {/* Created Date */}
                         <View className="flex-row items-center p-4 border-b border-gray-100">
                             <Calendar size={20} color="#6B7280" />
                             <View className="ml-3">
@@ -173,13 +175,13 @@ const ServiceDetailScreen = () => {
                             </View>
                         </View>
 
-                        {/* Last Updated */}
+                        {/* Direction */}
                         <View className="flex-row items-center p-4">
-                            <Clock size={20} color="#6B7280" />
+                            <User size={20} color="#6B7280" />
                             <View className="ml-3">
-                                <Text className="text-gray-500 text-sm">Last Updated</Text>
+                                <Text className="text-gray-500 text-sm">Type</Text>
                                 <Text className="text-gray-800 font-medium">
-                                    {formatDate(service.updatedAt)}
+                                    {isOffering ? 'Service Offering' : 'Service Request'}
                                 </Text>
                             </View>
                         </View>
@@ -195,22 +197,130 @@ const ServiceDetailScreen = () => {
                         </Box>
                     </View>
 
-                    {/* Contact Button */}
-                    <Pressable
-                        className={`py-4 px-6 rounded-xl flex-row justify-center items-center ${isOffering ? 'bg-emerald-500' : 'bg-amber-500'
-                            }`}
-                        onPress={() => {
-                            Alert.alert(
-                                isOffering ? 'Contact Provider' : 'Offer Help',
-                                `You're attempting to ${isOffering ? 'contact the provider' : 'offer help'} for this service.`,
-                                [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-                            );
-                        }}
-                    >
-                        <Text className="text-white font-semibold text-lg mr-2">
-                            {isOffering ? 'Contact Provider' : 'Offer Help'}
-                        </Text>
-                    </Pressable>
+                    {/* Provider/Requester Information */}
+                    {service.user && (
+                        <View className="mb-6">
+                            <Heading size="md" className="mb-2">
+                                {isOffering ? 'Provider Information' : 'Requester Information'}
+                            </Heading>
+                            <Box className="p-4 bg-gray-50 rounded-lg">
+                                <View className="flex-row items-center mb-3">
+                                    {service.user.avatar ? (
+                                        <Image
+                                            source={{ uri: service.user.avatar }}
+                                            className="w-12 h-12 rounded-full mr-4"
+                                            alt="User avatar"
+                                        />
+                                    ) : (
+                                        <View className="w-12 h-12 bg-blue-100 rounded-full items-center justify-center mr-4">
+                                            <Text className="text-blue-500 font-bold">
+                                                {service.user.firstName?.charAt(0)}{service.user.lastName?.charAt(0)}
+                                            </Text>
+                                        </View>
+                                    )}
+                                    <View>
+                                        <Text className="font-medium text-base">
+                                            {service.user.firstName} {service.user.lastName}
+                                        </Text>
+                                        <Text className="text-gray-600 text-sm">
+                                            {service.user.email}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View className="mt-2">
+                                    {service.user.location && (
+                                        <View className="flex-row items-center mt-2">
+                                            <FontAwesome name="map-marker" size={16} color="#6B7280" className="mr-2" />
+                                            <Text className="text-gray-700 ml-2">
+                                                {service.user.location}
+                                            </Text>
+                                        </View>
+                                    )}
+                                    {service.user.phoneNumber && (
+                                        <View className="flex-row items-center mt-2">
+                                            <FontAwesome name="phone" size={16} color="#6B7280" className="mr-2" />
+                                            <Text className="text-gray-700 ml-2">
+                                                {service.user.phoneNumber}
+                                            </Text>
+                                        </View>
+                                    )}
+                                    <Text className="text-gray-700 mt-2">
+                                        Posted: {formatDate(service.createdAt)}
+                                    </Text>
+                                    <Text className="text-gray-700 mt-1">
+                                        Last Updated: {formatDate(service.updatedAt)}
+                                    </Text>
+                                </View>
+                            </Box>
+                        </View>
+                    )}
+
+                    {/* Contact buttons - only shown if user is not the owner and user info exists */}
+                    {!isOwner && service.user && (
+                        <View className="flex-row justify-between space-x-2 mb-6">
+                            {/* Call button - only shown if user has phone number */}
+                            {service.user?.phoneNumber && (
+                                <Button
+                                    className="flex-1 bg-green-500 py-3 rounded-lg flex-row items-center justify-center"
+                                    onPress={() => {
+                                        if (service.user?.phoneNumber) {
+                                            Linking.openURL(`tel:${service.user.phoneNumber}`);
+                                        }
+                                    }}
+                                >
+                                    <FontAwesome name="phone" size={16} color="#fff" />
+                                    <Text className="text-white font-medium ml-2">Call</Text>
+                                </Button>
+                            )}
+
+                            {/* Email button */}
+                            <Button
+                                className="flex-1 bg-orange-500 py-3 rounded-lg flex-row items-center justify-center mx-2"
+                                onPress={() => {
+                                    if (service.user?.email) {
+                                        const firstName = service.user?.firstName || 'there';
+                                        Linking.openURL(`mailto:${service.user.email}?subject=Regarding your ${isOffering ? 'service' : 'request'}: ${service.title}&body=Hello ${firstName},\n\nI'm interested in your ${isOffering ? 'service' : 'service request'} "${service.title}"${service.price ? ` priced at ${formatCurrency(service.price)}` : ''}.\n\nPlease let me know if you're still ${isOffering ? 'providing this service' : 'looking for help'}.\n\nThanks!`);
+                                    }
+                                }}
+                            >
+                                <FontAwesome name="envelope" size={16} color="#fff" />
+                                <Text className="text-white font-medium ml-2">Email</Text>
+                            </Button>
+
+                            {/* Chat button */}
+                            <Button
+                                className="flex-1 bg-blue-500 py-3 rounded-lg flex-row items-center justify-center"
+                                onPress={() => {
+                                    // Chat functionality to be implemented
+                                    if (service.user?.id) {
+                                        console.log('Chat with user:', service.user.id);
+                                    }
+                                }}
+                            >
+                                <FontAwesome name="comment" size={16} color="#fff" />
+                                <Text className="text-white font-medium ml-2">Chat</Text>
+                            </Button>
+                        </View>
+                    )}
+
+                    {/* Contact Button - we'll keep the original button in addition to the new buttons */}
+                    {!isOwner && (
+                        <Pressable
+                            className={`py-4 px-6 rounded-xl flex-row justify-center items-center ${isOffering ? 'bg-emerald-500' : 'bg-amber-500'
+                                }`}
+                            onPress={() => {
+                                Alert.alert(
+                                    isOffering ? 'Contact Provider' : 'Offer Help',
+                                    `You're attempting to ${isOffering ? 'contact the provider' : 'offer help'} for this service.`,
+                                    [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+                                );
+                            }}
+                        >
+                            <Text className="text-white font-semibold text-lg mr-2">
+                                {isOffering ? 'Contact Provider' : 'Offer Help'}
+                            </Text>
+                        </Pressable>
+                    )}
                 </View>
             </ScrollView>
         </SafeAreaView>

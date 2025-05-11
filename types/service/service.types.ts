@@ -25,7 +25,11 @@ export interface ServiceUser {
     id: string;
     firstName: string;
     lastName: string;
-    [key: string]: any; // For any additional user properties
+    email: string;
+    location?: string;
+    phoneNumber?: string;
+    avatar?: string;
+    [key: string]: any;
 }
 
 export interface ServicePagination {
