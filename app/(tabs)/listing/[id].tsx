@@ -230,22 +230,46 @@ const ListingDetailScreen = () => {
                         <Heading size="md" className="mb-2">Seller Information</Heading>
                         <Box className="p-4 bg-gray-50 rounded-lg">
                             <View className="flex-row items-center mb-3">
-                                <View className="w-10 h-10 bg-blue-100 rounded-full items-center justify-center mr-4">
-                                    <Text className="text-blue-500 font-bold">
-                                        {listing.user.firstName.charAt(0)}{listing.user.lastName.charAt(0)}
-                                    </Text>
-                                </View>
+                                {listing.user.avatar ? (
+                                    <Image
+                                        source={{ uri: listing.user.avatar }}
+                                        className="w-12 h-12 rounded-full mr-4"
+                                        alt="User avatar"
+                                    />
+                                ) : (
+                                    <View className="w-12 h-12 bg-blue-100 rounded-full items-center justify-center mr-4">
+                                        <Text className="text-blue-500 font-bold">
+                                            {listing.user.firstName.charAt(0)}{listing.user.lastName.charAt(0)}
+                                        </Text>
+                                    </View>
+                                )}
                                 <View>
                                     <Text className="font-medium text-base">
                                         {listing.user.firstName} {listing.user.lastName}
                                     </Text>
-                                    <Text className="font-medium text-base">
+                                    <Text className="text-gray-600 text-sm">
                                         {listing.user.email}
                                     </Text>
                                 </View>
                             </View>
                             <View className="mt-2">
-                                <Text className="text-gray-700 mt-1">
+                                {listing.user.location && (
+                                    <View className="flex-row items-center mt-2">
+                                        <FontAwesome name="map-marker" size={16} color="#6B7280" className="mr-2" />
+                                        <Text className="text-gray-700 ml-2">
+                                            {listing.user.location}
+                                        </Text>
+                                    </View>
+                                )}
+                                {listing.user.phoneNumber && (
+                                    <View className="flex-row items-center mt-2">
+                                        <FontAwesome name="phone" size={16} color="#6B7280" className="mr-2" />
+                                        <Text className="text-gray-700 ml-2">
+                                            {listing.user.phoneNumber}
+                                        </Text>
+                                    </View>
+                                )}
+                                <Text className="text-gray-700 mt-2">
                                     Listing Created: {formatDate(listing.createdAt)}
                                 </Text>
                                 <Text className="text-gray-700 mt-1">

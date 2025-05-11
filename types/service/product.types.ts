@@ -31,6 +31,9 @@ export interface ListingResponse {
         firstName: string;
         lastName: string;
         email: string;
+        location?: string;
+        phoneNumber?: string;
+        avatar?: string;
     };
 }
 
