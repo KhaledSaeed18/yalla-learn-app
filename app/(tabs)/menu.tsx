@@ -25,6 +25,11 @@ export default function Tab() {
             onPress: () => router.push('/my-services')
         },
         {
+            icon: "lock-closed-outline",
+            title: "Password & Security",
+            onPress: () => router.push('/profile/change-password')
+        },
+        {
             icon: "help-circle-outline",
             title: "Help & Support",
             onPress: () => console.log("Help")

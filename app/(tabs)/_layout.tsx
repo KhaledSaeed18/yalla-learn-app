@@ -89,6 +89,13 @@ export default function TabLayout() {
                         headerShown: false,
                     }}
                 />
+                <Tabs.Screen
+                    name="profile/change-password"
+                    options={{
+                        href: null,
+                        headerShown: false,
+                    }}
+                />
             </Tabs>
         </SafeAreaProvider>
     );
