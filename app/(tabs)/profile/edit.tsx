@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { View, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { User } from '@/types/service/user.types';
 import { updateProfile, getCurrentUserProfile } from '@/services/user.service';
 import { Button } from '@/components/ui/button';
@@ -123,7 +123,7 @@ export default function EditProfileScreen() {
             <ScrollView className="flex-1 px-4">
                 <View className="flex-row items-center my-4">
                     <TouchableOpacity onPress={() => router.back()} className="mr-4">
-                        <Ionicons name="arrow-back" size={24} color="#000" />
+                        <FontAwesome name="arrow-left" size={25} color="rgb(var(--color-primary-500))" />
                     </TouchableOpacity>
                     <Heading size="xl" className="text-typography-900">Edit Profile</Heading>
                 </View>

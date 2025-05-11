@@ -10,6 +10,7 @@ import { ServiceDirection } from '@/types/enums';
 import { Box } from '@/components/ui/box';
 import { ArrowLeft, Clock, Calendar, User, Tag } from 'lucide-react-native';
 import { formatCurrency } from '@/lib/utils';
+import { FontAwesome } from '@expo/vector-icons';
 
 const ServiceDetailScreen = () => {
     const router = useRouter();
@@ -106,7 +107,7 @@ const ServiceDetailScreen = () => {
                 <View className={`w-full h-2 ${isOffering ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                 <View className="p-4 flex-row items-center">
                     <Pressable onPress={() => router.back()} className="p-2 mr-2">
-                        <ArrowLeft size={24} color="#333" />
+                        <FontAwesome name="arrow-left" size={25} color="rgb(var(--color-primary-500))" />
                     </Pressable>
                     <Heading size="lg">Service Details</Heading>
                 </View>

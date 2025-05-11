@@ -2,13 +2,14 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, ScrollView, ActivityIndicator, Pressable, Text } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft, Heart } from 'lucide-react-native';
+import { ArrowLeft } from 'lucide-react-native';
 import { Heading } from '@/components/ui/heading';
 import { Box } from '@/components/ui/box';
 import { productService } from '@/services/product.service';
 import { ListingResponse } from '@/types/service/product.types';
 import { Image } from '@/components/ui/image';
 import { formatCurrency } from '@/lib/utils';
+import { FontAwesome } from '@expo/vector-icons';
 
 const ListingDetailScreen = () => {
     const router = useRouter();
@@ -121,9 +122,7 @@ const ListingDetailScreen = () => {
                 <View className="w-full h-2 bg-blue-500" />
                 <View className="p-4 flex-row items-center justify-between">
                     <Pressable onPress={() => router.back()} className="p-2">
-                        <View>
-                            <ArrowLeft size={24} color="#333" />
-                        </View>
+                        <FontAwesome name="arrow-left" size={25} color="rgb(var(--color-primary-500))" />
                     </Pressable>
                     <Heading size="lg">Listing Details</Heading>
                     <View className="w-10"></View>
