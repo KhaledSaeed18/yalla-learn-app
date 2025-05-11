@@ -3,7 +3,6 @@ export interface SignInRequest {
     password: string;
 }
 
-// The actual API response structure from the server
 export interface ApiSignInResponse {
     status: string;
     statusCode: number;

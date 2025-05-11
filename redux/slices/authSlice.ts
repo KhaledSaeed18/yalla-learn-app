@@ -21,25 +21,6 @@ const initialState: AuthState = {
     error: null,
 };
 
-// Async thunks
-export const loginUser = createAsyncThunk<
-    SignInResponse,
-    SignInRequest,
-    { rejectValue: string }
->('auth/login', async (credentials, { rejectWithValue }) => {
-    try {
-        const response = await api.post<SignInResponse>('/auth/signin', credentials);
-
-        // Store refresh token in AsyncStorage for persistence
-        await AsyncStorage.setItem('refreshToken', response.refreshToken);
-
-        return response;
-    } catch (error) {
-        const apiError = error as ApiError;
-        return rejectWithValue(apiError.message);
-    }
-});
-
 export const refreshTokenAction = createAsyncThunk<
     { accessToken: string },
     void,
@@ -57,26 +38,6 @@ export const refreshTokenAction = createAsyncThunk<
 
         // Extract the accessToken from the nested structure
         return { accessToken: response.data.accessToken };
-    } catch (error) {
-        const apiError = error as ApiError;
-        return rejectWithValue(apiError.message);
-    }
-});
-
-export const logoutUser = createAsyncThunk<
-    void,
-    void,
-    { rejectValue: string }
->('auth/logout', async (_, { getState, rejectWithValue }) => {
-    try {
-        const state = getState() as { auth: AuthState };
-        const refreshToken = state.auth.refreshToken;
-
-        // Call logout API
-        await api.post('/auth/logout', { refreshToken });
-
-        // Clear refresh token from AsyncStorage
-        await AsyncStorage.removeItem('refreshToken');
     } catch (error) {
         const apiError = error as ApiError;
         return rejectWithValue(apiError.message);
@@ -103,35 +64,12 @@ const authSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        // Login user
-        builder.addCase(loginUser.pending, (state) => {
-            state.isLoading = true;
-            state.error = null;
-        });
-        builder.addCase(loginUser.fulfilled, (state, action) => {
-            state.isLoading = false;
-            state.isAuthenticated = true;
-            state.accessToken = action.payload.accessToken;
-            state.refreshToken = action.payload.refreshToken;
-        });
-        builder.addCase(loginUser.rejected, (state, action) => {
-            state.isLoading = false;
-            state.error = action.payload || 'Failed to login';
-        });
-
         // Refresh token
         builder.addCase(refreshTokenAction.fulfilled, (state, action) => {
             state.accessToken = action.payload.accessToken;
             state.isAuthenticated = true;
         });
         builder.addCase(refreshTokenAction.rejected, (state, action) => {
-            state.isAuthenticated = false;
-            state.accessToken = null;
-            state.refreshToken = null;
-        });
-
-        // Logout user
-        builder.addCase(logoutUser.fulfilled, (state) => {
             state.isAuthenticated = false;
             state.accessToken = null;
             state.refreshToken = null;

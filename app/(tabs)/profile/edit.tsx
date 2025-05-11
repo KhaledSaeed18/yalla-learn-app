@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { View, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -15,6 +15,7 @@ export default function EditProfileScreen() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [originalData, setOriginalData] = useState<Partial<User>>({});
 
     const [formData, setFormData] = useState<Partial<User>>({
         firstName: '',
@@ -32,14 +33,16 @@ export default function EditProfileScreen() {
             try {
                 const userData = await getCurrentUserProfile();
                 setCurrentUser(userData);
-                setFormData({
+                const initialFormData = {
                     firstName: userData.firstName || '',
                     lastName: userData.lastName || '',
                     email: userData.email || '',
                     bio: userData.bio || '',
                     location: userData.location || '',
                     phoneNumber: userData.phoneNumber || '',
-                });
+                };
+                setFormData(initialFormData);
+                setOriginalData(initialFormData);
                 setError(null);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load profile');
@@ -56,6 +59,19 @@ export default function EditProfileScreen() {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
+    // Determine if form data has changed compared to original data
+    const hasChanges = useMemo(() => {
+        if (!originalData) return false;
+
+        return (
+            formData.firstName !== originalData.firstName ||
+            formData.lastName !== originalData.lastName ||
+            formData.bio !== originalData.bio ||
+            formData.location !== originalData.location ||
+            formData.phoneNumber !== originalData.phoneNumber
+        );
+    }, [formData, originalData]);
+
     const handleSubmit = async () => {
         setIsLoading(true);
         setError(null);
@@ -65,6 +81,14 @@ export default function EditProfileScreen() {
 
             // Update local state with the response from API
             setCurrentUser(updatedUser);
+            setOriginalData({
+                firstName: updatedUser.firstName || '',
+                lastName: updatedUser.lastName || '',
+                email: updatedUser.email || '',
+                bio: updatedUser.bio || '',
+                location: updatedUser.location || '',
+                phoneNumber: updatedUser.phoneNumber || '',
+            });
 
             Alert.alert('Success', 'Profile updated successfully');
             router.back();
@@ -198,8 +222,8 @@ export default function EditProfileScreen() {
                     <View className="my-6">
                         <Button
                             onPress={handleSubmit}
-                            disabled={isLoading}
-                            className="bg-primary-600 py-3"
+                            disabled={isLoading || !hasChanges}
+                            className={`py-3 ${hasChanges ? 'bg-primary-600' : 'bg-primary-400'}`}
                         >
                             {isLoading ? (
                                 <ActivityIndicator color="white" />
@@ -207,6 +231,9 @@ export default function EditProfileScreen() {
                                 <Text className="text-white font-semibold">Update Profile</Text>
                             )}
                         </Button>
+                        {!hasChanges && (
+                            <Text className="text-typography-500 text-center mt-2">No changes to update</Text>
+                        )}
                     </View>
 
                     {error && (

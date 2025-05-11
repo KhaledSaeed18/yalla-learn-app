@@ -14,8 +14,6 @@ export const authServices = {
                 credentials
             );
 
-            console.log('API Response:', apiResponse);
-
             // Extract the data from the nested structure
             if (!apiResponse?.data?.user || !apiResponse?.data?.accessToken || !apiResponse?.data?.refreshToken) {
                 console.error('Invalid response structure:', apiResponse);

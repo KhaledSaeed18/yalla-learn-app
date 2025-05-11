@@ -1,5 +1,3 @@
-// User types based on the Prisma model and API response structure
-
 export interface User {
     id: string;
     firstName: string;
