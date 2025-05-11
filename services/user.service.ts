@@ -18,7 +18,7 @@ export const getCurrentUserProfile = async (): Promise<User> => {
  */
 export const updateProfile = async (userData: UpdateProfileRequest): Promise<User> => {
     try {
-        const response = await api.patch<UserResponse>('/users/update-profile', userData);
+        const response = await api.put<UserResponse>('/users/update-profile', userData);
         return response.data.user;
     } catch (error) {
         throw error;

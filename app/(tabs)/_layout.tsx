@@ -57,12 +57,6 @@ export default function TabLayout() {
                     }}
                 />
                 <Tabs.Screen
-                    name="listing-details"
-                    options={{
-                        href: null,
-                    }}
-                />
-                <Tabs.Screen
                     name="my-services"
                     options={{
                         href: null,

@@ -3,9 +3,8 @@ import { View, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Text } fr
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { updateUserProfile } from '@/redux/slices/userSlice';
 import { User } from '@/types/service/user.types';
+import { updateProfile, getCurrentUserProfile } from '@/services/user.service';
 import { Button } from '@/components/ui/button';
 import { Input, InputField } from '@/components/ui/input';
 import { Heading } from '@/components/ui/heading';
@@ -13,8 +12,9 @@ import { VStack } from '@/components/ui/vstack';
 import { FormControl, FormControlLabel, FormControlHelperText } from '@/components/ui/form-control';
 
 export default function EditProfileScreen() {
-    const dispatch = useAppDispatch();
-    const { currentUser, isLoading, error } = useAppSelector(state => state.user);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const [formData, setFormData] = useState<Partial<User>>({
         firstName: '',
@@ -26,31 +26,64 @@ export default function EditProfileScreen() {
     });
 
     useEffect(() => {
-        if (currentUser) {
-            setFormData({
-                firstName: currentUser.firstName || '',
-                lastName: currentUser.lastName || '',
-                email: currentUser.email || '',
-                bio: currentUser.bio || '',
-                location: currentUser.location || '',
-                phoneNumber: currentUser.phoneNumber || '',
-            });
-        }
-    }, [currentUser]);
+        // Fetch user profile when component mounts
+        const fetchUserProfile = async () => {
+            setIsLoading(true);
+            try {
+                const userData = await getCurrentUserProfile();
+                setCurrentUser(userData);
+                setFormData({
+                    firstName: userData.firstName || '',
+                    lastName: userData.lastName || '',
+                    email: userData.email || '',
+                    bio: userData.bio || '',
+                    location: userData.location || '',
+                    phoneNumber: userData.phoneNumber || '',
+                });
+                setError(null);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Failed to load profile');
+                console.error('Error fetching user profile:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
 
     const handleChange = (field: keyof typeof formData, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
     const handleSubmit = async () => {
+        setIsLoading(true);
+        setError(null);
         try {
-            await dispatch(updateUserProfile(formData)).unwrap();
+            // Update the profile directly using the API service
+            const updatedUser = await updateProfile(formData);
+
+            // Update local state with the response from API
+            setCurrentUser(updatedUser);
+
             Alert.alert('Success', 'Profile updated successfully');
             router.back();
-        } catch (error) {
-            Alert.alert('Error', error as string);
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Failed to update profile';
+            setError(errorMessage);
+            Alert.alert('Error', errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     };
+
+    if (isLoading && !currentUser) {
+        return (
+            <SafeAreaView className="flex-1 justify-center items-center bg-background-0">
+                <ActivityIndicator size="large" color="#0000ff" />
+            </SafeAreaView>
+        );
+    }
 
     if (!currentUser) {
         return (
@@ -113,7 +146,7 @@ export default function EditProfileScreen() {
                             />
                         </Input>
                         <FormControlHelperText>
-                            <Text className="text-typography-400">Email cannot be changed</Text>
+                            <Text className="text-typography-500">Email cannot be changed</Text>
                         </FormControlHelperText>
                     </FormControl>
 
@@ -133,20 +166,6 @@ export default function EditProfileScreen() {
 
                     <FormControl>
                         <FormControlLabel>
-                            <Text className="text-typography-600">Location</Text>
-                        </FormControlLabel>
-                        <Input>
-                            <InputField
-                                placeholder="Enter location"
-                                value={formData.location || ''}
-                                onChangeText={(text) => handleChange('location', text)}
-                                className="bg-background-0 border-background-200"
-                            />
-                        </Input>
-                    </FormControl>
-
-                    <FormControl>
-                        <FormControlLabel>
                             <Text className="text-typography-600">Bio</Text>
                         </FormControlLabel>
                         <Input>
@@ -156,23 +175,43 @@ export default function EditProfileScreen() {
                                 onChangeText={(text) => handleChange('bio', text)}
                                 multiline
                                 numberOfLines={4}
+                                className="bg-background-0 border-background-200 pt-2"
                                 textAlignVertical="top"
-                                className="h-24 pt-2 bg-background-0 border-background-200"
                             />
                         </Input>
                     </FormControl>
 
-                    <Button
-                        className="mt-6 bg-primary-500"
-                        onPress={handleSubmit}
-                        isDisabled={isLoading}
-                    >
-                        {isLoading ? (
-                            <ActivityIndicator color="#ffffff" />
-                        ) : (
-                            <Text className="text-white font-medium">Save Changes</Text>
-                        )}
-                    </Button>
+                    <FormControl>
+                        <FormControlLabel>
+                            <Text className="text-typography-600">Location</Text>
+                        </FormControlLabel>
+                        <Input>
+                            <InputField
+                                placeholder="Enter your location"
+                                value={formData.location || ''}
+                                onChangeText={(text) => handleChange('location', text)}
+                                className="bg-background-0 border-background-200"
+                            />
+                        </Input>
+                    </FormControl>
+
+                    <View className="my-6">
+                        <Button
+                            onPress={handleSubmit}
+                            disabled={isLoading}
+                            className="bg-primary-600 py-3"
+                        >
+                            {isLoading ? (
+                                <ActivityIndicator color="white" />
+                            ) : (
+                                <Text className="text-white font-semibold">Update Profile</Text>
+                            )}
+                        </Button>
+                    </View>
+
+                    {error && (
+                        <Text className="text-red-500 mt-2">{error}</Text>
+                    )}
                 </VStack>
             </ScrollView>
         </SafeAreaView>
