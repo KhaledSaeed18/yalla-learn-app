@@ -19,6 +19,20 @@ export const productService = {
     },
 
     /**
+     * Update an existing listing by ID
+     */
+    updateListing: async (id: string, productData: ProductFormData): Promise<ProductResponse> => {
+        const formattedData = {
+            ...productData,
+            price: parseFloat(productData.price),
+            rentalPeriod: productData.rentalPeriod ? parseInt(productData.rentalPeriod) : undefined,
+            images: productData.images
+        };
+
+        return api.put<ProductResponse>(`/listings/update-listing/${id}`, formattedData);
+    },
+
+    /**
      * Delete a listing by ID
      */
     deleteListing: async (id: string): Promise<void> => {

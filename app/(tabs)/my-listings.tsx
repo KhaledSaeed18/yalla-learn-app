@@ -8,6 +8,7 @@ import { ListingResponse } from '@/types/service/product.types';
 import { MyListingCard } from '@/components/ui/my-listing-card';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import { UpdateListingModal } from '@/components/listings/update-listing-modal';
 
 export default function MyListingsScreen() {
     const router = useRouter();
@@ -17,6 +18,8 @@ export default function MyListingsScreen() {
     const [currentPage, setCurrentPage] = useState(1);
     const [hasNextPage, setHasNextPage] = useState(false);
     const [totalListings, setTotalListings] = useState(0);
+    const [updateModalVisible, setUpdateModalVisible] = useState(false);
+    const [selectedListing, setSelectedListing] = useState<ListingResponse | undefined>(undefined);
 
     const fetchListings = useCallback(async (refresh: boolean = false) => {
         try {
@@ -77,6 +80,10 @@ export default function MyListingsScreen() {
         fetchListings(true);
     };
 
+    const handleUpdateSuccess = () => {
+        fetchListings(true);
+    };
+
     const handleLoadMore = () => {
         if (hasNextPage && !loading && !refreshing) {
             fetchListings();
@@ -84,9 +91,13 @@ export default function MyListingsScreen() {
     };
 
     const handleEditListing = (listingId: string) => {
-        // Navigation to edit listing page (to be implemented)
-        // router.push(`/edit-listing/${listingId}`);
-        Alert.alert('Edit Listing', 'Edit functionality will be implemented soon.');
+        const listing = listings.find(item => item.id === listingId);
+        if (listing) {
+            setSelectedListing(listing);
+            setUpdateModalVisible(true);
+        } else {
+            Alert.alert('Error', 'Listing not found.');
+        }
     };
 
     const handleDeleteListing = (listingId: string) => {
@@ -235,6 +246,13 @@ export default function MyListingsScreen() {
             >
                 <Ionicons name="add" size={24} color="white" />
             </TouchableOpacity>
+
+            <UpdateListingModal
+                isOpen={updateModalVisible}
+                onClose={() => setUpdateModalVisible(false)}
+                listing={selectedListing}
+                onSuccess={handleUpdateSuccess}
+            />
         </SafeAreaView>
     );
 }
