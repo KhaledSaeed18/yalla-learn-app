@@ -4,12 +4,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { router } from 'expo-router';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Entypo } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { changePassword } from '@/services/auth/change-password.service';
 import { Box } from '@/components/ui/box';
 import { FormControl, FormControlLabel, FormControlError, FormControlErrorText } from '@/components/ui/form-control';
-import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input';
+import { Input, InputField } from '@/components/ui/input';
 import { VStack } from '@/components/ui/vstack';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
@@ -116,15 +116,12 @@ export default function ChangePassword() {
                                         secureTextEntry={!showOldPassword}
                                         className="bg-background-0 border-background-200"
                                     />
-                                    <InputSlot onPress={() => setShowOldPassword(!showOldPassword)}>
-                                        <InputIcon>
-                                            <Ionicons
-                                                name={showOldPassword ? "eye-off-outline" : "eye-outline"}
-                                                size={20}
-                                                color="#666"
-                                            />
-                                        </InputIcon>
-                                    </InputSlot>
+                                    <TouchableOpacity
+                                        className="absolute right-3 top-2"
+                                        onPress={() => setShowOldPassword(!showOldPassword)}
+                                    >
+                                        <Entypo name={showOldPassword ? "eye" : "eye-with-line"} size={20} color="#666" />
+                                    </TouchableOpacity>
                                 </Input>
                             )}
                         />
@@ -151,15 +148,12 @@ export default function ChangePassword() {
                                         secureTextEntry={!showNewPassword}
                                         className="bg-background-0 border-background-200"
                                     />
-                                    <InputSlot onPress={() => setShowNewPassword(!showNewPassword)}>
-                                        <InputIcon>
-                                            <Ionicons
-                                                name={showNewPassword ? "eye-off-outline" : "eye-outline"}
-                                                size={20}
-                                                color="#666"
-                                            />
-                                        </InputIcon>
-                                    </InputSlot>
+                                    <TouchableOpacity
+                                        className="absolute right-3 top-2"
+                                        onPress={() => setShowNewPassword(!showNewPassword)}
+                                    >
+                                        <Entypo name={showNewPassword ? "eye" : "eye-with-line"} size={20} color="#666" />
+                                    </TouchableOpacity>
                                 </Input>
                             )}
                         />
@@ -186,15 +180,12 @@ export default function ChangePassword() {
                                         secureTextEntry={!showConfirmPassword}
                                         className="bg-background-0 border-background-200"
                                     />
-                                    <InputSlot onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                                        <InputIcon>
-                                            <Ionicons
-                                                name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
-                                                size={20}
-                                                color="#666"
-                                            />
-                                        </InputIcon>
-                                    </InputSlot>
+                                    <TouchableOpacity
+                                        className="absolute right-3 top-2"
+                                        onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    >
+                                        <Entypo name={showConfirmPassword ? "eye" : "eye-with-line"} size={20} color="#666" />
+                                    </TouchableOpacity>
                                 </Input>
                             )}
                         />
