@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, ScrollView, ActivityIndicator, Pressable, Text } from 'react-native';
+import { View, ScrollView, ActivityIndicator, Pressable, Text, Linking } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft } from 'lucide-react-native';
@@ -33,7 +33,6 @@ const ListingDetailScreen = () => {
         setLoading(true);
         try {
             const response = await productService.getListingById(id);
-            console.log('Listing details response:', response.data);
             setListing(response.data.listing);
 
             if (currentUser && response.data.listing.user.id === currentUser.id) {
@@ -129,7 +128,7 @@ const ListingDetailScreen = () => {
                     headerShown: false,
                 }}
             />
-            <ScrollView className="flex-1">
+            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
                 {/* Header with back button */}
                 <View className="w-full h-2 bg-blue-500" />
                 <View className="p-4 flex-row items-center justify-between">
@@ -279,11 +278,45 @@ const ListingDetailScreen = () => {
                         </Box>
                     </View>
 
-                    {/* Contact seller button - only shown if user is not the owner */}
+                    {/* Contact buttons - only shown if user is not the owner */}
                     {!isOwner && (
-                        <Pressable className="bg-blue-500 py-3 rounded-lg items-center">
-                            <Text className="text-white font-medium">Contact Seller</Text>
-                        </Pressable>
+                        <View className="flex-row justify-between space-x-2">
+                            {/* Call button - only shown if seller has phone number */}
+                            {listing.user.phoneNumber && (
+                                <Pressable
+                                    className="flex-1 bg-green-500 py-3 rounded-lg flex-row items-center justify-center"
+                                    onPress={() => {
+                                        Linking.openURL(`tel:${listing.user.phoneNumber}`);
+                                    }}
+                                >
+                                    <FontAwesome name="phone" size={16} color="#fff" />
+                                    <Text className="text-white font-medium ml-2">Call</Text>
+                                </Pressable>
+                            )}
+
+                            {/* Email button */}
+                            <Pressable
+                                className="flex-1 bg-orange-500 py-3 rounded-lg flex-row items-center justify-center mx-2"
+                                onPress={() => {
+                                    Linking.openURL(`mailto:${listing.user.email}?subject=Regarding your listing: ${listing.title}&body=Hello ${listing.user.firstName},\n\nI'm interested in your listing "${listing.title}" priced at ${formatCurrency(listing.price)}.\n\nPlease let me know if it's still available.\n\nThanks!`);
+                                }}
+                            >
+                                <FontAwesome name="envelope" size={16} color="#fff" />
+                                <Text className="text-white font-medium ml-2">Email</Text>
+                            </Pressable>
+
+                            {/* Chat button */}
+                            <Pressable
+                                className="flex-1 bg-blue-500 py-3 rounded-lg flex-row items-center justify-center"
+                                onPress={() => {
+                                    // Chat functionality to be implemented
+                                    console.log('Chat with seller:', listing.user.id);
+                                }}
+                            >
+                                <FontAwesome name="comment" size={16} color="#fff" />
+                                <Text className="text-white font-medium ml-2">Chat</Text>
+                            </Pressable>
+                        </View>
                     )}
                 </View>
             </ScrollView>
