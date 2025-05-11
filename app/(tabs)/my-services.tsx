@@ -94,6 +94,13 @@ export default function MyServicesScreen() {
 
     const direction = watch('direction');
 
+    // Clear price when changing to requesting
+    useEffect(() => {
+        if (direction === ServiceDirection.REQUESTING) {
+            setValue('price', '');
+        }
+    }, [direction, setValue]);
+
     // Helper function to format enum values for display
     const formatEnumValue = (value: string) => {
         return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
@@ -171,7 +178,14 @@ export default function MyServicesScreen() {
 
         setIsUpdating(true);
         try {
-            await serviceService.updateService(selectedService.id, data);
+            // If the service is changed from offering to requesting, set price to empty string
+            const updatedData = { ...data };
+            if (selectedService.direction === ServiceDirection.OFFERING &&
+                data.direction === ServiceDirection.REQUESTING) {
+                updatedData.price = '';
+            }
+
+            await serviceService.updateService(selectedService.id, updatedData);
 
             // Close modal and refresh data
             setIsModalOpen(false);
