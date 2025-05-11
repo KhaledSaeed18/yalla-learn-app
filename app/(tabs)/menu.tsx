@@ -104,11 +104,11 @@ export default function Tab() {
 
                     {/* Logout Button */}
                     <TouchableOpacity
-                        className='bg-background-0 rounded-xl p-4 flex-row items-center justify-center mb-8'
+                        className='bg-error-500 rounded-xl p-4 flex-row items-center justify-center mb-8'
                         onPress={handleLogout}
                     >
-                        <Ionicons name="log-out-outline" size={24} color="#f44336" className='mr-2' />
-                        <Text className='text-error-600 font-medium text-base'>Logout</Text>
+                        <Ionicons name="log-out-outline" size={24} color="#fff" className='mr-2' />
+                        <Text className='text-white font-medium text-base'>Logout</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
