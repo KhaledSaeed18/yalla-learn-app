@@ -547,7 +547,7 @@ export default function MyServicesScreen() {
                             onPress={handleSubmit(handleUpdateService)}
                             isDisabled={isUpdating}
                         >
-                            <Text>{isUpdating ? 'Updating...' : 'Update Service'}</Text>
+                            <Text className='text-white'>{isUpdating ? 'Updating...' : 'Update Service'}</Text>
                             {isUpdating && <ActivityIndicator size="small" color="white" />}
                         </Button>
                     </ModalFooter>
