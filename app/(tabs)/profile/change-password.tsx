@@ -89,8 +89,11 @@ export default function ChangePassword() {
                         onPress={() => router.back()}
                         className="mr-4"
                     >
-                        <FontAwesome name="arrow-left" size={25} color="rgb(var(--color-primary-500))" />                    </TouchableOpacity>
-                    <Heading size="xl" className="text-typography-900">Password & Security</Heading>
+                        <FontAwesome name="arrow-left" size={25} color="rgb(var(--color-primary-500))" />
+                    </TouchableOpacity>
+                    <Heading size="xl" className="text-typography-900">
+                        <Text>Password & Security</Text>
+                    </Heading>
                 </View>
 
                 <Box className="mb-6">
