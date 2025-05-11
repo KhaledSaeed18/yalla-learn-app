@@ -43,7 +43,7 @@ export default function ResetPassword() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
     const [validationError, setValidationError] = useState<string | null>(null);
-    const inputRefs = useRef<Array<TextInput | null>>([]);
+    const inputRefs = useRef<Array<any>>([]);
     const router = useRouter();
 
     useEffect(() => {

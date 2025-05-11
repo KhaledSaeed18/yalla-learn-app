@@ -25,11 +25,6 @@ export default function Tab() {
             onPress: () => router.push('/my-services')
         },
         {
-            icon: "settings-outline",
-            title: "Settings",
-            onPress: () => console.log("Settings")
-        },
-        {
             icon: "help-circle-outline",
             title: "Help & Support",
             onPress: () => console.log("Help")
