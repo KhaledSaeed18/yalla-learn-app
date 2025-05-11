@@ -14,6 +14,7 @@ import { ServiceResponse } from '@/types/service/service.types';
 import { productService } from '@/services/product.service';
 import { serviceService } from '@/services/service.service';
 import { BrainCircuit } from 'lucide-react-native';
+import { BrowserMockup } from '@/components/ui/browser-mockup';
 
 const HomeHeader = () => (
     <View className="flex-row justify-between items-center pb-4 pt-2 px-4 border-b border-gray-200">
@@ -162,6 +163,38 @@ export default function HomePage() {
                             bgColor="bg-[#8B5CF6]"
                         />
                     </ScrollView>
+                </View>
+
+                {/* Website CTA Section */}
+                <View className="px-4 mb-8 mt-2">
+                    <View className="bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700 p-6 rounded-2xl overflow-hidden shadow-xl">
+                        <View className="flex-row flex-wrap items-center justify-between">
+                            <View className="flex-1 pr-4 mb-4">
+                                <Heading size="lg" className="text-white mb-2">Experience Full Learning</Heading>
+                                <Text className="text-white text-sm opacity-90 mb-3">
+                                    Discover advanced features, join discussions and access exclusive resources on our web platform.
+                                </Text>
+                                <Button
+                                    size="sm"
+                                    className="bg-white self-start"
+                                    onPress={navigateToWebsite}
+                                >
+                                    <FontAwesome name="external-link" size={14} color="#4f46e5" className="mr-1" />
+                                    <Text className="text-indigo-700 font-semibold">Visit Website</Text>
+                                </Button>
+                            </View>
+                            <View className="w-[170px] transform -rotate-2">
+                                <BrowserMockup
+                                    imageUrl="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1000"
+                                    height={180}
+                                    className="shadow-lg"
+                                />
+                            </View>
+                        </View>
+                        <View className="absolute top-2 right-2 opacity-20">
+                            <FontAwesome name="graduation-cap" size={60} color="#ffffff" />
+                        </View>
+                    </View>
                 </View>
 
                 {/* Recent Listings Section */}
