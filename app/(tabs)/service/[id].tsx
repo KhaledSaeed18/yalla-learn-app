@@ -38,13 +38,11 @@ const ServiceDetailScreen = () => {
         }
     }, [id]);
 
-    // Use useFocusEffect to refetch data every time the screen comes into focus
     useFocusEffect(
         useCallback(() => {
             console.log('Service screen focused, fetching data...');
             fetchServiceDetails();
 
-            // Return a cleanup function (optional)
             return () => {
                 console.log('Service screen blurred');
             };
@@ -201,8 +199,6 @@ const ServiceDetailScreen = () => {
                         className={`py-4 px-6 rounded-xl flex-row justify-center items-center ${isOffering ? 'bg-emerald-500' : 'bg-amber-500'
                             }`}
                         onPress={() => {
-                            // This will be implemented in the future for contacting the service provider
-                            // For now, we'll just show an alert
                             Alert.alert(
                                 isOffering ? 'Contact Provider' : 'Offer Help',
                                 `You're attempting to ${isOffering ? 'contact the provider' : 'offer help'} for this service.`,

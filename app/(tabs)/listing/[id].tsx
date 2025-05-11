@@ -38,13 +38,11 @@ const ListingDetailScreen = () => {
         }
     }, [id]);
 
-    // Use useFocusEffect to refetch data every time the screen comes into focus
     useFocusEffect(
         useCallback(() => {
             console.log('Listing screen focused, fetching data...');
             fetchListingDetails();
 
-            // Return a cleanup function (optional)
             return () => {
                 console.log('Listing screen blurred');
             };
