@@ -7,8 +7,18 @@ import { serviceService } from '@/services/service.service';
 import { ServiceResponse } from '@/types/service/service.types';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { formatCurrency } from '@/lib/utils';
-import { ServiceDirection } from '@/types/enums';
+import { GigCategory, ServiceDirection } from '@/types/enums';
 import { router } from 'expo-router';
+import { Modal, ModalBackdrop, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from '@/components/ui/modal';
+import { Button } from '@/components/ui/button';
+import { Input, InputField } from '@/components/ui/input';
+import { Select, SelectTrigger, SelectInput, SelectIcon, SelectPortal, SelectContent, SelectItem } from '@/components/ui/select';
+import { ScrollView } from 'react-native';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ServiceFormData, serviceSchema } from '@/lib/validations/service.validation';
+import { Box } from '@/components/ui/box';
+import { VStack } from '@/components/ui/vstack';
 
 const formatRelativeTime = (dateString: string): string => {
     const date = new Date(dateString);
@@ -59,6 +69,35 @@ export default function MyServicesScreen() {
     const [currentPage, setCurrentPage] = useState(1);
     const [hasNextPage, setHasNextPage] = useState(false);
     const [totalServices, setTotalServices] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedService, setSelectedService] = useState<ServiceResponse | null>(null);
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    // Form setup for editing
+    const {
+        control,
+        handleSubmit,
+        watch,
+        formState: { errors },
+        reset,
+        setValue
+    } = useForm<ServiceFormData>({
+        resolver: zodResolver(serviceSchema),
+        defaultValues: {
+            title: '',
+            description: '',
+            price: '',
+            category: GigCategory.OTHER,
+            direction: ServiceDirection.OFFERING
+        }
+    });
+
+    const direction = watch('direction');
+
+    // Helper function to format enum values for display
+    const formatEnumValue = (value: string) => {
+        return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+    };
 
     const fetchServices = useCallback(async (refresh: boolean = false) => {
         try {
@@ -113,8 +152,44 @@ export default function MyServicesScreen() {
     };
 
     const handleEditService = (serviceId: string) => {
-        // Navigate to edit service page with the service ID
-        // router.push(`/edit-service/${serviceId}`);
+        // Find the service to edit
+        const serviceToEdit = services.find(service => service.id === serviceId);
+        if (serviceToEdit) {
+            setSelectedService(serviceToEdit);
+            // Set form values
+            setValue('title', serviceToEdit.title);
+            setValue('description', serviceToEdit.description);
+            setValue('price', serviceToEdit.price ? serviceToEdit.price.toString() : '');
+            setValue('category', serviceToEdit.category);
+            setValue('direction', serviceToEdit.direction);
+            setIsModalOpen(true);
+        }
+    };
+
+    const handleUpdateService = async (data: ServiceFormData) => {
+        if (!selectedService) return;
+
+        setIsUpdating(true);
+        try {
+            await serviceService.updateService(selectedService.id, data);
+
+            // Close modal and refresh data
+            setIsModalOpen(false);
+            setSelectedService(null);
+            fetchServices(true);
+
+            Alert.alert(
+                "Success",
+                "Your service has been successfully updated!",
+                [{ text: "OK" }]
+            );
+        } catch (error) {
+            let errorMessage = "Failed to update service. Please try again.";
+
+            Alert.alert("Error", errorMessage);
+        } finally {
+            setIsUpdating(false);
+        }
     };
 
     const handleServicePress = (serviceId: string) => {
@@ -302,6 +377,182 @@ export default function MyServicesScreen() {
             >
                 <Ionicons name="add" size={24} color="white" />
             </TouchableOpacity>
+
+            {/* Edit Service Modal */}
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <ModalBackdrop />
+                <ModalContent>
+                    <ModalHeader>
+                        <Heading size="lg">Edit Service</Heading>
+                        <ModalCloseButton>
+                            <Ionicons name="close" size={24} color="black" />
+                        </ModalCloseButton>
+                    </ModalHeader>
+                    <ModalBody>
+                        <ScrollView showsVerticalScrollIndicator={false}>
+                            <VStack space="md" className="py-2">
+                                <Box>
+                                    <Text className="mb-2 text-typography-700">Service Type</Text>
+                                    <Controller
+                                        control={control}
+                                        name="direction"
+                                        render={({ field: { onChange, value } }) => (
+                                            <View className="flex-row">
+                                                <TouchableOpacity
+                                                    onPress={() => onChange(ServiceDirection.OFFERING)}
+                                                    className={`flex-1 py-3 rounded-l-md ${value === ServiceDirection.OFFERING ? 'bg-emerald-500' : 'bg-gray-200'}`}
+                                                >
+                                                    <Text className={`text-center font-medium ${value === ServiceDirection.OFFERING ? 'text-white' : 'text-gray-700'}`}>
+                                                        I'm Offering
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    onPress={() => onChange(ServiceDirection.REQUESTING)}
+                                                    className={`flex-1 py-3 rounded-r-md ${value === ServiceDirection.REQUESTING ? 'bg-amber-500' : 'bg-gray-200'}`}
+                                                >
+                                                    <Text className={`text-center font-medium ${value === ServiceDirection.REQUESTING ? 'text-white' : 'text-gray-700'}`}>
+                                                        I'm Requesting
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        )}
+                                    />
+                                    {errors.direction && (
+                                        <Text className="text-error-600 text-xs mt-1">{errors.direction.message}</Text>
+                                    )}
+                                </Box>
+
+                                <Box>
+                                    <Text className="mb-2 text-typography-700">Service Title</Text>
+                                    <Controller
+                                        control={control}
+                                        name="title"
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                            <Input variant="outline" size="md">
+                                                <InputField
+                                                    placeholder="Enter service title"
+                                                    value={value}
+                                                    onChangeText={onChange}
+                                                    onBlur={onBlur}
+                                                />
+                                            </Input>
+                                        )}
+                                    />
+                                    {errors.title && (
+                                        <Text className="text-error-600 text-xs mt-1">{errors.title.message}</Text>
+                                    )}
+                                </Box>
+
+                                {direction === ServiceDirection.OFFERING && (
+                                    <Box>
+                                        <Text className="mb-2 text-typography-700">Price</Text>
+                                        <Controller
+                                            control={control}
+                                            name="price"
+                                            render={({ field: { onChange, onBlur, value } }) => (
+                                                <Input variant="outline" size="md">
+                                                    <InputField
+                                                        placeholder="Enter price"
+                                                        value={value}
+                                                        onChangeText={onChange}
+                                                        onBlur={onBlur}
+                                                        keyboardType="decimal-pad"
+                                                    />
+                                                </Input>
+                                            )}
+                                        />
+                                        {errors.price && (
+                                            <Text className="text-error-600 text-xs mt-1">{errors.price.message}</Text>
+                                        )}
+                                    </Box>
+                                )}
+
+                                <Box>
+                                    <Text className="mb-2 text-typography-700">Category</Text>
+                                    <Controller
+                                        control={control}
+                                        name="category"
+                                        render={({ field: { onChange, value } }) => (
+                                            <Select
+                                                onValueChange={onChange}
+                                                defaultValue={value}
+                                            >
+                                                <SelectTrigger variant="outline" size="md">
+                                                    <SelectInput placeholder="Select a category" />
+                                                    <SelectIcon>
+                                                        <Ionicons name="chevron-down" size={16} color="gray" />
+                                                    </SelectIcon>
+                                                </SelectTrigger>
+                                                <SelectPortal>
+                                                    <SelectContent>
+                                                        {Object.values(GigCategory).map((category) => (
+                                                            <SelectItem
+                                                                key={category}
+                                                                label={formatEnumValue(category)}
+                                                                value={category}
+                                                            />
+                                                        ))}
+                                                    </SelectContent>
+                                                </SelectPortal>
+                                            </Select>
+                                        )}
+                                    />
+                                    {errors.category && (
+                                        <Text className="text-error-600 text-xs mt-1">{errors.category.message}</Text>
+                                    )}
+                                </Box>
+
+                                <Box>
+                                    <Text className="mb-2 text-typography-700">Description</Text>
+                                    <Controller
+                                        control={control}
+                                        name="description"
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                            <Input
+                                                variant="outline"
+                                                size="md"
+                                                className="h-32"
+                                            >
+                                                <InputField
+                                                    placeholder="Describe your service"
+                                                    value={value}
+                                                    onChangeText={onChange}
+                                                    onBlur={onBlur}
+                                                    numberOfLines={4}
+                                                    multiline={true}
+                                                />
+                                            </Input>
+                                        )}
+                                    />
+                                    {errors.description && (
+                                        <Text className="text-error-600 text-xs mt-1">{errors.description.message}</Text>
+                                    )}
+                                </Box>
+                            </VStack>
+                        </ScrollView>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            action="secondary"
+                            onPress={() => setIsModalOpen(false)}
+                            disabled={isUpdating}
+                        >
+                            <Text>Cancel</Text>
+                        </Button>
+                        <Button
+                            size="sm"
+                            action="primary"
+                            onPress={handleSubmit(handleUpdateService)}
+                            isDisabled={isUpdating}
+                        >
+                            <Text>{isUpdating ? 'Updating...' : 'Update Service'}</Text>
+                            {isUpdating && <ActivityIndicator size="small" color="white" />}
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </SafeAreaView>
     );
 }
