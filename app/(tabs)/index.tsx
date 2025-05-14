@@ -61,7 +61,7 @@ export default function HomePage() {
     const navigateToAddServices = () => router.push("/(tabs)/add-service");
     const navigateToServices = () => router.push("/(tabs)/services");
     const navigateToAdd = () => router.push("/(tabs)/add");
-    const navigateToWebsite = () => router.push("https://google.com");
+    const navigateToWebsite = () => router.push("https://yalla-learn.me");
 
     const fetchListings = async () => {
         try {
@@ -119,7 +119,9 @@ export default function HomePage() {
     };
 
     return (
-        <SafeAreaView className="bg-background-0 flex-1">
+        <SafeAreaView className="bg-background-0 flex-1" 
+        edges={['top', 'left', 'right']}
+        >
             <HomeHeader />
             <ScrollView
                 className="flex-1"

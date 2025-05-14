@@ -300,18 +300,6 @@ const ListingDetailScreen = () => {
                                 <FontAwesome name="envelope" size={16} color="#fff" />
                                 <Text className="text-white font-medium ml-2">Email</Text>
                             </Button>
-
-                            {/* Chat button */}
-                            <Button
-                                className="flex-1 bg-blue-500 py-3 rounded-lg flex-row items-center justify-center"
-                                onPress={() => {
-                                    // Chat functionality to be implemented
-                                    console.log('Chat with seller:', listing.user.id);
-                                }}
-                            >
-                                <FontAwesome name="comment" size={16} color="#fff" />
-                                <Text className="text-white font-medium ml-2">Chat</Text>
-                            </Button>
                         </View>
                     )}
                 </View>

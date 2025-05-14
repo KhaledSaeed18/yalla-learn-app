@@ -17,7 +17,7 @@ function WebsiteCTA() {
                     variant="solid"
                     className="bg-[#3B82F6] text-white"
                     onPress={() => {
-                        Linking.openURL('https://www.yalla-learn.com').catch(err =>
+                        Linking.openURL('https://www.yalla-learn.me').catch(err =>
                             console.error('An error occurred opening the URL:', err)
                         );
                     }}
@@ -40,17 +40,16 @@ function WebsiteCTA() {
 
                     {/* Mock address bar */}
                     <Box className="flex-1 px-3 py-1 bg-white rounded-full">
-                        <Text className="text-md text-center">www.yalla-learn.com</Text>
+                        <Text className="text-md text-center">www.yalla-learn.me</Text>
                     </Box>
                 </Box>
 
                 {/* Website preview image */}
                 <Image
-                    source={{
-                        uri: "https://plus.unsplash.com/premium_photo-1683121710572-7723bd2e235d?q=80&w=3132&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                    }}
+                    source={require('../../assets/images/website-demo.png')}
                     className="w-full h-48"
-                    resizeMode="cover"
+                    resizeMode="stretch"
+                    alt="Website Preview"
                 />
             </Box>
         </Box>

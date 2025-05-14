@@ -91,7 +91,7 @@ const Listings = () => {
                 </Heading>
             </View>
 
-            <View className="px-4 py-3">
+            <View className="px-4">
                 <ListingsFilter onFilterChange={handleFilterChange} />
             </View>
 

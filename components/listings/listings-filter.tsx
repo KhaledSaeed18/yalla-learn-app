@@ -217,12 +217,12 @@ export const ListingsFilter = ({ onFilterChange, initialFilters = { sortBy: 'cre
     };
 
     return (
-        <View className="mb-2">
+        <View className="">
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ paddingVertical: 4 }}
-                className="pb-2"
+                className=""
             >
                 <View className="flex-row items-center">
                     {activeFilterCount > 0 && (

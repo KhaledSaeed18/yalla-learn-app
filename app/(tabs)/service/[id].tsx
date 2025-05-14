@@ -8,7 +8,7 @@ import { serviceService } from '@/services/service.service';
 import { ServiceResponse } from '@/types/service/service.types';
 import { ServiceDirection } from '@/types/enums';
 import { Box } from '@/components/ui/box';
-import { ArrowLeft, Clock, Calendar, User, Tag } from 'lucide-react-native';
+import { Calendar, User, Tag } from 'lucide-react-native';
 import { formatCurrency } from '@/lib/utils';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAppSelector } from '@/redux/hooks';
@@ -261,7 +261,7 @@ const ServiceDetailScreen = () => {
                             {/* Call button - only shown if user has phone number */}
                             {service.user?.phoneNumber && (
                                 <Button
-                                    className="flex-1 bg-green-500 py-3 rounded-lg flex-row items-center justify-center"
+                                    className="flex-1 bg-green-500 rounded-lg flex-row items-center justify-center"
                                     onPress={() => {
                                         if (service.user?.phoneNumber) {
                                             Linking.openURL(`tel:${service.user.phoneNumber}`);
@@ -275,7 +275,7 @@ const ServiceDetailScreen = () => {
 
                             {/* Email button */}
                             <Button
-                                className="flex-1 bg-orange-500 py-3 rounded-lg flex-row items-center justify-center mx-2"
+                                className="flex-1 bg-orange-500 rounded-lg flex-row items-center justify-center mx-2"
                                 onPress={() => {
                                     if (service.user?.email) {
                                         const firstName = service.user?.firstName || 'there';
@@ -286,40 +286,7 @@ const ServiceDetailScreen = () => {
                                 <FontAwesome name="envelope" size={16} color="#fff" />
                                 <Text className="text-white font-medium ml-2">Email</Text>
                             </Button>
-
-                            {/* Chat button */}
-                            <Button
-                                className="flex-1 bg-blue-500 py-3 rounded-lg flex-row items-center justify-center"
-                                onPress={() => {
-                                    // Chat functionality to be implemented
-                                    if (service.user?.id) {
-                                        console.log('Chat with user:', service.user.id);
-                                    }
-                                }}
-                            >
-                                <FontAwesome name="comment" size={16} color="#fff" />
-                                <Text className="text-white font-medium ml-2">Chat</Text>
-                            </Button>
                         </View>
-                    )}
-
-                    {/* Contact Button - we'll keep the original button in addition to the new buttons */}
-                    {!isOwner && (
-                        <Pressable
-                            className={`py-4 px-6 rounded-xl flex-row justify-center items-center ${isOffering ? 'bg-emerald-500' : 'bg-amber-500'
-                                }`}
-                            onPress={() => {
-                                Alert.alert(
-                                    isOffering ? 'Contact Provider' : 'Offer Help',
-                                    `You're attempting to ${isOffering ? 'contact the provider' : 'offer help'} for this service.`,
-                                    [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-                                );
-                            }}
-                        >
-                            <Text className="text-white font-semibold text-lg mr-2">
-                                {isOffering ? 'Contact Provider' : 'Offer Help'}
-                            </Text>
-                        </Pressable>
                     )}
                 </View>
             </ScrollView>
