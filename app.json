@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "senior-app",
-    "slug": "senior-app",
+    "name": "yalla-learn",
+    "slug": "yalla-learn",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
