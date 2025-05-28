@@ -280,7 +280,7 @@ const ListingDetailScreen = () => {
                             {/* Call button - only shown if seller has phone number */}
                             {listing.user.phoneNumber && (
                                 <Button
-                                    className="flex-1 bg-green-500 py-3 rounded-lg flex-row items-center justify-center"
+                                    className="flex-1 bg-green-500 rounded-lg flex-row items-center justify-center"
                                     onPress={() => {
                                         Linking.openURL(`tel:${listing.user.phoneNumber}`);
                                     }}
@@ -292,7 +292,7 @@ const ListingDetailScreen = () => {
 
                             {/* Email button */}
                             <Button
-                                className="flex-1 bg-orange-500 py-3 rounded-lg flex-row items-center justify-center mx-2"
+                                className="flex-1 bg-orange-500 rounded-lg flex-row items-center justify-center mx-2"
                                 onPress={() => {
                                     Linking.openURL(`mailto:${listing.user.email}?subject=Regarding your listing: ${listing.title}&body=Hello ${listing.user.firstName},\n\nI'm interested in your listing "${listing.title}" priced at ${formatCurrency(listing.price)}.\n\nPlease let me know if it's still available.\n\nThanks!`);
                                 }}

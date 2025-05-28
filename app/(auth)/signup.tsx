@@ -82,7 +82,7 @@ export default function SignUp() {
     };
 
     return (
-        <View className="flex-1 bg-background-50 p-6 justify-center">
+        <View className="flex-1 bg-white p-6 justify-center">
             <Box className="mb-6 items-center">
                 <BrainCircuit size={80} color="#3B82F6" className="mr-2" />
                 <Heading size="xl" className="text-typography-900">Create Account</Heading>

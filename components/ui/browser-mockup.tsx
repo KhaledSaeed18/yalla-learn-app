@@ -8,8 +8,8 @@ function WebsiteCTA() {
     return (
         <Box className="mb-4">
             {/* Text and CTA */}
-            <Box className="flex-row items-center justify-between mb-2">
-                <Heading size="lg">
+            <Box className="flex-row items-center justify-between gap-1 mb-2">
+                <Heading size="md" className="text-gray-800 font-semibold">
                     Explore More on Our Website!
                 </Heading>
                 <Button
