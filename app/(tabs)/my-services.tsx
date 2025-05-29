@@ -491,8 +491,15 @@ export default function MyServicesScreen() {
                                                 onValueChange={onChange}
                                                 defaultValue={value}
                                             >
-                                                <SelectTrigger variant="outline" size="md">
-                                                    <SelectInput placeholder="Select a category" />
+                                                <SelectTrigger variant="outline" size="md" className="h-12">
+                                                    <SelectInput
+                                                        placeholder="Select a category"
+                                                        style={{
+                                                            textAlignVertical: 'center',
+                                                            paddingTop: 0,
+                                                            paddingBottom: 0,
+                                                            includeFontPadding: false
+                                                        }} />
                                                     <SelectIcon>
                                                         <Ionicons name="chevron-down" size={16} color="gray" />
                                                     </SelectIcon>

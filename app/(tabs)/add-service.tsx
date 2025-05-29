@@ -173,10 +173,16 @@ export default function AddService() {
                                     onValueChange={onChange}
                                     defaultValue={value}
                                 >
-                                    <SelectTrigger variant="outline" size="md">
+                                    <SelectTrigger variant="outline" size="md" className="h-12">
                                         <SelectInput
                                             placeholder="Select category"
                                             value={formatEnumValue(value)}
+                                            style={{
+                                                textAlignVertical: 'center',
+                                                paddingTop: 0,
+                                                paddingBottom: 0,
+                                                includeFontPadding: false
+                                            }}
                                         />
                                         <SelectIcon className="mr-3" as={ChevronDownIcon} />
                                     </SelectTrigger>
